@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "394675648791",
+    "project_id": "gtcrm-857e1",
+    "storage_bucket": "gtcrm-857e1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394675648791:android:a7f5c176a2e0f459f21f52",
+        "android_client_info": {
+          "package_name": "com.gitakshmi.edupathpro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCqvjzSuomkJZA0yr2U5Y0jMz5cMRc-RE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
