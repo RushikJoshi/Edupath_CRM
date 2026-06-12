@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/widgets/shimmer_loading.dart';
@@ -20,7 +19,6 @@ import '../../data/models/dashboard_model.dart';
 import '../../routes/app_routes.dart';
 import '../customers/customer_list_screen.dart';
 import '../inquiry/inquiry_list_screen.dart';
-import '../leads/lead_list_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, this.onProfileTap});
@@ -32,11 +30,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   static const double _cardRadius = 14;
-
-  static const List<BoxShadow> _innerShadows = [
-    BoxShadow(color: Color(0x22000000), blurRadius: 8, offset: Offset(2, 2)),
-    BoxShadow(color: Color(0x40FFFFFF), blurRadius: 8, offset: Offset(-2, -2)),
-  ];
 
   @override
   void initState() {
@@ -266,33 +259,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(
-                responsiveHorizontalPadding(context),
-                8,
-                responsiveHorizontalPadding(context),
+              padding: const EdgeInsets.fromLTRB(
+                10,
                 12,
+                10,
+                16,
               ),
               child: ResponsiveConstraint(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTopLeadsCard(data),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(flex: 7, child: _performanceCard(data)),
-                        const SizedBox(width: 8),
+                        Expanded(child: _performanceCard(data)),
+                        const SizedBox(width: 12),
                         Expanded(
-                          flex: 4,
                           child: Column(
                             children: [
                               _smallStatCard(
                                 title: 'Total inquiry',
-                                value: _formatCompactNumber(
-                                  data.totalInquiries,
-                                ),
-                                icon: Icons.bubble_chart_rounded,
+                                value: _formatCompactNumber(data.totalInquiries),
+                                imageAsset: 'assets/svgs/total_inquiry_illustration.png',
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -301,13 +291,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 10),
                               _smallStatCard(
                                 title: 'Total Accounts',
-                                value: _formatCompactNumber(
-                                  data.totalCustomers,
-                                ),
-                                icon: Icons.person_outline_rounded,
+                                value: _formatCompactNumber(data.totalCustomers),
+                                imageAsset: 'assets/svgs/total_accounts_illustration.png',
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -316,32 +304,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   );
                                 },
                               ),
+                              const SizedBox(height: 10),
+                              _smallStatCard(
+                                title: 'Conversion Rate',
+                                value: '${data.conversionRate.toStringAsFixed(1).replaceAll('.', ',')}%',
+                                imageAsset: 'assets/svgs/conversion_rate_illustration.png',
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
                           child: _bottomInfoCard(
                             title: 'Revenue',
                             value: _formatCurrency(data.totalRevenue),
-                            icon: Icons.insights_rounded,
+                            imageAsset: 'assets/svgs/revenue_illustration.png',
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: _bottomInfoCard(
                             title: 'Connect',
                             value: _formatCompactNumber(data.totalContacts),
-                            icon: Icons.people_alt_outlined,
+                            imageAsset: 'assets/svgs/connect_illustration.png',
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     _recentActivityCard(data),
                   ],
                 ),
@@ -354,90 +348,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildTopLeadsCard(DashboardModel data) {
-    return InnerShadow(
-      shadows: _innerShadows,
-      child: InkWell(
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_cardRadius),
-        onTap: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const LeadListScreen()));
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(_cardRadius),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.accentDark.withValues(alpha: 0.82),
-                AppColors.primaryLight.withValues(alpha: 0.78),
-                AppColors.primary.withValues(alpha: 0.82),
-              ],
-            ),
+        color: const Color(0xFF2E8EFF),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Total Leads',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Total Leads',
+                      _formatCompactNumber(data.totalLeads),
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w500,
-                        height: 1,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          _formatCompactNumber(data.totalLeads),
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w700,
-                            height: 1,
-                          ),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF10B981),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '+15%',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '+${data.conversionRate.toStringAsFixed(0)}%',
-                          style: GoogleFonts.poppins(
-                            color: AppColors.success,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'This month.',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'This month.',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withOpacity(0.85),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.query_stats_rounded,
-                color: Colors.white.withValues(alpha: 0.72),
-                size: 52,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          Image.asset(
+            'assets/svgs/total_leads_graph.png',
+            width: 70,
+            height: 60,
+            fit: BoxFit.contain,
+          ),
+        ],
       ),
     );
   }
@@ -474,42 +463,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          responsiveHorizontalPadding(context),
+        padding: const EdgeInsets.fromLTRB(
           10,
-          responsiveHorizontalPadding(context),
+          12,
           10,
+          16,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _shimmerCard(height: 120),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _shimmerCard(height: 170)),
-                const SizedBox(width: 8),
+                Expanded(child: _shimmerCard(height: 200)),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     children: [
-                      _shimmerCard(height: 81),
-                      const SizedBox(height: 8),
-                      _shimmerCard(height: 81),
+                      _shimmerCard(height: 60),
+                      const SizedBox(height: 10),
+                      _shimmerCard(height: 60),
+                      const SizedBox(height: 10),
+                      _shimmerCard(height: 60),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _shimmerCard(height: 78)),
-                const SizedBox(width: 8),
-                Expanded(child: _shimmerCard(height: 78)),
+                Expanded(child: _shimmerCard(height: 80)),
+                const SizedBox(width: 12),
+                Expanded(child: _shimmerCard(height: 80)),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             ShimmerLoading.box(
               width: double.infinity,
               height: 160,
@@ -534,116 +525,144 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _ChartMetric(
         'Inquiry',
         data.totalInquiries.toDouble(),
-        Colors.blue.shade400,
+        const Color(0xFF3B82F6), // Blue
       ),
-      _ChartMetric('Leads', data.totalLeads.toDouble(), Colors.green.shade500),
+      _ChartMetric(
+        'Leads',
+        data.totalLeads.toDouble(),
+        const Color(0xFF8B5CF6), // Purple
+      ),
       _ChartMetric(
         'Accounts',
         data.totalCustomers.toDouble(),
-        Colors.orange.shade500,
+        const Color(0xFF06B6D4), // Cyan
       ),
     ];
 
     final total = chartItems.fold<double>(0, (sum, item) => sum + item.value);
     final hasData = total > 0;
 
-    return InnerShadow(
-      shadows: _innerShadows,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(_cardRadius),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(_cardRadius),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
               'Performance Distribution',
               style: GoogleFonts.poppins(
-                color: AppColors.primary,
-                fontSize: 10,
+                color: const Color(0xFF1E293B),
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 4),
-            SizedBox(
-              height: 110,
-              child: hasData
-                  ? Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        PieChart(
-                          PieChartData(
-                            sectionsSpace: 2,
-                            centerSpaceRadius: 24,
-                            sections: List.generate(chartItems.length, (index) {
-                              final item = chartItems[index];
-                              final percentage = (item.value / total) * 100;
-                              return PieChartSectionData(
-                                value: item.value,
-                                color: item.color,
-                                radius: 32,
-                                title: item.value > 0
-                                    ? '${percentage.toStringAsFixed(0)}%'
-                                    : '',
-                                titleStyle: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 6,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                titlePositionPercentageOffset: 0.7,
-                              );
-                            }),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Center(
-                      child: Text(
-                        'No chart data',
-                        style: GoogleFonts.poppins(
-                          color: Colors.grey.shade600,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 120,
+            child: hasData
+                ? Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PieChart(
+                        PieChartData(
+                          sectionsSpace: 2,
+                          centerSpaceRadius: 32,
+                          sections: List.generate(chartItems.length, (index) {
+                            final item = chartItems[index];
+                            final percentage = (item.value / total) * 100;
+                            return PieChartSectionData(
+                              value: item.value,
+                              color: item.color,
+                              radius: 26,
+                              title: item.value > 0
+                                  ? '${percentage.toStringAsFixed(0)}%'
+                                  : '',
+                              titleStyle: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              titlePositionPercentageOffset: 0.6,
+                            );
+                          }),
                         ),
                       ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Total',
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              color: const Color(0xFF64748B),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            total.toInt().toString(),
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              color: const Color(0xFF1E293B),
+                              fontWeight: FontWeight.w700,
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Text(
+                      'No chart data',
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey.shade600,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _chartLegend(
-                    'Inquiry',
-                    data.totalInquiries,
-                    Colors.blue.shade400,
-                    total,
                   ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: _chartLegend(
-                    'Leads',
-                    data.totalLeads,
-                    Colors.green.shade500,
-                    total,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: _chartLegend(
-                    'Accounts',
-                    data.totalCustomers,
-                    Colors.orange.shade500,
-                    total,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          // Vertical aligned legend exactly like the screenshot
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _chartLegend(
+                'Inquiry',
+                data.totalInquiries,
+                const Color(0xFF3B82F6),
+                total,
+              ),
+              const SizedBox(height: 6),
+              _chartLegend(
+                'Leads',
+                data.totalLeads,
+                const Color(0xFF8B5CF6),
+                total,
+              ),
+              const SizedBox(height: 6),
+              _chartLegend(
+                'Accounts',
+                data.totalCustomers,
+                const Color(0xFF06B6D4),
+                total,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -651,56 +670,83 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _smallStatCard({
     required String title,
     required String value,
-    required IconData icon,
+    IconData? icon,
+    Color? iconColor,
+    Color? iconBgColor,
+    String? imageAsset,
+    double height = 78,
     VoidCallback? onTap,
   }) {
-    return InnerShadow(
-      shadows: _innerShadows,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(_cardRadius),
-        child: Container(
-          height: 90,
-          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(_cardRadius),
-            border: Border.all(color: AppColors.primary, width: 1),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, color: AppColors.primary, size: 18),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        color: AppColors.textPrimary,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                      ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: height,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x40000000),
+              blurRadius: 4,
+              spreadRadius: 0,
+              offset: Offset(0, 0),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF64748B),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const Spacer(),
-                    Text(
-                      value,
-                      style: GoogleFonts.poppins(
-                        color: AppColors.primary,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF1E293B),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            if (imageAsset != null)
+              Image.asset(
+                imageAsset,
+                width: 38,
+                height: 38,
+                fit: BoxFit.contain,
+              )
+            else if (icon != null)
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: iconBgColor ?? Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor ?? Colors.blue,
+                  size: 20,
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -709,49 +755,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _bottomInfoCard({
     required String title,
     required String value,
-    required IconData icon,
+    required String imageAsset,
   }) {
-    return InnerShadow(
-      shadows: _innerShadows,
-      child: Container(
-        height: 80,
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(_cardRadius),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: AppColors.primary, size: 16),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      color: AppColors.textPrimary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(_cardRadius),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Image.asset(
+                imageAsset,
+                width: 20,
+                height: 20,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF475569),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
-            const Spacer(),
-            Text(
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
               value,
               style: GoogleFonts.poppins(
-                color: AppColors.primary,
-                fontSize: 26,
-                fontWeight: FontWeight.w600,
-                height: 1,
+                color: const Color(0xFF1E293B),
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -759,89 +817,93 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _recentActivityCard(DashboardModel data) {
     final items = <_ActivityItem>[
       _ActivityItem(
-        Icons.event_note_outlined,
+        Icons.calendar_today_outlined,
         data.todayMeetings > 0
-            ? 'Meeting scheduled with client'
+            ? 'Meeting scheduled with rahul'
             : 'No meeting scheduled today',
         'Today',
       ),
       _ActivityItem(
-        Icons.call_outlined,
+        Icons.phone_outlined,
         data.todayCalls > 0
-            ? 'Call follow-up is pending'
+            ? 'Call with priya is pending'
             : 'No pending calls for today',
         'Today',
       ),
       _ActivityItem(
         Icons.person_outline_rounded,
-        'New leads count: ${_formatCompactNumber(data.totalLeads)}',
+        'New lead: Anil kapur',
         'Yesterday',
       ),
       _ActivityItem(
         Icons.mail_outline_rounded,
-        'Inquiry count: ${_formatCompactNumber(data.totalInquiries)}',
+        'inquiry received from MNC Cro',
         '2 days ago',
       ),
     ];
 
-    return InnerShadow(
-      shadows: _innerShadows,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(_cardRadius),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
-              child: Text(
-                'Recent Activity',
-                style: GoogleFonts.poppins(
-                  color: AppColors.textPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(_cardRadius),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(0, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+            child: Text(
+              'Recent Activity',
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF1E293B),
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            const Divider(height: 1),
-            ...items.map(_activityRow),
-          ],
-        ),
+          ),
+          const Divider(height: 1, color: Color(0xFFF1F5F9)),
+          ...items.map(_activityRow),
+        ],
       ),
     );
   }
 
   Widget _activityRow(_ActivityItem item) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.border)),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
       ),
       child: Row(
         children: [
-          Icon(item.icon, size: 20, color: AppColors.textSecondary),
-          const SizedBox(width: 8),
+          Icon(item.icon, size: 18, color: const Color(0xFF64748B)),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               item.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.poppins(
-                color: AppColors.textPrimary,
-                fontSize: 11,
+                color: const Color(0xFF334155),
+                fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
           Text(
             item.time,
             style: GoogleFonts.poppins(
-              color: AppColors.textSecondary,
-              fontSize: 10,
+              color: const Color(0xFF94A3B8),
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -857,32 +919,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 10,
-          height: 10,
+          width: 8,
+          height: 8,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 6),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.poppins(
-                fontSize: 9,
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              '${value.toString()} • ${percentage.toStringAsFixed(0)}%',
-              style: GoogleFonts.poppins(
-                fontSize: 8,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 11,
+            color: const Color(0xFF475569),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          '${percentage.toStringAsFixed(0)}%',
+          style: GoogleFonts.poppins(
+            fontSize: 11,
+            color: const Color(0xFF64748B),
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ],
     );
@@ -904,7 +961,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String _formatCurrency(double amount) {
     final whole = amount.round();
-    return 'Rs ${_formatCompactNumber(whole)}';
+    return '₹ ${_formatCompactNumber(whole)}';
   }
 }
 
@@ -923,3 +980,4 @@ class _ChartMetric {
   final double value;
   final Color color;
 }
+

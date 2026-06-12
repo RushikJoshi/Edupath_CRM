@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 /// BgTeal  : #CCF7F0 — Light Teal (chips, section bg, borders)
 class AppColors {
   // ─── Primary ────────────────────────────────────────────────────────
-  static const Color primary = Color(0xFF0D4C7D);
-  static const Color primaryDark = Color(0xFF08375C); // darker shade of primary
-  static const Color primaryLight = Color(0xFF1A6BAD); // lighter shade of primary
+  static const Color primary = Color(0xFF2E8EFF);
+  static const Color primaryDark = Color(0xFF1B73E3); // darker shade of primary
+  static const Color primaryLight = Color(0xFF5CA3FF); // lighter shade of primary
   static const Color primarySurface = Color(0xFFE5F2FF);
-  static const Color primaryDarkBlue = Color(0xFF0D4C7D);
+  static const Color primaryDarkBlue = Color(0xFF2E8EFF);
 
   // ─── Accent ──────────────────────────────────────────────────────────
   static const Color accent = Color(0xFF45E2C8);
@@ -20,9 +20,9 @@ class AppColors {
   static const Color accentSurface = Color(0xFFCCF7F0);
 
   // ─── Gradients ───────────────────────────────────────────────────────
-  static const List<Color> primaryGradient = [Color(0xFF0D4C7D), Color(0xFF1A6BAD)];
-  static const List<Color> splashGradient = [Color(0xFF0D4C7D), Color(0xFF1A6BAD)];
-  static const List<Color> dashboardGradient = [Color(0xFF08375C), Color(0xFF0D4C7D)];
+  static const List<Color> primaryGradient = [Color(0xFF2E8EFF), Color(0xFF1B73E3)];
+  static const List<Color> splashGradient = [Color(0xFF2E8EFF), Color(0xFF1B73E3)];
+  static const List<Color> dashboardGradient = [Color(0xFF1B73E3), Color(0xFF2E8EFF)];
   static const List<Color> accentGradient = [Color(0xFF45E2C8), Color(0xFF2EC4AC)];
 
   // ─── Status ──────────────────────────────────────────────────────────
@@ -38,7 +38,7 @@ class AppColors {
   static const Color lostColor = Color(0xFF0D4C7D);
 
   // ─── Backgrounds ─────────────────────────────────────────────────────
-  static const Color background = Color(0xEFEBF1FD); // page scaffold
+  static const Color background = Color(0xFFF9FAFB); // page scaffold
   static const Color surfaceWhite = Color(0xFFF5FBFF); // card surface (near-white, very light blue)
   static const Color surfaceCard = Color(0xFFF5FBFF); // same as surfaceWhite
   static const Color surfaceLight = Color(0xFFCCF7F0); // teal section bg

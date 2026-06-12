@@ -23,6 +23,6 @@ class AppConstants {
   // Override in production with: --dart-define=API_BASE_URL=https://your-domain.com
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://app.dev.gitakshmilabs.com',
+    defaultValue: 'https://app.gitakshmilabs.com',
   );
 }
