@@ -70,7 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
             return GoogleFonts.poppins(
               fontSize: 11,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: isSelected ? AppColors.primary : Colors.grey.shade500,
+              color: isSelected ? const Color(0xFF2E8EFF) : const Color(0xFF0E4C7D),
+            );
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            final isSelected = states.contains(WidgetState.selected);
+            return IconThemeData(
+              color: isSelected ? const Color(0xFF2E8EFF) : const Color(0xFF0E4C7D),
             );
           }),
         ),
@@ -93,21 +99,21 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 0,
           height: 65,
           destinations: [
-            _navDestination('assets/svgs/Dashboard.svg', 'Dashboard'),
-            _navDestination('assets/svgs/Enquiries.svg', 'Enquiry'),
-            _navDestination('assets/svgs/leads.svg', 'Leads'),
-            _navDestination('assets/svgs/meetings.svg', 'Meetings'),
-            _navDestination('assets/svgs/profile.svg', 'Profile'),
+            _navDestination('assets/svgs/bottom_dashboard.png', 'Dashboard'),
+            _navDestination('assets/svgs/bottom_enquiry.png', 'Enquiry'),
+            _navDestination('assets/svgs/bottom_leads.png', 'Leads'),
+            _navDestination('assets/svgs/bottom_meeting.png', 'Meetings'),
+            _navDestination('assets/svgs/bottom_profile.png', 'Profile'),
           ],
         ),
       ),
     );
   }
 
-  NavigationDestination _navDestination(String svgAsset, String label) {
+  NavigationDestination _navDestination(String assetPath, String label) {
     return NavigationDestination(
-      icon: SvgPicture.asset(svgAsset, width: 24, height: 24),
-      selectedIcon: SvgPicture.asset(svgAsset, width: 24, height: 24),
+      icon: _NavIcon(assetPath: assetPath),
+      selectedIcon: _NavIcon(assetPath: assetPath),
       label: label,
     );
   }
@@ -400,6 +406,30 @@ class _HomeScreenState extends State<HomeScreen> {
           size: 20,
         ),
       ),
+    );
+  }
+}
+
+class _NavIcon extends StatelessWidget {
+  const _NavIcon({required this.assetPath});
+  final String assetPath;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = IconTheme.of(context).color;
+    if (assetPath.endsWith('.png')) {
+      return Image.asset(
+        assetPath,
+        width: 24,
+        height: 24,
+        color: color,
+      );
+    }
+    return SvgPicture.asset(
+      assetPath,
+      width: 24,
+      height: 24,
+      colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
     );
   }
 }

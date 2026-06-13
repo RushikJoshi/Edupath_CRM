@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,10 +16,18 @@ import '../../core/widgets/shimmer_loading.dart';
 
 import '../../data/models/inquiry_model.dart';
 
-class InquiryDetailScreen extends StatelessWidget {
+class InquiryDetailScreen extends StatefulWidget {
   const InquiryDetailScreen({super.key, this.inquiry});
 
   final InquiryModel? inquiry;
+
+  @override
+  State<InquiryDetailScreen> createState() => _InquiryDetailScreenState();
+}
+
+class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
+  bool _isContactExpanded = true;
+  bool _isDetailsExpanded = false;
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -71,7 +77,7 @@ class InquiryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (inquiry == null) {
+    if (widget.inquiry == null) {
       return Scaffold(
         appBar: AppBar(backgroundColor: AppColors.primary),
         body: Center(
@@ -117,15 +123,15 @@ class InquiryDetailScreen extends StatelessWidget {
       builder: (context, state) {
         // Always use the latest version from BlocState if available
         final inq =
-            state.items.where((i) => i.id == inquiry!.id).firstOrNull ??
-            inquiry!;
+            state.items.where((i) => i.id == widget.inquiry!.id).firstOrNull ??
+            widget.inquiry!;
         final sc = statusColor(inq.status);
         final loading = state.actionStatus == AppStatus.loading;
 
         return Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.primary,
+            backgroundColor: const Color(0xFF2E8EFF),
             elevation: 0,
             toolbarHeight: 64,
             leading: IconButton(
@@ -164,13 +170,13 @@ class InquiryDetailScreen extends StatelessWidget {
               ],
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 14),
-                child: SvgPicture.asset(
-                  'assets/svgs/Enquiries.svg',
-                  width: 24,
-                  height: 24,
+              IconButton(
+                icon: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: Colors.white,
+                  size: 24,
                 ),
+                onPressed: () {},
               ),
             ],
           ),
@@ -191,57 +197,85 @@ class InquiryDetailScreen extends StatelessWidget {
                       const SizedBox(height: 14),
 
                       // ── Contact Info ──
-                      _section('Contact Info', Icons.person_rounded, [
-                        _rowWithActions(
-                          Icons.phone_rounded,
-                          'Phone',
-                          inq.phone,
-                          onCall: () => _call(inq.phone),
-                          onWhatsApp: () => _whatsApp(inq.phone, inq.name),
-                        ),
-                        _row(Icons.email_rounded, 'Email', inq.email),
-                        if (inq.companyName?.isNotEmpty == true)
+                      _buildCollapsibleSection(
+                        title: 'Contact Info',
+                        icon: Icons.person_rounded,
+                        isExpanded: _isContactExpanded,
+                        onToggle: () {
+                          setState(() {
+                            _isContactExpanded = !_isContactExpanded;
+                          });
+                        },
+                        children: [
                           _row(
-                            Icons.business_rounded,
-                            'Company',
-                            inq.companyName!,
+                            Icons.assignment_ind_rounded,
+                            'Full Name',
+                            inq.name,
                           ),
-                        if (inq.city?.isNotEmpty == true)
-                          _row(Icons.location_city_rounded, 'City', inq.city!),
-                        if (inq.address?.isNotEmpty == true)
-                          _row(
-                            Icons.location_on_rounded,
-                            'Address',
-                            inq.address!,
+                          _rowWithActions(
+                            Icons.phone_rounded,
+                            'Phone',
+                            inq.phone,
+                            onCall: () => _call(inq.phone),
+                            onWhatsApp: () => _whatsApp(inq.phone, inq.name),
                           ),
-                        if (inq.website?.isNotEmpty == true)
-                          _row(Icons.language_rounded, 'Website', inq.website!),
-                      ]),
+                          _row(Icons.email_rounded, 'Email', inq.email),
+                          _rowSideBySide(
+                            Icons.location_city_rounded,
+                            'City',
+                            inq.city?.isNotEmpty == true ? inq.city!.toUpperCase() : 'AHMADABAD',
+                            'State',
+                            'GUJRAT',
+                          ),
+                          if (inq.companyName?.isNotEmpty == true)
+                            _row(
+                              Icons.business_rounded,
+                              'Company',
+                              inq.companyName!,
+                            ),
+                          if (inq.address?.isNotEmpty == true)
+                            _row(
+                              Icons.location_on_rounded,
+                              'Address',
+                              inq.address!,
+                            ),
+                          if (inq.website?.isNotEmpty == true)
+                            _row(Icons.language_rounded, 'Website', inq.website!),
+                        ],
+                      ),
                       const SizedBox(height: 14),
 
                       // ── Enquiry Details ──
-                      _section('Enquiry Details', Icons.info_outline_rounded, [
-                        _row(Icons.flag_rounded, 'Status', _cap(inq.status)),
-                        _row(Icons.alt_route_rounded, 'Source', inq.source),
-                        if (inq.sourceId?.isNotEmpty == true)
-                          _row(Icons.tag_rounded, 'Source ID', inq.sourceId!),
-                        if (inq.course?.isNotEmpty == true)
-                          _row(Icons.school_rounded, 'Course', inq.course!),
-                        if (inq.location?.isNotEmpty == true)
-                          _row(Icons.place_rounded, 'Location', inq.location!),
-                        if (inq.value != null)
+                      _buildCollapsibleSection(
+                        title: 'Enquiry Details',
+                        icon: Icons.info_outline_rounded,
+                        isExpanded: _isDetailsExpanded,
+                        onToggle: () {
+                          setState(() {
+                            _isDetailsExpanded = !_isDetailsExpanded;
+                          });
+                        },
+                        children: [
+                          _row(Icons.flag_rounded, 'Status', _cap(inq.status)),
+                          _row(Icons.place_rounded, 'Location', inq.location ?? 'AHMADABAD'),
+                          _row(Icons.alt_route_rounded, 'Source', inq.source),
                           _row(
                             Icons.currency_rupee_rounded,
                             'Value',
-                            '₹ ${inq.value}',
+                            inq.value != null ? '₹ ${inq.value}' : '₹ 0',
                           ),
-                        if (inq.branchName.isNotEmpty)
-                          _row(
-                            Icons.account_tree_rounded,
-                            'Branch',
-                            inq.branchName,
-                          ),
-                      ]),
+                          if (inq.sourceId?.isNotEmpty == true)
+                            _row(Icons.tag_rounded, 'Source ID', inq.sourceId!),
+                          if (inq.course?.isNotEmpty == true)
+                            _row(Icons.school_rounded, 'Course', inq.course!),
+                          if (inq.branchName.isNotEmpty)
+                            _row(
+                              Icons.account_tree_rounded,
+                              'Branch',
+                              inq.branchName,
+                            ),
+                        ],
+                      ),
                       const SizedBox(height: 14),
 
                       // ── Assignment & More ──
@@ -250,8 +284,9 @@ class InquiryDetailScreen extends StatelessWidget {
                         Icons.assignment_ind_rounded,
                         [
                           _row(Icons.person_pin_rounded, 'Assigned To', () {
-                            if (inq.assignedTo?.isNotEmpty != true)
+                            if (inq.assignedTo?.isNotEmpty != true) {
                               return 'Not assigned';
+                            }
                             final users = context.read<UserBloc>().state.items;
                             final match = users
                                 .where((u) => u.id == inq.assignedTo)
@@ -657,148 +692,195 @@ class InquiryDetailScreen extends StatelessWidget {
               .join()
               .toUpperCase()
         : '?';
-    return InnerShadow(
-      shadows: [
-        BoxShadow(
-          color: Colors.transparent,
-          blurRadius: 10,
-          offset: const Offset(3, 3),
-        ),
-      ],
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Row(
-          children: <Widget>[
-            // Avatar
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-              ),
-              child: Center(
-                child: Text(
-                  initials,
-                  style: GoogleFonts.poppins(
-                    color: AppColors.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF2E8EFF), width: 1.5),
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(28),
+              child: Image.network(
+                'https://i.pravatar.cc/150?u=${inq.id}',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                  child: Center(
+                    child: Text(
+                      initials,
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF2E8EFF),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    inq.name,
-                    style: GoogleFonts.poppins(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
-                    ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  inq.name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF000000),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    inq.email,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: Colors.grey.shade500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  inq.email.isNotEmpty ? inq.email : 'No email address',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
                   ),
-                  const SizedBox(height: 6),
-                  // Status pill
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: sc.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: sc.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      _cap(inq.status),
-                      style: GoogleFonts.poppins(
-                        color: sc,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            SvgPicture.asset(
-              'assets/svgs/Enquiries.svg',
-              width: 28,
-              height: 28,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildCollapsibleSection({
+    required String title,
+    required IconData icon,
+    required bool isExpanded,
+    required VoidCallback onToggle,
+    required List<Widget> children,
+  }) {
+    final activeChildren = children.where((w) => w is! SizedBox).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onToggle,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x40000000),
+                  blurRadius: 4,
+                  spreadRadius: 0,
+                  offset: Offset(0, 0),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF000000),
+                    ),
+                  ),
+                ),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  color: const Color(0xFF2E8EFF),
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (isExpanded && activeChildren.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x40000000),
+                  blurRadius: 4,
+                  spreadRadius: 0,
+                  offset: Offset.zero,
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: activeChildren,
+            ),
+          ),
+        ],
+      ],
     );
   }
 
   Widget _section(String title, IconData icon, List<Widget> rows) {
     if (rows.isEmpty) return const SizedBox.shrink();
-    return InnerShadow(
-      shadows: [
-        BoxShadow(
-          color: Colors.transparent,
-          blurRadius: 10,
-          offset: const Offset(2, 2),
-        ),
-      ],
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 14, 10, 0),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(icon, size: 14, color: AppColors.primary),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset.zero,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 14, 10, 0),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E8EFF).withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
+                  child: Icon(icon, size: 14, color: const Color(0xFF2E8EFF)),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF000000),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            const SizedBox(height: 6),
-            ...rows,
-          ],
-        ),
+          ),
+          const SizedBox(height: 6),
+          ...rows,
+        ],
       ),
     );
   }
@@ -808,12 +890,12 @@ class InquiryDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.08)),
+          top: BorderSide(color: const Color(0xFF2E8EFF).withOpacity(0.08)),
         ),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: AppColors.primary.withOpacity(0.5)),
+          Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -823,7 +905,7 @@ class InquiryDetailScreen extends StatelessWidget {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 10,
-                    color: Colors.grey.shade500,
+                    color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.3,
                   ),
@@ -834,7 +916,7 @@ class InquiryDetailScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: const Color(0xFF000000),
                   ),
                 ),
               ],
@@ -856,13 +938,13 @@ class InquiryDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.08)),
+          top: BorderSide(color: const Color(0xFF2E8EFF).withOpacity(0.08)),
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: AppColors.primary.withOpacity(0.5)),
+          Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -872,7 +954,7 @@ class InquiryDetailScreen extends StatelessWidget {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 10,
-                    color: Colors.grey.shade500,
+                    color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.3,
                   ),
@@ -883,15 +965,18 @@ class InquiryDetailScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: const Color(0xFF000000),
                   ),
                 ),
               ],
             ),
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
                 onPressed: onCall,
                 icon: Image.asset(
                   'assets/svgs/mobile.png',
@@ -899,7 +984,10 @@ class InquiryDetailScreen extends StatelessWidget {
                   height: 30,
                 ),
               ),
+              const SizedBox(width: 8),
               IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
                 onPressed: onWhatsApp,
                 icon: Image.asset(
                   'assets/svgs/whatsapp.png',
@@ -914,51 +1002,134 @@ class InquiryDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _textCard(String title, IconData icon, String text) {
-    return InnerShadow(
-      shadows: [
-        BoxShadow(
-          color: Colors.transparent,
-          blurRadius: 10,
-          offset: const Offset(2, 2),
+  Widget _rowSideBySide(
+    IconData icon,
+    String label1,
+    String value1,
+    String label2,
+    String value2,
+  ) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: const Color(0xFF2E8EFF).withOpacity(0.08)),
         ),
-      ],
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Row(
               children: [
-                Icon(icon, size: 16, color: AppColors.primary),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primary,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        value1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF000000),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 24,
+                  width: 1,
+                  color: Colors.grey.shade300,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label2,
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        value2,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF000000),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              text,
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                color: Colors.grey.shade600,
-                height: 1.6,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _textCard(String title, IconData icon, String text) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset.zero,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF000000),
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            text,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              color: const Color(0xFF000000),
+              height: 1.6,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
