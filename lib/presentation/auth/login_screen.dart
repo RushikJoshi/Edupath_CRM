@@ -22,16 +22,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _rememberMe = false;
-  bool _isLoginTab = true;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -119,24 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      // Back Button for Sign Up screen
-                      if (!_isLoginTab)
-                        Positioned(
-                          left: 12,
-                          top: 45,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.arrow_back_rounded,
-                              color: Colors.white,
-                              size: 26,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isLoginTab = true;
-                              });
-                            },
-                          ),
-                        ),
+
                       // Text and Title Content
                       Container(
                         height: MediaQuery.of(context).size.height * 0.38,
@@ -147,9 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _isLoginTab
-                                  ? 'Go ahead and set up\nyour account'
-                                  : 'Create your\naccount',
+                              'Go ahead and set up\nyour account',
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -187,151 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Tab Switcher (Login / Sign Up)
-                            Container(
-                              height: 54,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFE8EEF9),
-                                borderRadius: BorderRadius.circular(27),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _isLoginTab = true;
-                                        });
-                                      },
-                                      child: Container(
-                                        margin: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: _isLoginTab
-                                              ? Colors.white
-                                              : Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(23),
-                                          boxShadow: _isLoginTab
-                                              ? [
-                                                  BoxShadow(
-                                                    color: Colors.black
-                                                        .withValues(alpha: 0.05),
-                                                    blurRadius: 4,
-                                                    offset: const Offset(0, 2),
-                                                  ),
-                                                ]
-                                              : null,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'Login',
-                                            style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              color: _isLoginTab
-                                                  ? const Color(0xFF2E8EFF)
-                                                  : Colors.grey.shade600,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          _isLoginTab = false;
-                                        });
-                                      },
-                                      child: Container(
-                                        margin: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: !_isLoginTab
-                                              ? Colors.white
-                                              : Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(23),
-                                          boxShadow: !_isLoginTab
-                                              ? [
-                                                  BoxShadow(
-                                                    color: Colors.black
-                                                        .withValues(alpha: 0.05),
-                                                    blurRadius: 4,
-                                                    offset: const Offset(0, 2),
-                                                  ),
-                                                ]
-                                              : null,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'Sign Up',
-                                            style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.bold,
-                                              color: !_isLoginTab
-                                                  ? const Color(0xFF2E8EFF)
-                                                  : Colors.grey.shade600,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 30),
-
-                            // Full Name Field (Only for Sign Up)
-                            if (!_isLoginTab) ...[
-                              TextFormField(
-                                controller: _nameController,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: 'Full Name',
-                                  hintStyle: GoogleFonts.poppins(
-                                    color: Colors.grey.shade500,
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.person_outline_rounded,
-                                    color: Color(0xFF2E8EFF),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                    horizontal: 16,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFFE8EEF9),
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFFE8EEF9),
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide: const BorderSide(
-                                      color: Color(0xFF2E8EFF),
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                                validator: (v) => _isLoginTab
-                                    ? null
-                                    : Validators.requiredField(v, 'Full Name'),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
+                            const SizedBox(height: 10),
 
                             // Email Address Field
                             TextFormField(
@@ -445,67 +279,63 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 16),
 
-                            // Remember Me & Forget Password Row (Only for Login)
-                            if (_isLoginTab) ...[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: Checkbox(
-                                          value: _rememberMe,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              _rememberMe = val ?? false;
-                                            });
-                                          },
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                          ),
-                                          side: const BorderSide(
-                                            color: Color(0xFF2E8EFF),
-                                            width: 1.5,
-                                          ),
+                            // Remember Me & Forget Password Row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: Checkbox(
+                                        value: _rememberMe,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _rememberMe = val ?? false;
+                                          });
+                                        },
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                        ),
+                                        side: const BorderSide(
+                                          color: Color(0xFF2E8EFF),
+                                          width: 1.5,
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'Remember me',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          color: Colors.grey.shade600,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                    child: Text(
-                                      'Forget Password?',
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Remember me',
                                       style: GoogleFonts.poppins(
                                         fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color(0xFF2E8EFF),
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
+                                  ],
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 30),
-                            ] else ...[
-                              const SizedBox(height: 14),
-                            ],
+                                  child: Text(
+                                    'Forget Password?',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF2E8EFF),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 30),
 
                             // Action Button (Login / Sign Up)
                             SizedBox(
@@ -546,7 +376,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       )
                                     : Text(
-                                        _isLoginTab ? 'Login' : 'Sign Up',
+                                        'Login',
                                         style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,

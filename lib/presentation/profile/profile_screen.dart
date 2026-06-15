@@ -77,46 +77,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: AppColors.background,
       drawer: const AppDrawer(activeRoute: AppRoutes.profile),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFF2E8EFF),
         elevation: 0,
         toolbarHeight: 64,
         leading: Builder(
-          builder: (ctx) => Padding(
-            padding: const EdgeInsets.only(left: 12, top: 10, bottom: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Colors.black,
-                  size: 16,
-                ),
-                onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  } else {
-                    Scaffold.of(ctx).openDrawer();
-                  }
-                },
-              ),
+          builder: (ctx) => IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 20,
             ),
+            onPressed: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                Scaffold.of(ctx).openDrawer();
+              }
+            },
           ),
         ),
         title: Text(
           'Profile',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -216,7 +199,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 icon: Icons.badge_outlined,
                 label: 'Full Name',
                 value: user?.name ?? '-',
-                hasBorder: true,
               ),
               _buildItemRow(
                 icon: Icons.mail_outline_rounded,
@@ -344,14 +326,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           border: hasBorder
               ? Border.all(color: const Color(0xFF2E8EFF), width: 1.5)
               : Border.all(color: Colors.transparent, width: 1.5),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 4,
-              spreadRadius: 0,
-              offset: Offset.zero,
-            ),
-          ],
         ),
         child: Row(
           children: [
@@ -374,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           style: GoogleFonts.poppins(
                             fontSize: 11,
                             color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                         Text(

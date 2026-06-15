@@ -15,6 +15,7 @@ import '../../core/constants/app_enums.dart';
 import '../../core/widgets/responsive_wrapper.dart';
 import '../../data/models/meeting_model.dart';
 import '../../data/services/storage_service.dart';
+import '../../routes/app_routes.dart';
 
 class AddMeetingScreen extends StatefulWidget {
   const AddMeetingScreen({super.key, this.meeting});
@@ -303,8 +304,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                   TextFormField(
                                     controller: _titleCtrl,
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.black,
                                     ),
                                     decoration: InputDecoration(
@@ -313,8 +314,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                       border: InputBorder.none,
                                       hintText: 'Meeting Title',
                                       hintStyle: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.grey.shade400,
                                       ),
                                     ),
@@ -516,18 +517,23 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEFF5FF),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              Text('View Lead', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.black87)),
-                              const SizedBox(width: 4),
-                              const Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Colors.black87),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRoutes.leadList);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFF5FF),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              children: [
+                                Text('View Lead', style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.black87)),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.arrow_forward_ios_rounded, size: 10, color: Colors.black87),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -641,13 +647,13 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: _gridInput(
-                                icon: Icons.location_on_outlined,
-                                title: 'Location',
-                                controller: _locationCtrl,
-                                hint: 'Enter Location',
-                                enabled: _attendanceMode == 'offline',
-                              ),
+                                child: _gridInput(
+                                  icon: Icons.location_on_outlined,
+                                  title: 'Location',
+                                  controller: _locationCtrl,
+                                  hint: 'Enter Location',
+                                  enabled: true,
+                                ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -668,15 +674,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                   // Notes
                   Padding(
                     padding: const EdgeInsets.only(left: 4, right: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Notes',
-                          style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                        const Icon(Icons.more_horiz_rounded, color: Colors.black),
-                      ],
+                    child: Text(
+                      'Notes',
+                      style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -709,7 +709,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                         Expanded(
                           child: TextFormField(
                             controller: _notesCtrl,
+                            minLines: 4,
                             maxLines: null,
+                            textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87),
                             decoration: InputDecoration(
                               isDense: true,

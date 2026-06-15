@@ -31,26 +31,26 @@ class _LeadListScreenState extends State<LeadListScreen> {
   Future<void> _call(String phone) async {
     if (phone.isEmpty) return;
     final uri = Uri.parse('tel:$phone');
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    } catch (_) {}
   }
 
   Future<void> _whatsApp(String phone, String name) async {
     if (phone.isEmpty) return;
     final normalized = phone.replaceAll(' ', '').replaceAll('+', '');
     final uri = Uri.parse('https://wa.me/$normalized?text=Hi%20$name');
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    } catch (_) {}
   }
 
   Future<void> _sendEmail(String email) async {
     if (email.isEmpty) return;
     final uri = Uri.parse('mailto:$email');
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    } catch (_) {}
   }
 
   String _getTimeAgo(String id) {
