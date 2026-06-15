@@ -396,7 +396,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                               CircleAvatar(
                                                 radius: 24,
                                                 backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
-                                                backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${lead.id}'),
                                                 child: Text(
                                                   initials,
                                                   style: GoogleFonts.poppins(
@@ -434,7 +433,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                       ),
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
-                                                    ),
+                                                      ),
                                                   ],
                                                 ),
                                               ),
@@ -493,7 +492,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                         ),
                                         const SizedBox(height: 10),
                                         const Divider(height: 1, color: Color(0x332E8EFF)),
-                                        const SizedBox(height: 14),
+                                        const SizedBox(height: 10),
 
                                         // --- MIDDLE ROW ---
                                         Row(
@@ -568,7 +567,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                     color: const Color(0xFF000000),
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.w600,
-                                                    ),
+                                                  ),
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
@@ -612,7 +611,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                       ],
                                     ),
                                   ),
-                                  // Option capsule button (flush on the right, vertically centered)
+                                  // Option capsule button (flush right, same style as Enquiry screen button)
                                   GestureDetector(
                                     onTap: () => Navigator.pushNamed(
                                       context,
@@ -620,11 +619,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                       arguments: lead,
                                     ),
                                     child: Container(
-                                      width: 24,
-                                      height: 38,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF2E8EFF),
-                                        borderRadius: BorderRadius.circular(8),
+                                      width: 26,
+                                      height: 46,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF2E8EFF),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
                                       ),
                                       child: const Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -633,25 +635,25 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 2.5),
+                                          SizedBox(height: 3),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 2.5),
+                                          SizedBox(height: 3),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
@@ -747,8 +749,8 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 3,
-      height: 3,
+      width: 4,
+      height: 4,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../data/models/lead_status_history_entry.dart';
 
 /// Timeline of lead status changes: Status name, remark, date/time, user.
@@ -55,7 +56,7 @@ class LeadStatusTimeline extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w700,
-            color: const Color(0xB2000000),
+            color: AppColors.primary,
           ),
         ),
         if (currentStage != null && currentStage!.isNotEmpty) ...[
@@ -64,7 +65,7 @@ class LeadStatusTimeline extends StatelessWidget {
             'Current stage: $currentStage',
             style: GoogleFonts.poppins(
               fontSize: 12,
-              color: const Color(0xB2000000),
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -77,7 +78,7 @@ class LeadStatusTimeline extends StatelessWidget {
               'No status changes yet. Change stage from the pipeline above and add a remark.',
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: const Color(0xB2000000),
+                color: Colors.grey.shade600,
               ),
               textAlign: TextAlign.center,
             ),
@@ -115,9 +116,9 @@ class LeadStatusTimeline extends StatelessWidget {
                           width: 10,
                           height: 10,
                           margin: const EdgeInsets.only(top: 4),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFF2E8EFF),
+                            color: AppColors.primary,
                           ),
                         ),
                         if (!isLast)
@@ -141,7 +142,7 @@ class LeadStatusTimeline extends StatelessWidget {
                                 width: 24,
                                 height: 24,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.12),
+                                  color: AppColors.primary.withOpacity(0.12),
                                   shape: BoxShape.circle,
                                 ),
                                 alignment: Alignment.center,
@@ -150,7 +151,7 @@ class LeadStatusTimeline extends StatelessWidget {
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
-                                    color: const Color(0xB2000000),
+                                    color: AppColors.primary,
                                   ),
                                 ),
                               ),
@@ -161,7 +162,7 @@ class LeadStatusTimeline extends StatelessWidget {
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color(0xB2000000),
+                                    color: AppColors.textPrimary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -171,7 +172,7 @@ class LeadStatusTimeline extends StatelessWidget {
                                 '${_formatDate(e.createdAt)}, ${_formatTime(e.createdAt)}',
                                 style: GoogleFonts.poppins(
                                   fontSize: 10,
-                                  color: const Color(0xB2000000),
+                                  color: Colors.grey.shade600,
                                 ),
                               ),
                             ],
@@ -183,7 +184,7 @@ class LeadStatusTimeline extends StatelessWidget {
                               fontSize: 12,
                               fontStyle: FontStyle.italic,
                               fontWeight: FontWeight.w500,
-                              color: const Color(0xB2000000),
+                              color: Colors.grey.shade800,
                             ),
                           ),
                           if (e.remark.trim().isNotEmpty &&
@@ -194,7 +195,7 @@ class LeadStatusTimeline extends StatelessWidget {
                               e.remark.trim(),
                               style: GoogleFonts.poppins(
                                 fontSize: 11,
-                                color: const Color(0xB2000000),
+                                color: Colors.grey.shade600,
                               ),
                             ),
                           ],

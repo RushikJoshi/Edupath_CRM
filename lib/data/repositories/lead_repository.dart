@@ -11,11 +11,14 @@ class LeadRepository {
 
   Future<List<LeadModel>> fetchAll({String? search}) async {
     final list = await _api.getLeads(search: search);
+    final realList = list
+        .where((lead) => RegExp(r'^[a-fA-F0-9]{24}$').hasMatch(lead.id))
+        .toList();
     final role = await _storage.getRole();
     final branchId = await _storage.getBranchId();
 
-    if (role == null || role.contains('admin')) return list;
-    return list.where((lead) => lead.branchId == branchId).toList();
+    if (role == null || role.contains('admin')) return realList;
+    return realList.where((lead) => lead.branchId == branchId).toList();
   }
 
   Future<LeadModel> createLead({

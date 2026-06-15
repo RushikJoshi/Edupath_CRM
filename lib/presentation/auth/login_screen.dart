@@ -11,7 +11,6 @@ import '../../bloc/branch/branch_event.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_enums.dart';
 import '../../core/utils/validators.dart';
-import '../../core/widgets/responsive_wrapper.dart';
 import '../../routes/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,40 +20,18 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-  late final AnimationController _ctrl;
-  late final Animation<double> _fadeAnim;
-  late final Animation<Offset> _slideAnim;
-
-  Color _borderColorFor(TextEditingController controller) {
-    return controller.text.trim().isNotEmpty
-        ? AppColors.accentDark
-        : AppColors.primary;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    )..forward();
-    _fadeAnim = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.08),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
-  }
+  bool _rememberMe = false;
+  bool _isLoginTab = true;
 
   @override
   void dispose() {
-    _ctrl.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -65,21 +42,21 @@ class _LoginScreenState extends State<LoginScreen>
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        systemNavigationBarColor: AppColors.background,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
       ),
       child: Scaffold(
-        extendBody: true,
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.white,
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state.status == AppStatus.success && state.hasToken) {
               context.read<BranchBloc>().add(BranchFetched());
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                AppRoutes.home,
+                (route) => false,
+              );
             } else if (state.status == AppStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -103,485 +80,517 @@ class _LoginScreenState extends State<LoginScreen>
           builder: (context, state) {
             final loading = state.status == AppStatus.loading;
 
-            return Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Positioned(
-                  top: -50,
-                  right: -50,
-                  child: Container(
-                    width: 250,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.accent.withOpacity(0.12),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: -50,
-                  left: -70,
-                  child: Container(
-                    width: 250,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.08),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => FocusScope.of(context).unfocus(),
-                  behavior: HitTestBehavior.translucent,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        padding: EdgeInsets.fromLTRB(
-                          responsiveHorizontalPadding(context),
-                          0,
-                          responsiveHorizontalPadding(context),
-                          20,
-                        ),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight,
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Top Blue Header Container with Waves
+                  Stack(
+                    clipBehavior: Clip.antiAlias,
+                    children: [
+                      // Base Background (Dark Navy)
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.38,
+                        width: double.infinity,
+                        color: const Color(0xFF09348A),
+                      ),
+                      // Layer 2: Medium Blue Circle (covers middle/left)
+                      Positioned(
+                        left: -MediaQuery.of(context).size.width * 0.6,
+                        top: -MediaQuery.of(context).size.width * 0.5,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 1.5,
+                          height: MediaQuery.of(context).size.width * 1.5,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF145EE0),
+                            shape: BoxShape.circle,
                           ),
-                          child: IntrinsicHeight(
-                            child: ResponsiveConstraint(
-                              child: FadeTransition(
-                                opacity: _fadeAnim,
-                                child: SlideTransition(
-                                  position: _slideAnim,
-                                  child: ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 420,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                ClipRect(
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.topCenter,
-                                                    heightFactor: 0.64,
-                                                    child: Image.asset(
-                                                      'assets/svgs/CRM LOGO.png',
-                                                      height: 250,
-                                                      fit: BoxFit.contain,
-                                                    ),
+                        ),
+                      ),
+                      // Layer 3: Light Blue Circle (covers top-left)
+                      Positioned(
+                        left: -MediaQuery.of(context).size.width * 0.7,
+                        top: -MediaQuery.of(context).size.width * 0.5,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 1.4,
+                          height: MediaQuery.of(context).size.width * 1.4,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF2E8EFF),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      // Back Button for Sign Up screen
+                      if (!_isLoginTab)
+                        Positioned(
+                          left: 12,
+                          top: 45,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.arrow_back_rounded,
+                              color: Colors.white,
+                              size: 26,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isLoginTab = true;
+                              });
+                            },
+                          ),
+                        ),
+                      // Text and Title Content
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.38,
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _isLoginTab
+                                  ? 'Go ahead and set up\nyour account'
+                                  : 'Create your\naccount',
+                              style: GoogleFonts.poppins(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                height: 1.3,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Sign in-up to enjoy the best managing experience',
+                              style: GoogleFonts.poppins(
+                                fontSize: 11,
+                                color: Colors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  // White Card Section
+                  Transform.translate(
+                    offset: const Offset(0, -35),
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(35),
+                          topRight: Radius.circular(35),
+                        ),
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Tab Switcher (Login / Sign Up)
+                            Container(
+                              height: 54,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE8EEF9),
+                                borderRadius: BorderRadius.circular(27),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _isLoginTab = true;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: _isLoginTab
+                                              ? Colors.white
+                                              : Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(23),
+                                          boxShadow: _isLoginTab
+                                              ? [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withValues(alpha: 0.05),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  'EduPath CRM',
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 28,
-                                                    fontWeight: FontWeight.w800,
-                                                    color: AppColors.primary,
-                                                    letterSpacing: -0.5,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  'Sign in to continue',
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    color: AppColors.primary
-                                                        .withOpacity(0.6),
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Form(
-                                                  key: _formKey,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      _label('Email or Mobile'),
-                                                      const SizedBox(height: 8),
-                                                      TextFormField(
-                                                        controller:
-                                                            _emailController,
-                                                        onChanged: (_) =>
-                                                            setState(() {}),
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .emailAddress,
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
-                                                        decoration: InputDecoration(
-                                                          hintText:
-                                                              'you@company.com',
-                                                          hintStyle:
-                                                              GoogleFonts.poppins(
-                                                                color: AppColors
-                                                                    .textMuted,
-                                                              ),
-                                                          prefixIcon: const Icon(
-                                                            Icons
-                                                                .alternate_email_rounded,
-                                                            size: 20,
-                                                            color: AppColors
-                                                                .primaryLight,
-                                                          ),
-                                                          filled: true,
-                                                          fillColor: AppColors
-                                                              .background,
-                                                          border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _emailController,
-                                                              ),
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          enabledBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _emailController,
-                                                              ),
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          focusedBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _emailController,
-                                                              ),
-                                                              width: 2,
-                                                            ),
-                                                          ),
-                                                          errorStyle:
-                                                              GoogleFonts.poppins(
-                                                                color: AppColors
-                                                                    .error,
-                                                                fontSize: 12,
-                                                              ),
-                                                          errorBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide:
-                                                                const BorderSide(
-                                                                  color:
-                                                                      AppColors
-                                                                          .error,
-                                                                  width: 1.5,
-                                                                ),
-                                                          ),
-                                                          focusedErrorBorder:
-                                                              OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      14,
-                                                                    ),
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                      color: AppColors
-                                                                          .error,
-                                                                      width: 2,
-                                                                    ),
-                                                              ),
-                                                        ),
-                                                        validator: Validators
-                                                            .emailOrPhone,
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 24,
-                                                      ),
-                                                      _label('Password'),
-                                                      const SizedBox(height: 8),
-                                                      TextFormField(
-                                                        controller:
-                                                            _passwordController,
-                                                        onChanged: (_) =>
-                                                            setState(() {}),
-                                                        obscureText:
-                                                            _obscurePassword,
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
-                                                        decoration: InputDecoration(
-                                                          hintText: '••••••••',
-                                                          hintStyle:
-                                                              GoogleFonts.poppins(
-                                                                color: AppColors
-                                                                    .textMuted,
-                                                              ),
-                                                          prefixIcon: const Icon(
-                                                            Icons
-                                                                .lock_outline_rounded,
-                                                            size: 20,
-                                                            color: AppColors
-                                                                .primaryLight,
-                                                          ),
-                                                          suffixIcon: GestureDetector(
-                                                            onTap: () => setState(
-                                                              () => _obscurePassword =
-                                                                  !_obscurePassword,
-                                                            ),
-                                                            child: Icon(
-                                                              _obscurePassword
-                                                                  ? Icons
-                                                                        .visibility_off_outlined
-                                                                  : Icons
-                                                                        .visibility_outlined,
-                                                              size: 20,
-                                                              color: AppColors
-                                                                  .textMuted,
-                                                            ),
-                                                          ),
-                                                          filled: true,
-                                                          fillColor: AppColors
-                                                              .background,
-                                                          border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _passwordController,
-                                                              ),
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          enabledBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _passwordController,
-                                                              ),
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                          focusedBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide: BorderSide(
-                                                              color: _borderColorFor(
-                                                                _passwordController,
-                                                              ),
-                                                              width: 2,
-                                                            ),
-                                                          ),
-                                                          errorStyle:
-                                                              GoogleFonts.poppins(
-                                                                color: AppColors
-                                                                    .error,
-                                                                fontSize: 12,
-                                                              ),
-                                                          errorBorder: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  14,
-                                                                ),
-                                                            borderSide:
-                                                                const BorderSide(
-                                                                  color:
-                                                                      AppColors
-                                                                          .error,
-                                                                  width: 1.5,
-                                                                ),
-                                                          ),
-                                                          focusedErrorBorder:
-                                                              OutlineInputBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      14,
-                                                                    ),
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                      color: AppColors
-                                                                          .error,
-                                                                      width: 2,
-                                                                    ),
-                                                              ),
-                                                        ),
-                                                        validator: (v) =>
-                                                            Validators.requiredField(
-                                                              v,
-                                                              'Password',
-                                                            ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 28,
-                                                      ),
-                                                      SizedBox(
-                                                        width: double.infinity,
-                                                        height: 54,
-                                                        child: AnimatedScale(
-                                                          duration:
-                                                              const Duration(
-                                                                milliseconds:
-                                                                    180,
-                                                              ),
-                                                          scale: loading
-                                                              ? 0.98
-                                                              : 1,
-                                                          child: FilledButton(
-                                                            onPressed: loading
-                                                                ? null
-                                                                : () {
-                                                                    if (_formKey
-                                                                            .currentState
-                                                                            ?.validate() !=
-                                                                        true) {
-                                                                      return;
-                                                                    }
-                                                                    context.read<AuthBloc>().add(
-                                                                      LoginSubmitted(
-                                                                        email: _emailController
-                                                                            .text
-                                                                            .trim(),
-                                                                        password: _passwordController
-                                                                            .text
-                                                                            .trim(),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                            style: FilledButton.styleFrom(
-                                                              backgroundColor:
-                                                                  AppColors
-                                                                      .primary,
-                                                              disabledBackgroundColor:
-                                                                  AppColors
-                                                                      .primary
-                                                                      .withOpacity(
-                                                                        0.5,
-                                                                      ),
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      14,
-                                                                    ),
-                                                              ),
-                                                              elevation: 0,
-                                                            ),
-                                                            child: loading
-                                                                ? const SizedBox(
-                                                                    height: 24,
-                                                                    width: 24,
-                                                                    child: CircularProgressIndicator(
-                                                                      strokeWidth:
-                                                                          3,
-                                                                      color: AppColors
-                                                                          .accent,
-                                                                    ),
-                                                                  )
-                                                                : Text(
-                                                                    'Sign In',
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      color: AppColors
-                                                                          .surfaceWhite,
-                                                                      letterSpacing:
-                                                                          0.5,
-                                                                    ),
-                                                                  ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
+                                                ]
+                                              : null,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Login',
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.bold,
+                                              color: _isLoginTab
+                                                  ? const Color(0xFF2E8EFF)
+                                                  : Colors.grey.shade600,
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'GTPL',
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.red,
-                                            letterSpacing: 0.4,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _isLoginTab = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: !_isLoginTab
+                                              ? Colors.white
+                                              : Colors.transparent,
+                                          borderRadius:
+                                              BorderRadius.circular(23),
+                                          boxShadow: !_isLoginTab
+                                              ? [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withValues(alpha: 0.05),
+                                                    blurRadius: 4,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ]
+                                              : null,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Sign Up',
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.bold,
+                                              color: !_isLoginTab
+                                                  ? const Color(0xFF2E8EFF)
+                                                  : Colors.grey.shade600,
+                                            ),
                                           ),
                                         ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Gitakshmi Technologies Private Limited',
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
-                                      ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+
+                            // Full Name Field (Only for Sign Up)
+                            if (!_isLoginTab) ...[
+                              TextFormField(
+                                controller: _nameController,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Full Name',
+                                  hintStyle: GoogleFonts.poppins(
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  prefixIcon: const Icon(
+                                    Icons.person_outline_rounded,
+                                    color: Color(0xFF2E8EFF),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                    horizontal: 16,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFFE8EEF9),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFFE8EEF9),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF2E8EFF),
+                                      width: 2,
                                     ),
                                   ),
                                 ),
+                                validator: (v) => _isLoginTab
+                                    ? null
+                                    : Validators.requiredField(v, 'Full Name'),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+
+                            // Email Address Field
+                            TextFormField(
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'E-mail ID',
+                                hintStyle: GoogleFonts.poppins(
+                                  color: Colors.grey.shade500,
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.mail_outline_rounded,
+                                  color: Color(0xFF2E8EFF),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 16,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE8EEF9),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE8EEF9),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF2E8EFF),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              validator: Validators.emailOrPhone,
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Password Field
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: _obscurePassword,
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                hintStyle: GoogleFonts.poppins(
+                                  color: Colors.grey.shade500,
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: Color(0xFF2E8EFF),
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () => setState(
+                                    () => _obscurePassword = !_obscurePassword,
+                                  ),
+                                  child: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 16,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE8EEF9),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFE8EEF9),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF2E8EFF),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              validator: (v) => Validators.requiredField(
+                                v,
+                                'Password',
                               ),
                             ),
-                          ),
+                            const SizedBox(height: 16),
+
+                            // Remember Me & Forget Password Row (Only for Login)
+                            if (_isLoginTab) ...[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: Checkbox(
+                                          value: _rememberMe,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _rememberMe = val ?? false;
+                                            });
+                                          },
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                          ),
+                                          side: const BorderSide(
+                                            color: Color(0xFF2E8EFF),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Remember me',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: Size.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    child: Text(
+                                      'Forget Password?',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFF2E8EFF),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 30),
+                            ] else ...[
+                              const SizedBox(height: 14),
+                            ],
+
+                            // Action Button (Login / Sign Up)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: FilledButton(
+                                onPressed: loading
+                                    ? null
+                                    : () {
+                                        if (_formKey.currentState?.validate() !=
+                                            true) {
+                                          return;
+                                        }
+                                        // Trigger Auth Bloc event (both map to LoginSubmitted as registration isn't in scope)
+                                        context.read<AuthBloc>().add(
+                                              LoginSubmitted(
+                                                email: _emailController.text
+                                                    .trim(),
+                                                password: _passwordController
+                                                    .text
+                                                    .trim(),
+                                              ),
+                                            );
+                                      },
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2E8EFF),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                ),
+                                child: loading
+                                    ? const SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        _isLoginTab ? 'Login' : 'Sign Up',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+
+                            // Brand Footer info
+                            Center(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'GTPL',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Gitakshmi Technologies Private Limited',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),
-      ),
-    );
-  }
-
-  Widget _label(String text) {
-    return Text(
-      text,
-      style: GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textPrimary,
       ),
     );
   }

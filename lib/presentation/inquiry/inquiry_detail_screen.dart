@@ -736,19 +736,15 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(28),
-              child: Image.network(
-                'https://i.pravatar.cc/150?u=${inq.id}',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: const Color(0xFF2E8EFF).withOpacity(0.1),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: GoogleFonts.poppins(
-                        color: const Color(0xFF2E8EFF),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
+              child: Container(
+                color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                child: Center(
+                  child: Text(
+                    initials,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF2E8EFF),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),

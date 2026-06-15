@@ -226,9 +226,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   }
 
   Widget _list(MeetingState state, String status) {
-    final items = state.items
-        .where((e) => e.status.toLowerCase() == status.toLowerCase())
-        .toList();
+    final items = state.items.where((e) {
+      final s = e.status.toLowerCase();
+      if (status.toLowerCase() == 'cancelled') {
+        return s == 'cancelled' || s == 'canceled';
+      }
+      return s == status.toLowerCase();
+    }).toList();
     if (items.isEmpty) {
       return RefreshIndicator(
         color: AppColors.primary,
@@ -361,7 +365,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
           final normalized = result.toLowerCase();
           if (normalized == 'completed') {
             _tc.animateTo(1);
-          } else if (normalized == 'cancelled') {
+          } else if (normalized == 'cancelled' || normalized == 'canceled') {
             _tc.animateTo(2);
           } else {
             _tc.animateTo(0);
@@ -371,179 +375,181 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        height: 80,
+        constraints: const BoxConstraints(minHeight: 80),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: AppColors.primary, width: 1),
         ),
         clipBehavior: Clip.antiAlias,
-        child: Row(
-          children: <Widget>[
-            // ── Date badge ──
-            Container(
-              width: 74,
-              height: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // ── Date badge ──
+              Container(
+                width: 74,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '${dt.day}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  Text(
-                    months[dt.month - 1],
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      _meetingTitle(m),
+                      '${dt.day}',
                       style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        color: AppColors.primary,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.access_time_rounded,
-                          size: 13,
-                          color: AppColors.primary.withOpacity(0.5),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          timeStr,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.videocam_rounded,
-                          size: 13,
-                          color: AppColors.primary.withOpacity(0.5),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          m.attendanceMode.trim().isEmpty
-                              ? '-'
-                              : m.attendanceMode,
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      months[dt.month - 1],
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 10, 10, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: typeColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: typeColor.withOpacity(0.25)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(typeIcon, size: 11, color: typeColor),
-                        const SizedBox(width: 4),
-                        Text(
-                          m.meetingType,
-                          style: GoogleFonts.poppins(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: typeColor,
-                          ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        _meetingTitle(m),
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: AppColors.primary,
                         ),
-                      ],
-                    ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 13,
+                            color: AppColors.primary.withOpacity(0.5),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            timeStr,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.videocam_rounded,
+                            size: 13,
+                            color: AppColors.primary.withOpacity(0.5),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              m.attendanceMode.trim().isEmpty
+                                  ? '-'
+                                  : m.attendanceMode,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  if (isFollowUp) ...[
-                    const SizedBox(height: 6),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 10, 10, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.stageInterested.withOpacity(0.10),
+                        color: typeColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: AppColors.stageInterested.withOpacity(0.30),
-                        ),
+                        border: Border.all(color: typeColor.withOpacity(0.25)),
                       ),
-                      child: Text(
-                        'Follow up',
-                        style: GoogleFonts.poppins(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.stageInterested,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(typeIcon, size: 11, color: typeColor),
+                          const SizedBox(width: 4),
+                          Text(
+                            m.meetingType,
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: typeColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    if (isFollowUp) ...[
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.stageInterested.withOpacity(0.10),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: AppColors.stageInterested.withOpacity(0.30),
+                          ),
+                        ),
+                        child: Text(
+                          'Follow up',
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.stageInterested,
+                          ),
+                        ),
+                      ),
+                    ],
+                    const Spacer(),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 18,
+                      color: AppColors.primary.withOpacity(0.4),
+                    ),
                   ],
-                  const SizedBox(height: 8),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    size: 18,
-                    color: AppColors.primary.withOpacity(0.4),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

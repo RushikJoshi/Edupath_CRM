@@ -379,32 +379,15 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                       child: Row(
                                         children: [
                                           // Avatar
-                                          Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.black.withOpacity(0.08),
-                                                  Colors.black.withOpacity(0.02),
-                                                ],
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                              ),
-                                              border: Border.all(
-                                                color: Colors.black.withOpacity(0.15),
-                                                width: 1,
-                                              ),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                initials,
-                                                style: GoogleFonts.poppins(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 15,
-                                                ),
+                                          CircleAvatar(
+                                            radius: 24,
+                                            backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                            child: Text(
+                                              initials,
+                                              style: GoogleFonts.poppins(
+                                                color: const Color(0xFF2E8EFF),
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 14,
                                               ),
                                             ),
                                           ),
@@ -504,11 +487,14 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                       }
                                     },
                                     child: Container(
-                                      width: 24,
-                                      height: 38,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF2E8EFF),
-                                        borderRadius: BorderRadius.circular(8),
+                                      width: 26,
+                                      height: 46,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF2E8EFF),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
                                       ),
                                       child: const Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -517,25 +503,25 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 2.5),
+                                          SizedBox(height: 3),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 2.5),
+                                          SizedBox(height: 3),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 2.5),
+                                              SizedBox(width: 3),
                                               _Dot(),
                                             ],
                                           ),
@@ -636,8 +622,8 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 3,
-      height: 3,
+      width: 4,
+      height: 4,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
