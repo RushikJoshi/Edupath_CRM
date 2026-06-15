@@ -28,6 +28,9 @@ class InquiryDetailScreen extends StatefulWidget {
 class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
   bool _isContactExpanded = true;
   bool _isDetailsExpanded = false;
+  bool _isAssignmentExpanded = false;
+  bool _isMessageExpanded = false;
+  bool _isNotesExpanded = false;
 
   // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -279,10 +282,16 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                       const SizedBox(height: 14),
 
                       // ── Assignment & More ──
-                      _section(
-                        'Assignment & More',
-                        Icons.assignment_ind_rounded,
-                        [
+                      _buildCollapsibleSection(
+                        title: 'Assignment & More',
+                        icon: Icons.assignment_ind_rounded,
+                        isExpanded: _isAssignmentExpanded,
+                        onToggle: () {
+                          setState(() {
+                            _isAssignmentExpanded = !_isAssignmentExpanded;
+                          });
+                        },
+                        children: [
                           _row(Icons.person_pin_rounded, 'Assigned To', () {
                             if (inq.assignedTo?.isNotEmpty != true) {
                               return 'Not assigned';
@@ -328,12 +337,30 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                       ],
 
                       // ── Notes ──
-                      _textCard(
-                        'Notes',
-                        Icons.notes_rounded,
-                        inq.notes?.isNotEmpty == true
-                            ? inq.notes!
-                            : 'No notes added',
+                      _buildCollapsibleSection(
+                        title: 'Notes',
+                        icon: Icons.notes_rounded,
+                        isExpanded: _isNotesExpanded,
+                        onToggle: () {
+                          setState(() {
+                            _isNotesExpanded = !_isNotesExpanded;
+                          });
+                        },
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              inq.notes?.isNotEmpty == true
+                                  ? inq.notes!
+                                  : 'No notes added',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: const Color(0xFF000000),
+                                height: 1.6,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
 
@@ -368,7 +395,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                 ),
                               ),
                               style: FilledButton.styleFrom(
-                                backgroundColor: AppColors.stageWon,
+                                backgroundColor: const Color(0xFF2E8EFF),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -756,6 +783,55 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUnifiedCollapsibleSection({
+    required String title,
+    required IconData icon,
+    required bool isExpanded,
+    required VoidCallback onToggle,
+    required List<Widget> children,
+  }) {
+    final activeChildren = children.where((w) => w is! SizedBox).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: onToggle,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF000000),
+                    ),
+                  ),
+                ),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.keyboard_arrow_down_rounded,
+                  color: const Color(0xFF2E8EFF),
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (isExpanded && activeChildren.isNotEmpty)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: activeChildren,
+          ),
+      ],
     );
   }
 

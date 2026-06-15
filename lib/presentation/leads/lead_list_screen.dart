@@ -370,10 +370,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: const Color(0x6B2E8EFF),
-                                  width: 1,
-                                ),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Color(0x40000000),
@@ -383,289 +379,284 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                   ),
                                 ],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // --- TOP ROW ---
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        // Avatar
-                                        CircleAvatar(
-                                          radius: 24,
-                                          backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
-                                          backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${lead.id}'),
-                                          child: Text(
-                                            initials,
-                                            style: GoogleFonts.poppins(
-                                              color: const Color(0xFF2E8EFF),
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        // Name & Company/Branch
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                        // --- TOP ROW ---
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                lead.name,
-                                                style: GoogleFonts.poppins(
-                                                  color: const Color(0xFF2E8EFF),
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 15,
+                                              // Avatar
+                                              CircleAvatar(
+                                                radius: 24,
+                                                backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                                backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${lead.id}'),
+                                                child: Text(
+                                                  initials,
+                                                  style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF2E8EFF),
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                lead.companyName?.trim().isNotEmpty == true
-                                                    ? lead.companyName!
-                                                    : (lead.branchName.trim().isNotEmpty ? lead.branchName : 'No Company'),
-                                                style: GoogleFonts.poppins(
-                                                  color: const Color(0xFF2E8EFF).withOpacity(0.8),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 12,
+                                              const SizedBox(width: 12),
+                                              // Name & Company/Branch
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      lead.name,
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF000000),
+                                                        fontWeight: FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    const SizedBox(height: 2),
+                                                    Text(
+                                                      lead.companyName?.trim().isNotEmpty == true
+                                                          ? lead.companyName!
+                                                          : (lead.branchName.trim().isNotEmpty ? lead.branchName : 'No Company'),
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF000000).withOpacity(0.8),
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 12,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
                                                 ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              // Time and tool-tip bubble on far right
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    _getTimeAgo(lead.id),
+                                                    style: GoogleFonts.poppins(
+                                                      color: const Color(0xE5000000),
+                                                      fontSize: 11,
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 6),
+                                                  // Tooltip bubble: View more actions
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                    children: [
+                                                      Container(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                        decoration: BoxDecoration(
+                                                          color: const Color(0xFFCBE3FF), // Light blue matching mockup
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                        child: Text(
+                                                          'View more actions',
+                                                          style: GoogleFonts.poppins(
+                                                            color: const Color(0xFF000000),
+                                                            fontSize: 10,
+                                                            fontWeight: FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(right: 12), // Align arrow with grid button center
+                                                        child: Transform.translate(
+                                                          offset: const Offset(0, -3), // Slightly overlap with container
+                                                          child: Transform.rotate(
+                                                            angle: 0.785398, // 45 degrees in radians (pi / 4)
+                                                            child: Container(
+                                                              width: 8,
+                                                              height: 8,
+                                                              color: const Color(0xFFCBE3FF),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
                                         ),
-                                        // Time and tool-tip bubble on far right
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                        const SizedBox(height: 10),
+                                        const Divider(height: 1, color: Color(0x332E8EFF)),
+                                        const SizedBox(height: 14),
+
+                                        // --- MIDDLE ROW ---
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              _getTimeAgo(lead.id),
-                                              style: GoogleFonts.poppins(
-                                                color: const Color(0xE5000000),
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w500,
+                                            const SizedBox(width: 14),
+                                            // Phone Icon and text
+                                            const Icon(
+                                              Icons.phone_outlined,
+                                              size: 16,
+                                              color: Color(0xFF2E8EFF),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Flexible(
+                                              child: Text(
+                                                lead.phone.isNotEmpty ? lead.phone : 'No phone',
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xE5000000),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const SizedBox(height: 6),
-                                            // Tooltip bubble: View more actions
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(0xFFCBE3FF), // Light blue matching mockup
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Text(
-                                                    'View more actions',
-                                                    style: GoogleFonts.poppins(
-                                                      color: const Color(0xFF000000),
-                                                      fontSize: 10,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(right: 12), // Align arrow with grid button center
-                                                  child: Transform.translate(
-                                                    offset: const Offset(0, -3), // Slightly overlap with container
-                                                    child: Transform.rotate(
-                                                      angle: 0.785398, // 45 degrees in radians (pi / 4)
-                                                      child: Container(
-                                                        width: 8,
-                                                        height: 8,
-                                                        color: const Color(0xFFCBE3FF),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                            const SizedBox(width: 16),
+                                            // Email Icon and text
+                                            const Icon(
+                                              Icons.email_outlined,
+                                              size: 16,
+                                              color: Color(0xFF2E8EFF),
                                             ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                lead.email.isNotEmpty ? lead.email : 'No email',
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xE5000000),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 14),
                                           ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        const Divider(height: 1, color: Color(0x332E8EFF)),
+                                        const SizedBox(height: 10),
+
+                                        // --- BOTTOM ROW ---
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          child: Row(
+                                            children: [
+                                              // Status Pill
+                                              _pill(lead.stage.toUpperCase(), sc),
+                                              const SizedBox(width: 10),
+                                              // Assigned User Name
+                                              const Icon(
+                                                Icons.person_outline_rounded,
+                                                size: 16,
+                                                color: Color(0xFF2E8EFF),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Flexible(
+                                                child: Text(
+                                                  lead.assignedTo.isNotEmpty ? lead.assignedTo : 'Unassigned',
+                                                  style: GoogleFonts.poppins(
+                                                    color: const Color(0xFF000000),
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w600,
+                                                    ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              // Four Action Circle Buttons
+                                              Row(
+                                                children: [
+                                                  // Phone Action Button
+                                                  _actionCircleButton(
+                                                    icon: Icons.phone_outlined,
+                                                    iconColor: const Color(0xFF2E8EFF),
+                                                    onTap: () => _call(lead.phone),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  // WhatsApp Action Button
+                                                  _actionCircleButton(
+                                                    isImage: true,
+                                                    imagePath: 'assets/svgs/whatsapp.png',
+                                                    onTap: () => _whatsApp(lead.phone, lead.name),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  // Email Action Button
+                                                  _actionCircleButton(
+                                                    icon: Icons.email_outlined,
+                                                    iconColor: const Color(0xFF2E8EFF),
+                                                    onTap: () => _sendEmail(lead.email),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  // Calendar/Meeting Action Button
+                                                  _actionCircleButton(
+                                                    icon: Icons.calendar_today_outlined,
+                                                    iconColor: const Color(0xFF2E8EFF),
+                                                    onTap: () => Navigator.pushNamed(context, AppRoutes.addMeeting),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  const Divider(height: 1, color: Color(0x332E8EFF)),
-                                  const SizedBox(height: 10),
-
-                                  // --- MIDDLE ROW ---
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(width: 14),
-                                      // Phone Icon and text
-                                      const Icon(
-                                        Icons.phone_outlined,
-                                        size: 16,
-                                        color: Color(0xFF2E8EFF),
+                                  // Option capsule button (flush on the right, vertically centered)
+                                  GestureDetector(
+                                    onTap: () => Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.leadDetail,
+                                      arguments: lead,
+                                    ),
+                                    child: Container(
+                                      width: 24,
+                                      height: 38,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF2E8EFF),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                      const SizedBox(width: 6),
-                                      Flexible(
-                                        child: Text(
-                                          lead.phone.isNotEmpty ? lead.phone : 'No phone',
-                                          style: GoogleFonts.poppins(
-                                            color: const Color(0xE5000000),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      // Email Icon and text
-                                      const Icon(
-                                        Icons.email_outlined,
-                                        size: 16,
-                                        color: Color(0xFF2E8EFF),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Expanded(
-                                        child: Text(
-                                          lead.email.isNotEmpty ? lead.email : 'No email',
-                                          style: GoogleFonts.poppins(
-                                            color: const Color(0xE5000000),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      // Option capsule grid button
-                                      GestureDetector(
-                                        onTap: () => Navigator.pushNamed(
-                                          context,
-                                          AppRoutes.leadDetail,
-                                          arguments: lead,
-                                        ),
-                                        child: Container(
-                                          width: 32,
-                                          height: 44,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFF2E8EFF),
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(12),
-                                              bottomLeft: Radius.circular(12),
-                                              topRight: Radius.circular(4),
-                                              bottomRight: Radius.circular(4),
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: const Color(0xFF2E8EFF).withOpacity(0.4),
-                                                blurRadius: 6,
-                                                spreadRadius: 1,
-                                                offset: const Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: const Column(
+                                      child: const Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  _Dot(),
-                                                  SizedBox(width: 3),
-                                                  _Dot(),
-                                                ],
-                                              ),
-                                              SizedBox(height: 3.5),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  _Dot(),
-                                                  SizedBox(width: 3),
-                                                  _Dot(),
-                                                ],
-                                              ),
-                                              SizedBox(height: 3.5),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  _Dot(),
-                                                  SizedBox(width: 3),
-                                                  _Dot(),
-                                                ],
-                                              ),
+                                              _Dot(),
+                                              SizedBox(width: 2.5),
+                                              _Dot(),
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Divider(height: 1, color: Color(0x332E8EFF)),
-                                  const SizedBox(height: 10),
-
-                                  // --- BOTTOM ROW ---
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                                    child: Row(
-                                      children: [
-                                        // Status Pill
-                                        _pill(lead.stage.toUpperCase(), sc),
-                                        const SizedBox(width: 10),
-                                        // Assigned User Name
-                                        const Icon(
-                                          Icons.person_outline_rounded,
-                                          size: 16,
-                                          color: Color(0xFF2E8EFF),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Flexible(
-                                          child: Text(
-                                            lead.assignedTo.isNotEmpty ? lead.assignedTo : 'Unassigned',
-                                            style: GoogleFonts.poppins(
-                                              color: const Color(0xFF2E8EFF),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                          SizedBox(height: 2.5),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              _Dot(),
+                                              SizedBox(width: 2.5),
+                                              _Dot(),
+                                            ],
                                           ),
-                                        ),
-                                        const Spacer(),
-                                        // Four Action Circle Buttons
-                                        Row(
-                                          children: [
-                                            // Phone Action Button
-                                            _actionCircleButton(
-                                              icon: Icons.phone_outlined,
-                                              iconColor: const Color(0xFF2E8EFF),
-                                              onTap: () => _call(lead.phone),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            // WhatsApp Action Button
-                                            _actionCircleButton(
-                                              isImage: true,
-                                              imagePath: 'assets/svgs/whatsapp.png',
-                                              onTap: () => _whatsApp(lead.phone, lead.name),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            // Email Action Button
-                                            _actionCircleButton(
-                                              icon: Icons.email_outlined,
-                                              iconColor: const Color(0xFF2E8EFF),
-                                              onTap: () => _sendEmail(lead.email),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            // Calendar/Meeting Action Button
-                                            _actionCircleButton(
-                                              icon: Icons.calendar_today_outlined,
-                                              iconColor: const Color(0xFF2E8EFF),
-                                              onTap: () => Navigator.pushNamed(context, AppRoutes.addMeeting),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          SizedBox(height: 2.5),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              _Dot(),
+                                              SizedBox(width: 2.5),
+                                              _Dot(),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -756,8 +747,8 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 4,
-      height: 4,
+      width: 3,
+      height: 3,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,

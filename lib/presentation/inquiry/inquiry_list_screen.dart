@@ -157,7 +157,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                     ),
                     prefixIcon: const Icon(
                       Icons.search_rounded,
-                      color: Color(0xFF000000),
+                      color: Color(0xFF2E8EFF),
                       size: 22,
                     ),
                     fillColor: Colors.white,
@@ -440,7 +440,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                     const Icon(
                                                       Icons.email_outlined,
                                                       size: 14,
-                                                      color: Colors.black54,
+                                                      color: Color(0xFF2E8EFF),
                                                     ),
                                                     const SizedBox(width: 6),
                                                     Expanded(
@@ -465,7 +465,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                     const Icon(
                                                       Icons.phone_outlined,
                                                       size: 14,
-                                                      color: Colors.black54,
+                                                      color: Color(0xFF2E8EFF),
                                                     ),
                                                     const SizedBox(width: 6),
                                                     Text(
@@ -599,15 +599,15 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.08),
+            color: const Color(0xFF2E8EFF).withOpacity(0.08),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.black.withOpacity(0.2)),
+            border: Border.all(color: const Color(0xFF2E8EFF).withOpacity(0.2)),
           ),
           child: const Center(
             child: Icon(
               Icons.contact_mail_outlined,
               size: 36,
-              color: Colors.black,
+              color: Color(0xFF2E8EFF),
             ),
           ),
         ),
