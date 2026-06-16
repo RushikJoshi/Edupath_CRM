@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'core/injection.dart';
+import 'package:gtcrm/core/injection.dart';
 
 class MultiBranchCrmApp extends StatelessWidget {
   const MultiBranchCrmApp({super.key});

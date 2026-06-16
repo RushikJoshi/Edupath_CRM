@@ -8,8 +8,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'app.dart';
-import 'data/services/api_service.dart';
-import 'data/services/storage_service.dart';
+import 'core/di/injection_container.dart';
+import 'core/services/storage_service.dart';
+import 'package:gtcrm/core/network/api_endpoints.dart';
 import 'firebase_options.dart';
 
 void _log(String message) {
@@ -68,10 +69,15 @@ Future<void> _sendFcmTokenToBackend(String token) async {
       return;
     }
 
-    final ApiService apiService = ApiService();
-    apiService.setAuthToken(authToken);
+    final Dio dio = Dio(
+      BaseOptions(
+        baseUrl: ApiEndpoints.baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+      ),
+    );
 
-    final Response<dynamic> response = await apiService.client.post(
+    final Response<dynamic> response = await dio.post(
       '/api/token/save',
       data: <String, dynamic>{'userId': userId, 'fcmToken': token},
       options: Options(
@@ -105,6 +111,9 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   _log('Widgets binding initialized');
+
+  await setupLocator();
+  _log('Dependency injection initialized');
 
   try {
     await Firebase.initializeApp(

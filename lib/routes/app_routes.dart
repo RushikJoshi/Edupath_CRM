@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 
-import '../data/models/inquiry_model.dart';
-import '../data/models/lead_model.dart';
-import '../data/models/customer_model.dart';
-import '../data/models/deal_model.dart';
-import '../data/models/meeting_model.dart';
-import '../presentation/admin/branches_screen.dart';
-import '../presentation/customers/add_customer_screen.dart';
-import '../presentation/customers/customer_detail_screen.dart';
-import '../presentation/customers/customer_list_screen.dart';
-import '../presentation/deals/add_deal_screen.dart';
-import '../presentation/deals/deal_detail_screen.dart';
-import '../presentation/deals/deal_list_screen.dart';
-import '../presentation/admin/stages_screen.dart';
-import '../presentation/admin/users_screen.dart';
-import '../presentation/auth/login_screen.dart';
-// import '../presentation/auth/splash_screen.dart';
-import '../presentation/dashboard/home_screen.dart';
-import '../presentation/inquiry/add_inquiry_screen.dart';
-import '../presentation/inquiry/inquiry_detail_screen.dart';
-import '../presentation/leads/add_lead_screen.dart';
-import '../presentation/leads/lead_detail_screen.dart';
-import '../presentation/leads/pipeline_screen.dart';
-import '../presentation/meetings/add_meeting_screen.dart';
-import '../presentation/meetings/meeting_detail_screen.dart';
-import '../presentation/notifications/notifications_screen.dart';
-import '../presentation/audit/activity_screen.dart';
-import '../presentation/profile/change_password_screen.dart';
-import '../presentation/profile/profile_screen.dart';
-import '../presentation/tasks/task_list_screen.dart';
+import 'package:gtcrm/features/inquiry/data/models/inquiry_model.dart';
+import 'package:gtcrm/features/lead/data/models/lead_model.dart';
+import 'package:gtcrm/features/customer/data/models/customer_model.dart';
+import 'package:gtcrm/features/deal/data/models/deal_model.dart';
+import 'package:gtcrm/features/meeting/data/models/meeting_model.dart';
+
+// Feature Pages
+import 'package:gtcrm/features/user/presentation/pages/branches_screen.dart';
+import 'package:gtcrm/features/customer/presentation/pages/add_customer_screen.dart';
+import 'package:gtcrm/features/customer/presentation/pages/customer_detail_screen.dart';
+import 'package:gtcrm/features/customer/presentation/pages/customer_list_screen.dart';
+import 'package:gtcrm/features/deal/presentation/pages/add_deal_screen.dart';
+import 'package:gtcrm/features/deal/presentation/pages/deal_detail_screen.dart';
+import 'package:gtcrm/features/deal/presentation/pages/deal_list_screen.dart';
+import 'package:gtcrm/features/user/presentation/pages/stages_screen.dart';
+import 'package:gtcrm/features/user/presentation/pages/users_screen.dart';
+import 'package:gtcrm/features/auth/presentation/pages/login_screen.dart';
+import 'package:gtcrm/features/dashboard/presentation/pages/home_screen.dart';
+import 'package:gtcrm/features/inquiry/presentation/pages/add_inquiry_screen.dart';
+import 'package:gtcrm/features/inquiry/presentation/pages/inquiry_detail_screen.dart';
+import 'package:gtcrm/features/lead/presentation/pages/add_lead_screen.dart';
+import 'package:gtcrm/features/lead/presentation/pages/lead_detail_screen.dart';
+import 'package:gtcrm/features/pipeline/presentation/pages/pipeline_screen.dart';
+import 'package:gtcrm/features/follow_up/presentation/pages/follow_up_screen.dart';
+import 'package:gtcrm/features/meeting/presentation/pages/add_meeting_screen.dart';
+import 'package:gtcrm/features/meeting/presentation/pages/meeting_detail_screen.dart';
+import 'package:gtcrm/features/notification/presentation/pages/notifications_screen.dart';
+import 'package:gtcrm/features/audit_log/presentation/pages/audit_logs_screen.dart';
+import 'package:gtcrm/features/auth/presentation/pages/change_password_screen.dart';
+import 'package:gtcrm/features/auth/presentation/pages/profile_screen.dart';
+import 'package:gtcrm/features/task/presentation/pages/task_list_screen.dart';
 
 class AppRoutes {
   static const splash = '/splash';
@@ -43,6 +45,7 @@ class AppRoutes {
   static const addLead = '/add-lead';
   static const leadDetail = '/lead-detail';
   static const pipeline = '/pipeline';
+  static const followUp = '/follow-up';
 
   static const accounts = '/accounts';
   static const addAccount = '/add-account';
@@ -117,6 +120,8 @@ class AppRoutes {
         );
       case pipeline:
         return animated(const PipelineScreen());
+      case followUp:
+        return animated(FollowUpScreen(lead: settings.arguments));
       case accounts:
         return animated(const AccountListScreen());
       case addAccount:
@@ -139,7 +144,7 @@ class AppRoutes {
       case addDeal:
         return animated(const AddDealScreen());
       case auditLogs:
-        return animated(const ActivityScreen());
+        return animated(const AuditLogsScreen());
       case dealDetail:
         {
           final args = settings.arguments;

@@ -19,10 +19,4 @@ class AppConstants {
   static const String userNameKey = 'user_name';
   static const String userEmailKey = 'user_email';
   static const String tokenExpiryKey = 'token_expiry';
-
-  // Override in production with: --dart-define=API_BASE_URL=https://your-domain.com
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://app.gitakshmilabs.com',
-  );
 }

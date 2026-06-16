@@ -2,337 +2,163 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../bloc/auth/auth_bloc.dart';
-import '../bloc/auth/auth_event.dart';
-import '../bloc/auth/auth_state.dart';
-import '../bloc/branch/branch_bloc.dart';
-import '../bloc/branch/branch_event.dart';
-import '../bloc/customer/customer_bloc.dart';
-import '../bloc/dashboard/dashboard_bloc.dart';
-import '../bloc/inquiry/inquiry_bloc.dart';
-import '../bloc/deal/deal_bloc.dart';
-import '../bloc/lead/lead_bloc.dart';
-import '../bloc/meeting/meeting_bloc.dart';
-import '../bloc/audit_log/audit_log_bloc.dart';
-import '../bloc/activity/activity_bloc.dart';
-import '../bloc/notification/notification_bloc.dart';
-import '../bloc/pipeline/pipeline_bloc.dart';
-import '../bloc/pipeline/pipeline_event.dart';
-import '../bloc/task/task_bloc.dart';
-import '../bloc/user/user_bloc.dart';
-import '../bloc/follow_up/follow_up_bloc.dart';
-import '../data/api/auth_api.dart';
-import '../data/api/user_api.dart';
-import '../data/api/customer_api.dart';
-import '../data/api/deal_api.dart';
-import '../data/api/inquiry_api.dart';
-import '../data/api/lead_api.dart';
-import '../data/api/activity_api.dart';
-import '../data/api/audit_log_api.dart';
-import '../data/api/meeting_api.dart';
-import '../data/api/notification_api.dart';
-import '../data/api/pipeline_api.dart';
-import '../data/api/follow_up_api.dart';
-import '../data/api/task_api.dart';
-import '../data/repositories/audit_log_repository.dart';
-import '../data/repositories/activity_repository.dart';
-import '../data/repositories/auth_repository.dart';
-import '../data/repositories/branch_repository.dart';
-import '../data/repositories/customer_repository.dart';
-import '../data/repositories/dashboard_repository.dart';
-import '../data/repositories/inquiry_repository.dart';
-import '../data/repositories/deal_repository.dart';
-import '../data/repositories/lead_repository.dart';
-import '../data/repositories/meeting_repository.dart';
-import '../data/repositories/notification_repository.dart';
-import '../data/repositories/pipeline_repository.dart';
-import '../data/repositories/user_repository.dart';
-import '../data/repositories/follow_up_repository.dart';
-import '../data/repositories/task_repository.dart';
-import '../data/services/api_service.dart';
-import '../data/services/auth_service.dart';
-import '../data/services/branch_service.dart';
-import '../data/services/crm_service.dart';
-import '../data/services/inquiry_service.dart';
-import '../data/services/storage_service.dart';
-import '../data/services/user_service.dart';
-import '../presentation/auth/login_screen.dart';
-import '../presentation/dashboard/home_screen.dart';
+import 'di/injection_container.dart';
+
+// Import Blocs
+import 'package:gtcrm/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:gtcrm/features/auth/presentation/bloc/auth_event.dart';
+import 'package:gtcrm/features/auth/presentation/bloc/auth_state.dart';
+import 'package:gtcrm/features/branch/presentation/bloc/branch_bloc.dart';
+import 'package:gtcrm/features/branch/presentation/bloc/branch_event.dart';
+import 'package:gtcrm/features/customer/presentation/bloc/customer_bloc.dart';
+import 'package:gtcrm/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:gtcrm/features/inquiry/presentation/bloc/inquiry_bloc.dart';
+import 'package:gtcrm/features/deal/presentation/bloc/deal_bloc.dart';
+import 'package:gtcrm/features/lead/presentation/bloc/lead_bloc.dart';
+import 'package:gtcrm/features/meeting/presentation/bloc/meeting_bloc.dart';
+import 'package:gtcrm/features/audit_log/presentation/bloc/audit_log_bloc.dart';
+import 'package:gtcrm/features/activity/presentation/bloc/activity_bloc.dart';
+import 'package:gtcrm/features/notification/presentation/bloc/notification_bloc.dart';
+import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_bloc.dart';
+import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_event.dart';
+import 'package:gtcrm/features/task/presentation/bloc/task_bloc.dart';
+import 'package:gtcrm/features/user/presentation/bloc/user_bloc.dart';
+import 'package:gtcrm/features/follow_up/presentation/bloc/follow_up_bloc.dart';
+
+// Import Repositories (Interfaces)
+import 'package:gtcrm/features/auth/domain/repositories/auth_repository.dart';
+import 'package:gtcrm/features/branch/domain/repositories/branch_repository.dart';
+import 'package:gtcrm/features/customer/domain/repositories/customer_repository.dart';
+import 'package:gtcrm/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:gtcrm/features/inquiry/domain/repositories/inquiry_repository.dart';
+import 'package:gtcrm/features/deal/domain/repositories/deal_repository.dart';
+import 'package:gtcrm/features/lead/domain/repositories/lead_repository.dart';
+import 'package:gtcrm/features/meeting/domain/repositories/meeting_repository.dart';
+import 'package:gtcrm/features/audit_log/domain/repositories/audit_log_repository.dart';
+import 'package:gtcrm/features/activity/domain/repositories/activity_repository.dart';
+import 'package:gtcrm/features/notification/domain/repositories/notification_repository.dart';
+import 'package:gtcrm/features/pipeline/domain/repositories/pipeline_repository.dart';
+import 'package:gtcrm/features/task/domain/repositories/task_repository.dart';
+import 'package:gtcrm/features/user/domain/repositories/user_repository.dart';
+import 'package:gtcrm/features/follow_up/domain/repositories/follow_up_repository.dart';
+
+// Services & Common Constants
+import 'package:gtcrm/core/services/storage_service.dart';
+import 'network/dio_client.dart';
 import 'constants/app_constants.dart';
 import 'constants/app_enums.dart';
 import 'theme/app_theme.dart';
-import '../routes/app_routes.dart';
+import 'package:gtcrm/routes/app_routes.dart';
 
-/// Dependency injection: api_service → api layer → services → repositories → blocs.
-/// Keep this file as the single place for wiring.
+// Screens
+import 'package:gtcrm/features/auth/presentation/pages/login_screen.dart';
+import 'package:gtcrm/features/dashboard/presentation/pages/home_screen.dart';
+
+/// Dependency injection and widget tree providers wire-up.
 class Injection {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
   static Widget createApp() {
+    // Set up session expired callback on central DioClient
+    getIt<DioClient>().setSessionExpiredHandler((message) async {
+      final storage = getIt<StorageService>();
+      await storage.clearSession();
+
+      final nav = navigatorKey.currentState;
+      final dialogContext = navigatorKey.currentContext;
+      if (dialogContext != null) {
+        await showDialog<void>(
+          context: dialogContext,
+          barrierDismissible: false,
+          builder: (ctx) {
+            return AlertDialog(
+              title: const Text('Session Expired'),
+              content: Text(
+                message.isNotEmpty
+                    ? message
+                    : 'Your session has expired. Please login again.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+
+      nav?.pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+    });
+
     return MultiRepositoryProvider(
       providers: <RepositoryProvider<dynamic>>[
-        RepositoryProvider<StorageService>(create: (_) => StorageService()),
-        RepositoryProvider<ApiService>(
-          create: (context) {
-            final api = ApiService();
-            api.setSessionExpiredHandler((message) async {
-              final storage = context.read<StorageService>();
-              await storage.clearSession();
-              api.clearAuthToken();
-
-              final nav = navigatorKey.currentState;
-              final dialogContext = navigatorKey.currentContext;
-              if (dialogContext != null) {
-                await showDialog<void>(
-                  context: dialogContext,
-                  barrierDismissible: false,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: const Text('Session Expired'),
-                      content: Text(
-                        message.isNotEmpty
-                            ? message
-                            : 'Your session has expired. Please login again.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-
-              nav?.pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
-            });
-            return api;
-          },
-        ),
-        RepositoryProvider<AuthApi>(
-          create: (context) => AuthApi(context.read<ApiService>()),
-        ),
-        RepositoryProvider<UserApi>(
-          create: (context) => UserApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<InquiryApi>(
-          create: (context) => InquiryApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<LeadApi>(
-          create: (context) => LeadApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<CustomerApi>(
-          create: (context) => CustomerApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<DealApi>(
-          create: (context) => DealApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<ActivityApi>(
-          create: (context) => ActivityApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<PipelineApi>(
-          create: (context) => PipelineApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<AuditLogApi>(
-          create: (context) => AuditLogApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<MeetingApi>(
-          create: (context) => MeetingApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<FollowUpApi>(
-          create: (context) => FollowUpApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<NotificationApi>(
-          create: (context) => NotificationApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<TaskApi>(
-          create: (context) => TaskApi(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<AuthService>(
-          create: (context) => AuthService(context.read<AuthApi>()),
-        ),
-        RepositoryProvider<UserService>(
-          create: (context) => UserService(context.read<UserApi>()),
-        ),
-        RepositoryProvider<CrmService>(
-          create: (context) => CrmService(context.read<StorageService>()),
-        ),
-        RepositoryProvider<AuthRepository>(
-          create: (context) => AuthRepository(
-            context.read<AuthService>(),
-            context.read<StorageService>(),
-            context.read<ApiService>(),
-          ),
-        ),
-        RepositoryProvider<LeadRepository>(
-          create: (context) => LeadRepository(
-            context.read<LeadApi>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<CustomerRepository>(
-          create: (context) => CustomerRepository(
-            context.read<CustomerApi>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<DealRepository>(
-          create: (context) => DealRepository(
-            context.read<DealApi>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<ActivityRepository>(
-          create: (context) => ActivityRepository(context.read<ActivityApi>()),
-        ),
-        RepositoryProvider<BranchService>(
-          create: (context) => BranchService(
-            context.read<ApiService>(),
-            context.read<StorageService>().getToken,
-          ),
-        ),
-        RepositoryProvider<BranchRepository>(
-          create: (context) => BranchRepository(context.read<BranchService>()),
-        ),
-        RepositoryProvider<DashboardRepository>(
-          create: (context) => DashboardRepository(
-            context.read<ApiService>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<InquiryService>(
-          create: (context) => InquiryService(context.read<InquiryApi>()),
-        ),
-        RepositoryProvider<InquiryRepository>(
-          create: (context) => InquiryRepository(
-            context.read<InquiryService>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<UserRepository>(
-          create: (context) => UserRepository(
-            context.read<UserService>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<MeetingRepository>(
-          create: (context) => MeetingRepository(
-            context.read<MeetingApi>(),
-            context.read<StorageService>(),
-          ),
-        ),
-        RepositoryProvider<PipelineRepository>(
-          create: (context) => PipelineRepository(context.read<PipelineApi>()),
-        ),
-        RepositoryProvider<AuditLogRepository>(
-          create: (context) => AuditLogRepository(context.read<AuditLogApi>()),
-        ),
-        RepositoryProvider<FollowUpRepository>(
-          create: (context) => FollowUpRepository(context.read<FollowUpApi>()),
-        ),
-        RepositoryProvider<NotificationRepository>(
-          create: (context) =>
-              NotificationRepository(context.read<NotificationApi>()),
-        ),
-        RepositoryProvider<TaskRepository>(
-          create: (context) => TaskRepository(context.read<TaskApi>()),
-        ),
+        RepositoryProvider<StorageService>(create: (_) => getIt<StorageService>()),
+        RepositoryProvider<DioClient>(create: (_) => getIt<DioClient>()),
+        RepositoryProvider<AuthRepository>(create: (_) => getIt<AuthRepository>()),
+        RepositoryProvider<UserRepository>(create: (_) => getIt<UserRepository>()),
+        RepositoryProvider<BranchRepository>(create: (_) => getIt<BranchRepository>()),
+        RepositoryProvider<LeadRepository>(create: (_) => getIt<LeadRepository>()),
+        RepositoryProvider<CustomerRepository>(create: (_) => getIt<CustomerRepository>()),
+        RepositoryProvider<DealRepository>(create: (_) => getIt<DealRepository>()),
+        RepositoryProvider<ActivityRepository>(create: (_) => getIt<ActivityRepository>()),
+        RepositoryProvider<DashboardRepository>(create: (_) => getIt<DashboardRepository>()),
+        RepositoryProvider<InquiryRepository>(create: (_) => getIt<InquiryRepository>()),
+        RepositoryProvider<MeetingRepository>(create: (_) => getIt<MeetingRepository>()),
+        RepositoryProvider<PipelineRepository>(create: (_) => getIt<PipelineRepository>()),
+        RepositoryProvider<AuditLogRepository>(create: (_) => getIt<AuditLogRepository>()),
+        RepositoryProvider<FollowUpRepository>(create: (_) => getIt<FollowUpRepository>()),
+        RepositoryProvider<NotificationRepository>(create: (_) => getIt<NotificationRepository>()),
+        RepositoryProvider<TaskRepository>(create: (_) => getIt<TaskRepository>()),
       ],
       child: MultiBlocProvider(
         providers: <BlocProvider<dynamic>>[
           BlocProvider<AuthBloc>(
-            create: (context) =>
-                AuthBloc(context.read<AuthRepository>())..add(AppStarted()),
+            create: (context) => getIt<AuthBloc>()..add(AppStarted()),
           ),
           BlocProvider<BranchBloc>(
-            create: (context) =>
-                BranchBloc(context.read<BranchRepository>())
-                  ..add(BranchFetched()),
+            create: (context) => getIt<BranchBloc>()..add(BranchFetched()),
           ),
           BlocProvider<InquiryBloc>(
-            create: (context) => InquiryBloc(context.read<InquiryRepository>()),
+            create: (context) => getIt<InquiryBloc>(),
           ),
           BlocProvider<LeadBloc>(
-            create: (context) => LeadBloc(context.read<LeadRepository>()),
+            create: (context) => getIt<LeadBloc>(),
           ),
           BlocProvider<CustomerBloc>(
-            create: (context) =>
-                CustomerBloc(context.read<CustomerRepository>()),
+            create: (context) => getIt<CustomerBloc>(),
           ),
           BlocProvider<DealBloc>(
-            create: (context) => DealBloc(context.read<DealRepository>()),
+            create: (context) => getIt<DealBloc>(),
           ),
           BlocProvider<ActivityBloc>(
-            create: (context) =>
-                ActivityBloc(context.read<ActivityRepository>()),
+            create: (context) => getIt<ActivityBloc>(),
           ),
           BlocProvider<MeetingBloc>(
-            create: (context) => MeetingBloc(context.read<MeetingRepository>()),
+            create: (context) => getIt<MeetingBloc>(),
           ),
           BlocProvider<PipelineBloc>(
-            create: (context) =>
-                PipelineBloc(context.read<PipelineRepository>())
-                  ..add(PipelinesFetched()),
+            create: (context) => getIt<PipelineBloc>()..add(PipelinesFetched()),
           ),
           BlocProvider<AuditLogBloc>(
-            create: (context) =>
-                AuditLogBloc(context.read<AuditLogRepository>()),
+            create: (context) => getIt<AuditLogBloc>(),
           ),
           BlocProvider<DashboardBloc>(
-            create: (context) =>
-                DashboardBloc(context.read<DashboardRepository>()),
+            create: (context) => getIt<DashboardBloc>(),
           ),
           BlocProvider<UserBloc>(
-            create: (context) => UserBloc(context.read<UserRepository>()),
+            create: (context) => getIt<UserBloc>(),
           ),
           BlocProvider<FollowUpBloc>(
-            create: (context) =>
-                FollowUpBloc(context.read<FollowUpRepository>()),
+            create: (context) => getIt<FollowUpBloc>(),
           ),
           BlocProvider<NotificationBloc>(
-            create: (context) =>
-                NotificationBloc(context.read<NotificationRepository>()),
+            create: (context) => getIt<NotificationBloc>(),
           ),
           BlocProvider<TaskBloc>(
-            create: (context) => TaskBloc(context.read<TaskRepository>()),
+            create: (context) => getIt<TaskBloc>(),
           ),
         ],
         child: Builder(
