@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 import '../../bloc/lead/lead_bloc.dart';
 import '../../bloc/lead/lead_event.dart';
@@ -27,31 +27,6 @@ class LeadListScreen extends StatefulWidget {
 class _LeadListScreenState extends State<LeadListScreen> {
   final _searchCtrl = TextEditingController();
   Timer? _searchDebounce;
-
-  Future<void> _call(String phone) async {
-    if (phone.isEmpty) return;
-    final uri = Uri.parse('tel:$phone');
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {}
-  }
-
-  Future<void> _whatsApp(String phone, String name) async {
-    if (phone.isEmpty) return;
-    final normalized = phone.replaceAll(' ', '').replaceAll('+', '');
-    final uri = Uri.parse('https://wa.me/$normalized?text=Hi%20$name');
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {}
-  }
-
-  Future<void> _sendEmail(String email) async {
-    if (email.isEmpty) return;
-    final uri = Uri.parse('mailto:$email');
-    try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } catch (_) {}
-  }
 
   String _getTimeAgo(String id) {
     try {
@@ -180,7 +155,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -332,7 +307,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     onRefresh: _refreshLeads,
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, i) {
@@ -437,55 +412,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   ],
                                                 ),
                                               ),
-                                              // Time and tool-tip bubble on far right
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                children: [
-                                                  Text(
-                                                    _getTimeAgo(lead.id),
-                                                    style: GoogleFonts.poppins(
-                                                      color: const Color(0xE5000000),
-                                                      fontSize: 11,
-                                                      fontWeight: FontWeight.w500,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 6),
-                                                  // Tooltip bubble: View more actions
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                                    children: [
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(0xFFCBE3FF), // Light blue matching mockup
-                                                          borderRadius: BorderRadius.circular(8),
-                                                        ),
-                                                        child: Text(
-                                                          'View more actions',
-                                                          style: GoogleFonts.poppins(
-                                                            color: const Color(0xFF000000),
-                                                            fontSize: 10,
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(right: 12), // Align arrow with grid button center
-                                                        child: Transform.translate(
-                                                          offset: const Offset(0, -3), // Slightly overlap with container
-                                                          child: Transform.rotate(
-                                                            angle: 0.785398, // 45 degrees in radians (pi / 4)
-                                                            child: Container(
-                                                              width: 8,
-                                                              height: 8,
-                                                              color: const Color(0xFFCBE3FF),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                              // Time on far right
+                                              Text(
+                                                _getTimeAgo(lead.id),
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xE5000000),
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -572,39 +506,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                              const Spacer(),
-                                              // Four Action Circle Buttons
-                                              Row(
-                                                children: [
-                                                  // Phone Action Button
-                                                  _actionCircleButton(
-                                                    icon: Icons.phone_outlined,
-                                                    iconColor: const Color(0xFF2E8EFF),
-                                                    onTap: () => _call(lead.phone),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  // WhatsApp Action Button
-                                                  _actionCircleButton(
-                                                    isImage: true,
-                                                    imagePath: 'assets/svgs/whatsapp.png',
-                                                    onTap: () => _whatsApp(lead.phone, lead.name),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  // Email Action Button
-                                                  _actionCircleButton(
-                                                    icon: Icons.email_outlined,
-                                                    iconColor: const Color(0xFF2E8EFF),
-                                                    onTap: () => _sendEmail(lead.email),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  // Calendar/Meeting Action Button
-                                                  _actionCircleButton(
-                                                    icon: Icons.calendar_today_outlined,
-                                                    iconColor: const Color(0xFF2E8EFF),
-                                                    onTap: () => Navigator.pushNamed(context, AppRoutes.addMeeting),
-                                                  ),
-                                                ],
-                                              ),
+
                                             ],
                                           ),
                                         ),
@@ -709,38 +611,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
     );
   }
 
-  Widget _actionCircleButton({
-    IconData? icon,
-    Color? iconColor,
-    bool isImage = false,
-    String? imagePath,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: const Color(0x36B0B6FF),
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: isImage
-            ? Image.asset(
-                imagePath!,
-                width: 18,
-                height: 18,
-              )
-            : Icon(
-                icon,
-                color: iconColor,
-                size: 16,
-              ),
-      ),
-    );
-  }
 }
 
 class _Dot extends StatelessWidget {

@@ -129,7 +129,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
           children: <Widget>[
             // Search Bar
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -194,7 +194,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
 
             // Tab Switcher
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+              padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -308,7 +308,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                     onRefresh: () async =>
                         context.read<InquiryBloc>().add(const InquiryFetched()),
                     child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 10),
                       itemBuilder: (context, i) {

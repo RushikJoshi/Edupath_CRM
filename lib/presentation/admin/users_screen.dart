@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../bloc/auth/auth_bloc.dart';
@@ -27,10 +26,18 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
+  final TextEditingController _searchCtrl = TextEditingController();
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
     context.read<UserBloc>().add(UserFetched());
+    _searchCtrl.addListener(() {
+      setState(() {
+        _searchQuery = _searchCtrl.text.trim().toLowerCase();
+      });
+    });
 
     // Only Company Admins need to fetch the full branch list from the API.
     // Branch Managers already have their branchId from the auth session —
@@ -46,13 +53,13 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
-  // ── role / badge helpers ───────────────────────────────────────────────────
-
-  Color _getBadgeColor(String role) {
-    if (RoleGuard.isCompanyAdmin(role)) return AppColors.error;
-    if (RoleGuard.isBranchManager(role)) return AppColors.stageInterested;
-    return AppColors.primary;
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
   }
+
+  // ── role / badge helpers ───────────────────────────────────────────────────
 
   String _getRoleLabel(String role) {
     if (RoleGuard.isCompanyAdmin(role)) return 'Company Admin';
@@ -60,11 +67,6 @@ class _UsersScreenState extends State<UsersScreen> {
     if (RoleGuard.isSales(role)) return 'Sales';
     return role.toUpperCase();
   }
-
-  // ── build the branch list available to the logged-in user ─────────────────
-  //
-  // Company Admin  → all branches from BranchBloc
-  // Branch Manager → only the branch whose id matches their own branchId
 
   List<BranchModel> _availableBranches(
     AuthState auth,
@@ -77,10 +79,6 @@ class _UsersScreenState extends State<UsersScreen> {
       return branchState.items;
     }
 
-    // Branch Manager: no API call is made for branches.
-    // First try to find their branch in the already-loaded list (if any).
-    // If not found, synthesise a stub from their own branchId so the
-    // dropdown always shows exactly one, locked option.
     if (currentBranchId.isEmpty) return [];
 
     final fromList = branchState.items
@@ -89,7 +87,6 @@ class _UsersScreenState extends State<UsersScreen> {
 
     if (fromList.isNotEmpty) return fromList;
 
-    // Fallback: synthesise from the stored branchName (set at login).
     final storedName = auth.user?.branchName ?? '';
     return [
       BranchModel(
@@ -116,7 +113,6 @@ class _UsersScreenState extends State<UsersScreen> {
         RoleGuard.isCompanyAdmin(currentRole) &&
         branchState.status == AppStatus.loading;
 
-    // Pre-select: first available branch
     String? selectedBranchId = branches.isNotEmpty ? branches.first.id : null;
 
     showDialog<void>(
@@ -190,8 +186,6 @@ class _UsersScreenState extends State<UsersScreen> {
                       },
                     ),
                     const SizedBox(height: 12),
-
-                    // ── Branch dropdown ──────────────────────────────────────
                     _buildBranchDropdown(
                       branches: branches,
                       value: selectedBranchId,
@@ -199,8 +193,6 @@ class _UsersScreenState extends State<UsersScreen> {
                       isLoading: branchesLoading,
                     ),
                     const SizedBox(height: 12),
-
-                    // ── Role dropdown ────────────────────────────────────────
                     _buildRoleDropdown(
                       value: selectedRole,
                       onChanged: (v) =>
@@ -298,8 +290,6 @@ class _UsersScreenState extends State<UsersScreen> {
         RoleGuard.isCompanyAdmin(currentRole) &&
         branchState.status == AppStatus.loading;
 
-    // Pre-select the user's current branch if it is in the available list,
-    // else fall back to the first available branch.
     String? selectedBranchId = branches.any((b) => b.id == user.branchId)
         ? user.branchId
         : (branches.isNotEmpty ? branches.first.id : null);
@@ -350,8 +340,6 @@ class _UsersScreenState extends State<UsersScreen> {
                       Icons.person_outline_rounded,
                     ),
                     const SizedBox(height: 12),
-
-                    // ── Branch dropdown ──────────────────────────────────────
                     _buildBranchDropdown(
                       branches: branches,
                       value: selectedBranchId,
@@ -359,8 +347,6 @@ class _UsersScreenState extends State<UsersScreen> {
                       isLoading: branchesLoading,
                     ),
                     const SizedBox(height: 12),
-
-                    // ── Role dropdown ────────────────────────────────────────
                     _buildRoleDropdown(
                       value: selectedRole,
                       onChanged: (v) =>
@@ -551,16 +537,12 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
-  /// Branch dropdown.
-  /// - Company Admin : all branches are selectable.
-  /// - Branch Manager: only their one branch is shown (effectively locked).
   Widget _buildBranchDropdown({
     required List<BranchModel> branches,
     required String? value,
     required void Function(String?) onChanged,
     bool isLoading = false,
   }) {
-    // Show spinner only when explicitly loading (Company Admin waiting for API).
     if (isLoading || branches.isEmpty) {
       return InputDecorator(
         decoration: InputDecoration(
@@ -643,7 +625,6 @@ class _UsersScreenState extends State<UsersScreen> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       ),
       style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
-      // Branch managers have only one item — disable interaction
       onChanged: isSingleOption ? null : onChanged,
       items: branches
           .map(
@@ -762,11 +743,11 @@ class _UsersScreenState extends State<UsersScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.white,
 
         // ── AppBar ───────────────────────────────────────────────────────────
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
+          backgroundColor: const Color(0xFF2E8EFF),
           elevation: 0,
           toolbarHeight: 64,
           leading: IconButton(
@@ -777,59 +758,19 @@ class _UsersScreenState extends State<UsersScreen> {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'User Management',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Manage team access',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-            ],
+          title: Text(
+            'User Management',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
+            ),
           ),
           actions: [
             IconButton(
               tooltip: 'Refresh',
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 28),
               onPressed: () => context.read<UserBloc>().add(UserFetched()),
-            ),
-            Container(
-              margin: const EdgeInsets.only(right: 16),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.people_rounded,
-                    color: Colors.white,
-                    size: 15,
-                  ),
-                  const SizedBox(width: 5),
-                  BlocBuilder<UserBloc, UserState>(
-                    builder: (_, state) => Text(
-                      '${state.items.length} Users',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),
@@ -879,344 +820,495 @@ class _UsersScreenState extends State<UsersScreen> {
                 );
               }
 
-              if (state.items.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: AppColors.primary.withOpacity(0.2),
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.people_rounded,
-                          size: 36,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No users found',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Tap + to add your first user',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.grey.shade500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+              final totalUsers = state.items.length;
+              final activeUsers = state.items.where((u) => u.isActive).length;
 
-              return ListView.separated(
-                padding: responsiveListPadding(context),
-                itemCount: state.items.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (context, i) {
-                  final user = state.items[i];
-                  final rc = _getBadgeColor(user.role);
-                  final initials = user.name.isNotEmpty
-                      ? user.name
-                            .trim()
-                            .split(' ')
-                            .map((p) => p[0])
-                            .take(2)
-                            .join()
-                            .toUpperCase()
-                      : '?';
+              final filteredUsers = state.items.where((user) {
+                final name = user.name.toLowerCase();
+                final email = user.email.toLowerCase();
+                return name.contains(_searchQuery) || email.contains(_searchQuery);
+              }).toList();
 
-                  // Resolve branch name for display.
-                  // For Branch Managers, BranchBloc may have no items loaded —
-                  // fall back to _availableBranches which synthesises a stub.
-                  final branchBloc = context.read<BranchBloc>();
-                  final authState = context.read<AuthBloc>().state;
-                  final matchedBranch = branchBloc.state.items
-                      .cast<BranchModel?>()
-                      .firstWhere(
-                        (b) => b?.id == user.branchId,
-                        orElse: () => null,
-                      );
-                  String branchLabel;
-                  if (matchedBranch != null) {
-                    branchLabel = matchedBranch.name;
-                  } else {
-                    // Try synthesised list (covers Branch Manager's own branch)
-                    final synthesised = _availableBranches(
-                      authState,
-                      branchBloc.state,
-                    ).where((b) => b.id == user.branchId).toList();
-                    branchLabel = synthesised.isNotEmpty
-                        ? synthesised.first.name
-                        : '-';
-                  }
-
-                  return TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 1),
-                    duration: Duration(milliseconds: 150 + i * 40),
-                    builder: (_, v, child) => Opacity(
-                      opacity: v,
-                      child: Transform.translate(
-                        offset: Offset(0, 12 * (1 - v)),
-                        child: child,
-                      ),
-                    ),
-                    child: InnerShadow(
-                      shadows: [
-                        BoxShadow(
-                          color: Colors.transparent,
-                          blurRadius: 10,
-                          offset: const Offset(2, 2),
-                        ),
-                      ],
-                      child: Container(
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: AppColors.primary,
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            // Avatar
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: user.isActive
-                                    ? AppColors.primary.withOpacity(0.08)
-                                    : Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: user.isActive
-                                      ? AppColors.primary.withOpacity(0.25)
-                                      : Colors.grey.shade300,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  initials,
-                                  style: GoogleFonts.poppins(
-                                    color: user.isActive
-                                        ? AppColors.primary
-                                        : Colors.grey.shade400,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-
-                            // Info
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    user.name,
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
-                                      color: AppColors.primary,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: rc.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
-                                          border: Border.all(
-                                            color: rc.withOpacity(0.25),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          _getRoleLabel(user.role),
-                                          style: GoogleFonts.poppins(
-                                            color: rc,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Icon(
-                                        Icons.account_tree_outlined,
-                                        size: 11,
-                                        color: AppColors.primary.withOpacity(
-                                          0.4,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 3),
-                                      Flexible(
-                                        child: Text(
-                                          // Show branch name if resolved,
-                                          // fall back to raw id
-                                          branchLabel,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 11,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    user.email,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade500,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-
-                            // Active toggle + actions
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Switch(
-                                  value: user.isActive,
-                                  onChanged: (val) {
-                                    context.read<UserBloc>().add(
-                                      UserUpdated(
-                                        userId: user.id,
-                                        name: user.name,
-                                        role: user.role,
-                                        branchId: user.branchId,
-                                        status: val ? 'active' : 'inactive',
-                                      ),
-                                    );
-                                  },
-                                  activeColor: AppColors.stageWon,
-                                  activeTrackColor: AppColors.stageWon
-                                      .withOpacity(0.3),
-                                  inactiveThumbColor: Colors.grey.shade400,
-                                  inactiveTrackColor: Colors.grey.shade200,
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                Text(
-                                  user.isActive ? 'Active' : 'Inactive',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w600,
-                                    color: user.isActive
-                                        ? AppColors.stageWon
-                                        : Colors.grey.shade400,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    _iconAction(
-                                      icon: Icons.edit_rounded,
-                                      color: AppColors.stageInterested,
-                                      tooltip: 'Edit',
-                                      onTap: () => _showEditDialog(user),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    _iconAction(
-                                      icon: Icons.delete_rounded,
-                                      color: AppColors.error,
-                                      tooltip: 'Delete',
-                                      onTap: () => _confirmDelete(user),
-                                    ),
-                                  ],
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Search & Count Row
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  blurRadius: 4,
+                                  spreadRadius: 0,
+                                  offset: Offset.zero,
                                 ),
                               ],
                             ),
-                          ],
+                            child: TextField(
+                              controller: _searchCtrl,
+                              style: GoogleFonts.poppins(fontSize: 13),
+                              decoration: InputDecoration(
+                                hintText: 'Search Users by name, email...',
+                                hintStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade500),
+                                prefixIcon: const Icon(Icons.search_rounded, color: Colors.grey, size: 20),
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 10),
+                        Container(
+                          height: 46,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x40000000),
+                                blurRadius: 4,
+                                spreadRadius: 0,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.people_alt_outlined, size: 18, color: Colors.black54),
+                              const SizedBox(width: 6),
+                              Text(
+                                '${filteredUsers.length} Users',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+
+                  // Stats Cards Row
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        // Total Users Card
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF1F6FF),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  blurRadius: 4,
+                                  spreadRadius: 0,
+                                  offset: Offset.zero,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF2E8EFF),
+                                      ),
+                                      child: const Icon(Icons.people_rounded, size: 16, color: Colors.white),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '$totalUsers',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Total Users',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: const LinearProgressIndicator(
+                                    value: 1.0,
+                                    backgroundColor: Colors.transparent,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2E8EFF)),
+                                    minHeight: 4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        // Active Users Card
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8F8F5),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  blurRadius: 4,
+                                  spreadRadius: 0,
+                                  offset: Offset.zero,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF2ECC71),
+                                      ),
+                                      child: const Icon(Icons.person_outline_rounded, size: 16, color: Colors.white),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '$activeUsers',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Active Users',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: LinearProgressIndicator(
+                                    value: totalUsers > 0 ? activeUsers / totalUsers : 0.0,
+                                    backgroundColor: Colors.transparent,
+                                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2ECC71)),
+                                    minHeight: 4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // List view
+                  Expanded(
+                    child: filteredUsers.isEmpty
+                        ? Center(
+                            child: Text(
+                              'No users found',
+                              style: GoogleFonts.poppins(color: Colors.grey),
+                            ),
+                          )
+                        : ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+                            itemCount: filteredUsers.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 12),
+                            itemBuilder: (context, i) {
+                              final user = filteredUsers[i];
+                              final initials = user.name.isNotEmpty
+                                  ? user.name
+                                        .trim()
+                                        .split(' ')
+                                        .map((p) => p[0])
+                                        .take(2)
+                                        .join()
+                                        .toUpperCase()
+                                  : '?';
+
+                              final branchBloc = context.read<BranchBloc>();
+                              final authState = context.read<AuthBloc>().state;
+                              final matchedBranch = branchBloc.state.items
+                                  .cast<BranchModel?>()
+                                  .firstWhere(
+                                    (b) => b?.id == user.branchId,
+                                    orElse: () => null,
+                                  );
+                              String branchLabel;
+                              if (matchedBranch != null) {
+                                branchLabel = matchedBranch.name;
+                              } else {
+                                final synthesised = _availableBranches(
+                                  authState,
+                                  branchBloc.state,
+                                ).where((b) => b.id == user.branchId).toList();
+                                branchLabel = synthesised.isNotEmpty
+                                    ? synthesised.first.name
+                                    : '-';
+                              }
+
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x40000000),
+                                      blurRadius: 4,
+                                      spreadRadius: 0,
+                                      offset: Offset.zero,
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        left: BorderSide(color: Color(0xFF2E8EFF), width: 4),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(12),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Avatar
+                                        Container(
+                                          width: 56,
+                                          height: 56,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(28),
+                                            child: Center(
+                                              child: Text(
+                                                initials,
+                                                style: GoogleFonts.poppins(
+                                                  color: const Color(0xFF2E8EFF),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+
+                                        // Info column
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                user.name,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.mail_outline_rounded,
+                                                    size: 14,
+                                                    color: Color(0xFF2E8EFF),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Expanded(
+                                                    child: Text(
+                                                      user.email,
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 12,
+                                                        color: Colors.grey.shade600,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                                      borderRadius: BorderRadius.circular(6),
+                                                    ),
+                                                    child: Text(
+                                                      _getRoleLabel(user.role),
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xFF2E8EFF),
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                   const SizedBox(width: 8),
+                                                   const Icon(Icons.location_on_outlined, size: 14, color: Colors.black),
+                                                   const SizedBox(width: 2),
+                                                  Expanded(
+                                                    child: Text(
+                                                      branchLabel,
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 11,
+                                                        color: Colors.grey.shade600,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+
+                                        // Actions & status Column
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(),
+                                                  icon: const Icon(Icons.edit_rounded, size: 18, color: Colors.black54),
+                                                  onPressed: () => _showEditDialog(user),
+                                                ),
+                                                const SizedBox(width: 2),
+                                                IconButton(
+                                                  padding: EdgeInsets.zero,
+                                                  constraints: const BoxConstraints(),
+                                                  icon: const Icon(Icons.delete_rounded, size: 18, color: Colors.black54),
+                                                  onPressed: () => _confirmDelete(user),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 18),
+                                            InkWell(
+                                              onTap: () {
+                                                context.read<UserBloc>().add(
+                                                  UserUpdated(
+                                                    userId: user.id,
+                                                    name: user.name,
+                                                    role: user.role,
+                                                    branchId: user.branchId,
+                                                    status: user.isActive ? 'inactive' : 'active',
+                                                  ),
+                                                );
+                                              },
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: user.isActive ? const Color(0xFFE8F5E9) : const Color(0xFFFFEBEE),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      width: 6,
+                                                      height: 6,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: user.isActive ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      user.isActive ? 'Active' : 'Inactive',
+                                                      style: GoogleFonts.poppins(
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: user.isActive ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
               );
             },
           ),
         ),
 
         // ── FAB ──────────────────────────────────────────────────────────────
-        floatingActionButton: InnerShadow(
-          shadows: [
-            BoxShadow(
-              color: Colors.transparent,
-              blurRadius: 10,
-              offset: const Offset(3, 3),
-            ),
-          ],
-          child: FloatingActionButton.extended(
-            heroTag: 'add_user_fab',
-            onPressed: _showAddDialog,
-            icon: const Icon(Icons.person_add_rounded, color: Colors.white),
-            label: Text(
-              'Add User',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: AppColors.primary,
-            elevation: 0,
-          ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'add_user_fab',
+          onPressed: _showAddDialog,
+          backgroundColor: const Color(0xFF2E8EFF),
+          elevation: 4,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add, color: Colors.white, size: 30),
         ),
-      ),
-    );
-  }
 
-  Widget _iconAction({
-    required IconData icon,
-    required Color color,
-    required String tooltip,
-    required VoidCallback onTap,
-  }) {
-    return Tooltip(
-      message: tooltip,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(6),
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Icon(icon, size: 14, color: color),
-        ),
       ),
     );
   }

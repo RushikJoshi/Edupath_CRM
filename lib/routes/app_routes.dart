@@ -96,7 +96,9 @@ class AppRoutes {
       case login:
         return animated(const LoginScreen());
       case home:
-        return animated(const HomeScreen());
+        final arg = settings.arguments;
+        final initialIndex = arg is int ? arg : 0;
+        return animated(HomeScreen(initialIndex: initialIndex));
       case inquiryList:
         return animated(const HomeScreen(initialIndex: 1));
       case addInquiry:

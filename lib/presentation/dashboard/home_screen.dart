@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           // Header
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 60, 10, 30),
+            padding: const EdgeInsets.fromLTRB(16, 50, 16, 30),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: AppColors.primaryGradient,
@@ -151,22 +151,29 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 24),
+                  onPressed: () => Navigator.pop(context),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 50,
-                      height: 50,
+                      width: 42,
+                      height: 42,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Center(
                         child: Text(
                           initials,
                           style: GoogleFonts.poppins(
                             color: AppColors.primary,
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -206,6 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.poppins(
                     color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 13,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -349,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() => _currentIndex = index);
           Navigator.pop(context);
         },
-        leading: SvgPicture.asset(svgAsset, width: 30, height: 30),
+        leading: _buildLeadingIcon(label, svgAsset),
         title: Text(
           label,
           style: GoogleFonts.poppins(
@@ -391,7 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
         },
-        leading: SvgPicture.asset(svgAsset, width: 30, height: 30),
+        leading: _buildLeadingIcon(label, svgAsset),
         title: Text(
           label,
           style: GoogleFonts.poppins(
@@ -405,6 +414,100 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.grey.shade400,
           size: 20,
         ),
+      ),
+    );
+  }
+
+  Widget _buildLeadingIcon(String label, String svgAsset) {
+    String? pngAsset;
+    switch (label.toLowerCase()) {
+      case 'dashboard':
+        pngAsset = 'assets/svgs/dashboard_drawer.png';
+        break;
+      case 'enquiries':
+        pngAsset = 'assets/svgs/inquiry_drawer.png';
+        break;
+      case 'leads':
+        pngAsset = 'assets/svgs/lead_drawer.png';
+        break;
+      case 'meetings':
+        pngAsset = 'assets/svgs/meeting_drawer.png';
+        break;
+      case 'profile':
+        pngAsset = 'assets/svgs/profile_drawer.png';
+        break;
+      case 'users':
+        pngAsset = 'assets/svgs/user_drawer.png';
+        break;
+      case 'branches':
+        pngAsset = 'assets/svgs/branch_drawer.png';
+        break;
+      case 'pipeline stages':
+        pngAsset = 'assets/svgs/pipeline_drawer.png';
+        break;
+      case 'accounts':
+        pngAsset = 'assets/svgs/account_drawer.png';
+        break;
+      case 'tasks':
+        pngAsset = 'assets/svgs/task_drawer.png';
+        break;
+      case 'activity':
+        pngAsset = 'assets/svgs/activity_drawer.png';
+        break;
+    }
+
+    if (pngAsset != null) {
+      return Image.asset(
+        pngAsset,
+        width: 38,
+        height: 38,
+      );
+    }
+
+    Color bgColor;
+    Color iconColor;
+
+    switch (label.toLowerCase()) {
+      case 'users':
+        bgColor = const Color(0xFFEAF2FF);
+        iconColor = const Color(0xFF2E8EFF);
+        break;
+      case 'branches':
+        bgColor = const Color(0xFFFFEBEE);
+        iconColor = const Color(0xFFE91E63);
+        break;
+      case 'pipeline stages':
+        bgColor = const Color(0xFFE0F7FA);
+        iconColor = const Color(0xFF00ACC1);
+        break;
+      case 'accounts':
+        bgColor = const Color(0xFFFFF4E5);
+        iconColor = const Color(0xFFFF9800);
+        break;
+      case 'tasks':
+        bgColor = const Color(0xFFFCE4EC);
+        iconColor = const Color(0xFFE91E63);
+        break;
+      case 'activity':
+        bgColor = const Color(0xFFECEFF1);
+        iconColor = const Color(0xFF607D8B);
+        break;
+      default:
+        bgColor = const Color(0xFFEAF2FF);
+        iconColor = const Color(0xFF2E8EFF);
+    }
+
+    return Container(
+      width: 38,
+      height: 38,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: SvgPicture.asset(
+        svgAsset,
+        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
     );
   }

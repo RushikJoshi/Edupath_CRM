@@ -13,6 +13,7 @@ import '../../bloc/meeting/meeting_state.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_enums.dart';
 import '../../core/widgets/responsive_wrapper.dart';
+import '../../data/models/lead_model.dart';
 import '../../data/models/meeting_model.dart';
 import '../../data/services/storage_service.dart';
 import '../../routes/app_routes.dart';
@@ -30,7 +31,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _storageService = StorageService();
   String? _inlineError;
-  String? _activeAnimatedField;
 
   late final TextEditingController _titleCtrl;
   late final TextEditingController _descriptionCtrl;
@@ -221,7 +221,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         ),
         body: ResponsiveConstraint(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 120),
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 120),
             child: Form(
               key: _formKey,
               child: Column(
@@ -484,12 +484,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                             child: DropdownButton<String?>(
                               value: safeSelectedLeadId,
                               isExpanded: true,
+                              itemHeight: 64.0,
                               icon: const SizedBox.shrink(),
                               hint: Text(
                                 'Select Lead',
                                 style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                               ),
-                              items: leadItems.map((lead) {
+                              items: leadItems
+                                  .fold<List<LeadModel>>([], (list, element) {
+                                    if (!list.any((e) => e.id == element.id)) {
+                                      list.add(element);
+                                    }
+                                    return list;
+                                  })
+                                  .map((lead) {
                                 return DropdownMenuItem<String?>(
                                   value: lead.id,
                                   child: Column(
@@ -509,6 +517,30 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                   ),
                                 );
                               }).toList(),
+                              selectedItemBuilder: (BuildContext context) {
+                                return leadItems
+                                    .fold<List<LeadModel>>([], (list, element) {
+                                      if (!list.any((e) => e.id == element.id)) {
+                                        list.add(element);
+                                      }
+                                      return list;
+                                    })
+                                    .map<Widget>((lead) {
+                                  return Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      lead.name,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                }).toList();
+                              },
                               onChanged: (val) {
                                 setState(() {
                                   _selectedLeadId = val;
@@ -833,128 +865,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-  Widget _section(String title, IconData icon, List<Widget> children) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 8),
-            child: Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x40000000),
-                blurRadius: 4,
-                spreadRadius: 0,
-                offset: Offset(0, 0),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
-        ),
-      ],
-    );
-  }
 
-  Widget _label(String text) => Text(
-    text,
-    style: GoogleFonts.poppins(
-      fontSize: 12,
-      fontWeight: FontWeight.w600,
-      color: Colors.grey.shade500,
-      letterSpacing: 0.3,
-    ),
-  );
 
-  Widget _textField(
-    TextEditingController controller, {
-    required String hint,
-    int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
-    TextInputAction? textInputAction,
-    IconData? prefixIcon,
-    void Function(String value)? onChanged,
-    String? fieldKey,
-  }) {
-    final resolvedKeyboardType =
-        maxLines > 1 &&
-            textInputAction == TextInputAction.newline &&
-            keyboardType == TextInputType.text
-        ? TextInputType.multiline
-        : keyboardType;
-
-    final keyValue = fieldKey ?? hint;
-    final isActive = _activeAnimatedField == keyValue;
-
-    return AnimatedScale(
-      scale: isActive ? 1.01 : 1,
-      duration: const Duration(milliseconds: 160),
-      child: TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        keyboardType: resolvedKeyboardType,
-        textInputAction: textInputAction,
-        onTap: () => _triggerFieldAnimation(keyValue),
-        onChanged: onChanged,
-        style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary),
-        decoration: InputDecoration(
-          prefixIcon: prefixIcon == null
-              ? null
-              : Icon(
-                  prefixIcon,
-                  size: 18,
-                  color: AppColors.primary.withOpacity(0.55),
-                ),
-          hintText: hint,
-          hintStyle: GoogleFonts.poppins(
-            fontSize: 13,
-            color: Colors.grey.shade400,
-          ),
-          alignLabelWithHint: true,
-          filled: true,
-          fillColor: AppColors.surfaceWhite,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: 16,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: AppColors.primary.withOpacity(isActive ? 0.9 : 0.45),
-              width: isActive ? 1.5 : 1.2,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: AppColors.primary.withOpacity(isActive ? 0.9 : 0.45),
-              width: isActive ? 1.5 : 1.2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-          ),
-        ),
-      ),
-    );
-  }
 
     String _getMonth(int month) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -966,41 +878,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     return days[weekday - 1];
   }
 
-  Widget _participantAvatar(String url, String name, String subtitle) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 24,
-          backgroundColor: Colors.grey.shade200,
-          backgroundImage: NetworkImage(url),
-        ),
-        const SizedBox(height: 6),
-        Text(name, style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black)),
-        if (subtitle.isNotEmpty)
-          Text(subtitle, style: GoogleFonts.poppins(fontSize: 10, color: Colors.black54)),
-      ],
-    );
-  }
 
-  Widget _detailItem(IconData icon, String title, String subtitle) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20, color: Colors.black87),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: GoogleFonts.poppins(fontSize: 11, color: Colors.black87, fontWeight: FontWeight.w500)),
-              Text(subtitle, style: GoogleFonts.poppins(fontSize: 11, color: Colors.black54)),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
   void _updateEndDate() {
     if (_startDate == null || _startTime == null) return;
@@ -1138,144 +1016,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-  Widget _dropdown<T>({
-    required T value,
-    required IconData icon,
-    String? hint,
-    required List<DropdownMenuItem<T>> items,
-    required void Function(T?) onChanged,
-    String? Function(T?)? validator,
-    String? fieldKey,
-  }) {
-    final keyValue = fieldKey ?? hint ?? 'dropdown';
-    final isActive = _activeAnimatedField == keyValue;
-    return AnimatedScale(
-      scale: isActive ? 1.01 : 1,
-      duration: const Duration(milliseconds: 160),
-      child: DropdownButtonFormField<T>(
-        value: value,
-        onTap: () => _triggerFieldAnimation(keyValue),
-        style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary),
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            icon,
-            size: 18,
-            color: AppColors.primary.withOpacity(0.5),
-          ),
-          hintText: hint,
-          hintStyle: GoogleFonts.poppins(
-            fontSize: 13,
-            color: Colors.grey.shade400,
-          ),
-          filled: true,
-          fillColor: AppColors.surfaceWhite,
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 14,
-            horizontal: 16,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: AppColors.primary.withOpacity(isActive ? 0.9 : 0.45),
-              width: isActive ? 1.5 : 1.2,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: AppColors.primary.withOpacity(isActive ? 0.9 : 0.45),
-              width: isActive ? 1.5 : 1.2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-          ),
-        ),
-        items: items,
-        onChanged: onChanged,
-        validator: validator,
-        dropdownColor: Colors.white,
-        iconEnabledColor: AppColors.primary,
-        isDense: true,
-      ),
-    );
-  }
 
-  Widget _pickRow({
-    required IconData icon,
-    required String label,
-    required bool hasValue,
-    required VoidCallback onTap,
-    required String fieldKey,
-  }) {
-    final isActive = _activeAnimatedField == fieldKey;
-    return InkWell(
-      onTap: () {
-        _triggerFieldAnimation(fieldKey);
-        onTap();
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceWhite,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.primary.withOpacity(
-              isActive ? 0.95 : (hasValue ? 0.75 : 0.45),
-            ),
-            width: isActive ? 1.6 : 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.transparent,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: <Widget>[
-            Icon(
-              icon,
-              size: 18,
-              color: hasValue
-                  ? AppColors.primary
-                  : AppColors.primary.withOpacity(0.45),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: hasValue ? AppColors.primary : Colors.grey.shade400,
-                  fontWeight: hasValue ? FontWeight.w600 : FontWeight.w400,
-                ),
-              ),
-            ),
-            if (hasValue)
-              const Icon(
-                Icons.check_circle_rounded,
-                size: 16,
-                color: AppColors.primary,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _triggerFieldAnimation(String key) {
-    setState(() => _activeAnimatedField = key);
-    Future.delayed(const Duration(milliseconds: 220), () {
-      if (!mounted) return;
-      if (_activeAnimatedField == key) {
-        setState(() => _activeAnimatedField = null);
-      }
-    });
-  }
 
   Future<void> _save() async {
     _clearInlineError();
@@ -1422,15 +1163,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-  String _formatDate(BuildContext context, DateTime value) {
-    return MaterialLocalizations.of(context).formatMediumDate(value);
-  }
-
-  String _formatDateTime(BuildContext context, DateTime value) {
-    final date = MaterialLocalizations.of(context).formatMediumDate(value);
-    final time = TimeOfDay.fromDateTime(value).format(context);
-    return '$date • $time';
-  }
 
   void _clearInlineError() {
     if (!mounted || _inlineError == null) return;

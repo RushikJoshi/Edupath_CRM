@@ -34,7 +34,7 @@ class ResponsiveConstraint extends StatelessWidget {
 
 /// Responsive horizontal padding for body content.
 double responsiveHorizontalPadding(BuildContext context) {
-  return 10;
+  return 14;
 }
 
 /// Responsive grid cross-axis count: mobile 2, tablet 3, desktop 4.

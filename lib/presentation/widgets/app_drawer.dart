@@ -40,7 +40,7 @@ class AppDrawer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 60, 10, 30),
+            padding: const EdgeInsets.fromLTRB(16, 50, 16, 30),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: AppColors.primaryGradient,
@@ -52,22 +52,29 @@ class AppDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white, size: 24),
+                  onPressed: () => Navigator.pop(context),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 50,
-                      height: 50,
+                      width: 42,
+                      height: 42,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Center(
                         child: Text(
                           initials,
                           style: GoogleFonts.poppins(
                             color: AppColors.primary,
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -107,6 +114,8 @@ class AppDrawer extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 13,
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -159,6 +168,7 @@ class AppDrawer extends StatelessWidget {
                     'assets/svgs/users.svg',
                     'Users',
                     AppRoutes.users,
+                    showChevron: true,
                   ),
                 if (RoleGuard.canAccessBranches(role))
                   _routeItem(
@@ -166,6 +176,7 @@ class AppDrawer extends StatelessWidget {
                     'assets/svgs/branches.svg',
                     'Branches',
                     AppRoutes.branches,
+                    showChevron: true,
                   ),
                 if (RoleGuard.canAccessStages(role))
                   _routeItem(
@@ -173,18 +184,21 @@ class AppDrawer extends StatelessWidget {
                     'assets/svgs/stages.svg',
                     'Pipeline Stages',
                     AppRoutes.stages,
+                    showChevron: true,
                   ),
                 _routeItem(
                   context,
                   'assets/svgs/deal.svg',
                   'Accounts',
                   AppRoutes.accounts,
+                  showChevron: true,
                 ),
                 _routeItem(
                   context,
                   'assets/svgs/completed.svg',
                   'Tasks',
                   AppRoutes.tasks,
+                  showChevron: true,
                 ),
                 if (RoleGuard.canAccessAuditLogs(role))
                   _routeItem(
@@ -192,6 +206,7 @@ class AppDrawer extends StatelessWidget {
                     'assets/svgs/audit logs.svg',
                     'Activity',
                     AppRoutes.auditLogs,
+                    showChevron: true,
                   ),
               ],
             ),
@@ -255,8 +270,9 @@ class AppDrawer extends StatelessWidget {
     BuildContext context,
     String svgAsset,
     String label,
-    String route,
-  ) {
+    String route, {
+    bool showChevron = false,
+  }) {
     final selected = activeRoute == route;
 
     return Container(
@@ -277,7 +293,7 @@ class AppDrawer extends StatelessWidget {
           if (activeRoute == route) return;
           Navigator.pushNamed(context, route);
         },
-        leading: SvgPicture.asset(svgAsset, width: 30, height: 30),
+        leading: _buildLeadingIcon(label, svgAsset),
         title: Text(
           label,
           style: GoogleFonts.poppins(
@@ -286,11 +302,107 @@ class AppDrawer extends StatelessWidget {
             color: selected ? AppColors.primary : Colors.grey.shade700,
           ),
         ),
-        trailing: Icon(
-          Icons.chevron_right_rounded,
-          color: Colors.grey.shade400,
-          size: 20,
-        ),
+        trailing: showChevron
+            ? Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.grey.shade400,
+                size: 20,
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildLeadingIcon(String label, String svgAsset) {
+    String? pngAsset;
+    switch (label.toLowerCase()) {
+      case 'dashboard':
+        pngAsset = 'assets/svgs/dashboard_drawer.png';
+        break;
+      case 'enquiries':
+        pngAsset = 'assets/svgs/inquiry_drawer.png';
+        break;
+      case 'leads':
+        pngAsset = 'assets/svgs/lead_drawer.png';
+        break;
+      case 'meetings':
+        pngAsset = 'assets/svgs/meeting_drawer.png';
+        break;
+      case 'profile':
+        pngAsset = 'assets/svgs/profile_drawer.png';
+        break;
+      case 'users':
+        pngAsset = 'assets/svgs/user_drawer.png';
+        break;
+      case 'branches':
+        pngAsset = 'assets/svgs/branch_drawer.png';
+        break;
+      case 'pipeline stages':
+        pngAsset = 'assets/svgs/pipeline_drawer.png';
+        break;
+      case 'accounts':
+        pngAsset = 'assets/svgs/account_drawer.png';
+        break;
+      case 'tasks':
+        pngAsset = 'assets/svgs/task_drawer.png';
+        break;
+      case 'activity':
+        pngAsset = 'assets/svgs/activity_drawer.png';
+        break;
+    }
+
+    if (pngAsset != null) {
+      return Image.asset(
+        pngAsset,
+        width: 38,
+        height: 38,
+      );
+    }
+
+    Color bgColor;
+    Color iconColor;
+
+    switch (label.toLowerCase()) {
+      case 'users':
+        bgColor = const Color(0xFFEAF2FF);
+        iconColor = const Color(0xFF2E8EFF);
+        break;
+      case 'branches':
+        bgColor = const Color(0xFFFFEBEE);
+        iconColor = const Color(0xFFE91E63);
+        break;
+      case 'pipeline stages':
+        bgColor = const Color(0xFFE0F7FA);
+        iconColor = const Color(0xFF00ACC1);
+        break;
+      case 'accounts':
+        bgColor = const Color(0xFFFFF4E5);
+        iconColor = const Color(0xFFFF9800);
+        break;
+      case 'tasks':
+        bgColor = const Color(0xFFFCE4EC);
+        iconColor = const Color(0xFFE91E63);
+        break;
+      case 'activity':
+        bgColor = const Color(0xFFECEFF1);
+        iconColor = const Color(0xFF607D8B);
+        break;
+      default:
+        bgColor = const Color(0xFFEAF2FF);
+        iconColor = const Color(0xFF2E8EFF);
+    }
+
+    return Container(
+      width: 38,
+      height: 38,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(8),
+      child: SvgPicture.asset(
+        svgAsset,
+        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
     );
   }

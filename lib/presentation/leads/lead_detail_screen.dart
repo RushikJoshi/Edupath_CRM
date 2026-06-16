@@ -1214,7 +1214,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 10,
-                    color: const Color(0xB2000000),
+                    color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1224,7 +1224,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xB2000000),
+                    color: const Color(0xFF000000),
                   ),
                 ),
               ],
@@ -1268,7 +1268,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 10,
-                    color: const Color(0xB2000000),
+                    color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1278,7 +1278,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xB2000000),
+                    color: const Color(0xFF000000),
                   ),
                 ),
               ],

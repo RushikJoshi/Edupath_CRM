@@ -347,15 +347,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           label,
                           style: GoogleFonts.poppins(
                             fontSize: 11,
-                            color: Colors.grey.shade600,
-                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           value,
                           style: GoogleFonts.poppins(
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black,
                           ),
                         ),
@@ -365,7 +365,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       label,
                       style: GoogleFonts.poppins(
                         fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
                     ),
