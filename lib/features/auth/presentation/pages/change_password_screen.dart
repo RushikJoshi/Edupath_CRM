@@ -125,7 +125,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 35),
-                _buildField(
+                _PasswordTextField(
                   label: 'Current Password',
                   controller: _currentController,
                   obscureText: _obscureCurrent,
@@ -136,7 +136,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       Validators.requiredField(v, 'Current password'),
                 ),
                 const SizedBox(height: 20),
-                _buildField(
+                _PasswordTextField(
                   label: 'New password',
                   controller: _newController,
                   obscureText: _obscureNew,
@@ -146,7 +146,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   validator: (v) => Validators.requiredField(v, 'New password'),
                 ),
                 const SizedBox(height: 20),
-                _buildField(
+                _PasswordTextField(
                   label: 'Confirm new password',
                   controller: _confirmController,
                   obscureText: _obscureConfirm,
@@ -200,114 +200,170 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       ),
     );
   }
+}
 
-  Widget _buildField({
-    required String label,
-    required TextEditingController controller,
-    required bool obscureText,
-    required String hintText,
-    required VoidCallback onToggleObscure,
-    required String? Function(String?) validator,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: const Color(0xFF334155),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x40000000), // #00000040 (25% opacity) shadow
-                blurRadius: 4,
-                spreadRadius: 0,
-                offset: Offset.zero,
+class _PasswordTextField extends StatefulWidget {
+  final String label;
+  final TextEditingController controller;
+  final bool obscureText;
+  final String hintText;
+  final VoidCallback onToggleObscure;
+  final String? Function(String?) validator;
+
+  const _PasswordTextField({
+    required this.label,
+    required this.controller,
+    required this.obscureText,
+    required this.hintText,
+    required this.onToggleObscure,
+    required this.validator,
+  });
+
+  @override
+  State<_PasswordTextField> createState() => _PasswordTextFieldState();
+}
+
+class _PasswordTextFieldState extends State<_PasswordTextField> {
+  bool _isFocused = false;
+  late final FocusNode _focusNode;
+  FormFieldState<String>? _fieldState;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    });
+    widget.controller.addListener(_onControllerChanged);
+  }
+
+  void _onControllerChanged() {
+    if (_fieldState != null && _fieldState!.value != widget.controller.text) {
+      _fieldState!.didChange(widget.controller.text);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _PasswordTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_onControllerChanged);
+      widget.controller.addListener(_onControllerChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FormField<String>(
+      validator: widget.validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      initialValue: widget.controller.text,
+      builder: (FormFieldState<String> fieldState) {
+        _fieldState = fieldState;
+        final hasError = fieldState.hasError;
+        final errorText = fieldState.errorText;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.label,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF334155),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: hasError
+                      ? Colors.red
+                      : (_isFocused ? const Color(0xFF2E8EFF) : const Color(0xFFE2E8F0)),
+                  width: _isFocused || hasError ? 1.5 : 1.0,
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x40000000), // #00000040 shadow
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                controller: widget.controller,
+                obscureText: widget.obscureText,
+                focusNode: _focusNode,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  hintStyle: GoogleFonts.poppins(
+                    color: Colors.grey.shade500,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      widget.obscureText
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    onPressed: widget.onToggleObscure,
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
+                  errorStyle: const TextStyle(height: 0, fontSize: 0),
+                ),
+              ),
+            ),
+            if (hasError && errorText != null) ...[
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  errorText,
+                  style: GoogleFonts.poppins(
+                    color: Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ],
-          ),
-          child: TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.black,
-            ),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: GoogleFonts.poppins(
-                color: Colors.grey.shade500,
-                fontSize: 14,
-              ),
-              prefixIcon: const Icon(
-                Icons.lock_outline_rounded,
-                color: Colors.black,
-                size: 20,
-              ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  obscureText
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: onToggleObscure,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 16,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE2E8F0),
-                  width: 1.0,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE2E8F0),
-                  width: 1.0,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Color(0xFF2E8EFF),
-                  width: 1.5,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 1.0,
-                ),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 1.5,
-                ),
-              ),
-            ),
-            validator: validator,
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
