@@ -4,11 +4,6 @@ class ApiEndpoints {
     defaultValue: 'https://app.gitakshmilabs.com',
   );
 
-  // Auth Endpoints
-  static const String login = '/api/auth/login';
-  static const String fetchMe = '/api/auth/me';
-  static const String updateProfile = '/api/auth/profile';
-  static const String changePassword = '/api/auth/change-password';
 
   // Users Endpoints
   static const String users = '/api/users';
