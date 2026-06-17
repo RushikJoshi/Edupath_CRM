@@ -11,10 +11,4 @@ abstract class NotificationApiClient {
 
   @GET(ApiEndpoints.notifications)
   Future<HttpResponse<dynamic>> getNotifications();
-
-  @PATCH(ApiEndpoints.notificationRead)
-  Future<void> markAsRead(@Path('id') String id);
-
-  @PATCH(ApiEndpoints.notificationReadAll)
-  Future<void> markAllAsRead();
 }

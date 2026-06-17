@@ -317,7 +317,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () => Navigator.of(context).pushNamed(
+                                    AppRoutes.forgotPassword,
+                                  ),
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,

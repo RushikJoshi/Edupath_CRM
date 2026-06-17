@@ -39,19 +39,13 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> markAsRead(String id) async {
-    try {
-      await _apiClient.markAsRead(id);
-    } on DioException catch (e) {
-      throw AppErrorHandler.fromDioException(e);
-    }
+    // API call removed as requested.
+    return;
   }
 
   @override
   Future<void> markAllAsRead() async {
-    try {
-      await _apiClient.markAllAsRead();
-    } on DioException catch (e) {
-      throw AppErrorHandler.fromDioException(e);
-    }
+    // API call removed as requested.
+    return;
   }
 }

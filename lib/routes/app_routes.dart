@@ -30,6 +30,7 @@ import 'package:gtcrm/features/notification/presentation/pages/notifications_scr
 import 'package:gtcrm/features/audit_log/presentation/pages/audit_logs_screen.dart';
 import 'package:gtcrm/features/auth/presentation/pages/change_password_screen.dart';
 import 'package:gtcrm/features/auth/presentation/pages/profile_screen.dart';
+import 'package:gtcrm/features/auth/presentation/pages/forgot_password_screen.dart';
 import 'package:gtcrm/features/task/presentation/pages/task_list_screen.dart';
 
 class AppRoutes {
@@ -62,6 +63,7 @@ class AppRoutes {
 
   static const profile = '/profile';
   static const changePassword = '/change-password';
+  static const forgotPassword = '/forgot-password';
   static const notifications = '/notifications';
 
   static const deals = '/deals';
@@ -137,6 +139,8 @@ class AppRoutes {
         return animated(const ProfileScreen());
       case changePassword:
         return animated(const ChangePasswordScreen());
+      case forgotPassword:
+        return animated(const ForgotPasswordScreen());
       case notifications:
         return animated(const NotificationsScreen());
       case deals:
