@@ -79,138 +79,235 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFF2E8EFF),
         elevation: 0,
-        toolbarHeight: 64,
+        centerTitle: false,
+        titleSpacing: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 22,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Change Password',
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
             color: Colors.white,
           ),
         ),
       ),
       body: ResponsiveConstraint(
         child: Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(responsiveHorizontalPadding(context), 24, responsiveHorizontalPadding(context), 32),
-          children: [
-            Text(
-              'Enter your current password and choose a new one.',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 20,
+              bottom: 24,
             ),
-            const SizedBox(height: 24),
-            TextFormField(
-              controller: _currentController,
-              obscureText: _obscureCurrent,
-              decoration: InputDecoration(
-                labelText: 'Current password',
-                hintText: 'Enter current password',
-                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureCurrent ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  ),
-                  onPressed: () => setState(() => _obscureCurrent = !_obscureCurrent),
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              validator: (v) => Validators.requiredField(v, 'Current password'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _newController,
-              obscureText: _obscureNew,
-              decoration: InputDecoration(
-                labelText: 'New password',
-                hintText: 'Enter new password',
-                prefixIcon: const Icon(Icons.lock_rounded),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureNew ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  ),
-                  onPressed: () => setState(() => _obscureNew = !_obscureNew),
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              validator: (v) => Validators.requiredField(v, 'New password'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _confirmController,
-              obscureText: _obscureConfirm,
-              decoration: InputDecoration(
-                labelText: 'Confirm new password',
-                hintText: 'Re-enter new password',
-                prefixIcon: const Icon(Icons.lock_rounded),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureConfirm ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                  ),
-                  onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              validator: (v) {
-                final err = Validators.requiredField(v, 'Confirm password');
-                if (err != null) return err;
-                if (v?.trim() != _newController.text.trim()) {
-                  return 'Passwords do not match';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _loading ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Enter your password and\nchoose a new one.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    height: 1.4,
                   ),
                 ),
-                child: _loading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        'Change Password',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+                const SizedBox(height: 35),
+                _buildField(
+                  label: 'Current Password',
+                  controller: _currentController,
+                  obscureText: _obscureCurrent,
+                  hintText: 'Enter current password',
+                  onToggleObscure: () =>
+                      setState(() => _obscureCurrent = !_obscureCurrent),
+                  validator: (v) =>
+                      Validators.requiredField(v, 'Current password'),
+                ),
+                const SizedBox(height: 20),
+                _buildField(
+                  label: 'New password',
+                  controller: _newController,
+                  obscureText: _obscureNew,
+                  hintText: 'Enter new password',
+                  onToggleObscure: () =>
+                      setState(() => _obscureNew = !_obscureNew),
+                  validator: (v) => Validators.requiredField(v, 'New password'),
+                ),
+                const SizedBox(height: 20),
+                _buildField(
+                  label: 'Confirm new password',
+                  controller: _confirmController,
+                  obscureText: _obscureConfirm,
+                  hintText: 'Confirm new password',
+                  onToggleObscure: () =>
+                      setState(() => _obscureConfirm = !_obscureConfirm),
+                  validator: (v) {
+                    final err = Validators.requiredField(v, 'Confirm password');
+                    if (err != null) return err;
+                    if (v?.trim() != _newController.text.trim()) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: FilledButton(
+                    onPressed: _loading ? null : _submit,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E8EFF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
                       ),
-              ),
+                    ),
+                    child: _loading
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Change Password',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-      ),
+    );
+  }
+
+  Widget _buildField({
+    required String label,
+    required TextEditingController controller,
+    required bool obscureText,
+    required String hintText,
+    required VoidCallback onToggleObscure,
+    required String? Function(String?) validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF334155),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x40000000), // #00000040 (25% opacity) shadow
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: Offset.zero,
+              ),
+            ],
+          ),
+          child: TextFormField(
+            controller: controller,
+            obscureText: obscureText,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.black,
+            ),
+            decoration: InputDecoration(
+              hintText: hintText,
+              hintStyle: GoogleFonts.poppins(
+                color: Colors.grey.shade500,
+                fontSize: 14,
+              ),
+              prefixIcon: const Icon(
+                Icons.lock_outline_rounded,
+                color: Colors.black,
+                size: 20,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  obscureText
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  color: Colors.black,
+                  size: 20,
+                ),
+                onPressed: onToggleObscure,
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 16,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFFE2E8F0),
+                  width: 1.0,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFFE2E8F0),
+                  width: 1.0,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Color(0xFF2E8EFF),
+                  width: 1.5,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                  width: 1.0,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                  width: 1.5,
+                ),
+              ),
+            ),
+            validator: validator,
+          ),
+        ),
+      ],
     );
   }
 }

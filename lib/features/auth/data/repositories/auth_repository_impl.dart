@@ -10,12 +10,12 @@ import 'package:gtcrm/features/user/data/models/user_model.dart';
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._apiClient, this._storageService);
   final AuthApiClient _apiClient;
-  final StorageService _storageService;
+  final StorageService _storageService;///save token
 
   @override
   Future<UserModel> login({required String email, required String password}) async {
     try {
-      final response = await _apiClient.login({'email': email, 'password': password});
+      final response = await _apiClient.login({'email': email, 'password': password});/// token
       final data = response.data;
       if (data == null || data is! Map<String, dynamic>) {
         throw const AppException(
@@ -23,8 +23,9 @@ class AuthRepositoryImpl implements AuthRepository {
           userMessage: 'Something went wrong',
         );
       }
-      
+      /// server response token-===
       final token = (data['token'] ?? data['accessToken'] ?? data['jwt'])?.toString();
+
       final userJson = data['user'] ?? (data['data'] != null ? data['data']['user'] : null) ?? data['data'];
 
       if (token == null || token.isEmpty) {
@@ -42,7 +43,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final user = UserModel.fromJson(userJson);
-      
+      ///save token-=========
       final tokenExpiry = _extractTokenExpiry(token)?.toIso8601String();
       await _storageService.saveSession(
         token: token,

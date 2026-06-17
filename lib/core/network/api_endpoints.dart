@@ -28,7 +28,8 @@ class ApiEndpoints {
   // Notifications Endpoints
   static const String notifications = '/api/notifications';
   static const String notificationRead = '/api/notifications/{id}/read';
-  static const String notificationReadAll = '/api/notifications/read-all';
+  //static const String notificationReadAll = '/api/notifications/read-all';
+  static const String notificationReadAll = '/api/notifications/all-read';
 
   // Meetings Endpoints
   static const String meetings = '/api/meetings';

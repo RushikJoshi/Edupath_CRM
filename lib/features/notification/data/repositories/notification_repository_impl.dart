@@ -16,10 +16,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
       List<dynamic> list = [];
       if (data is List) {
         list = data;
-      } else if (data is Map && data['data'] is List) {
-        list = data['data'] as List<dynamic>;
-      } else if (data is Map && data['notifications'] is List) {
-        list = data['notifications'] as List<dynamic>;
+      } else if (data is Map) {
+        if (data['data'] is List) {
+          list = data['data'] as List<dynamic>;
+        } else if (data['notifications'] is List) {
+          list = data['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+          list = data['data']['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['data'] is List) {
+          list = data['data']['data'] as List<dynamic>;
+        }
       }
       return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
@@ -39,13 +45,35 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> markAsRead(String id) async {
-    // API call removed as requested.
-    return;
+    try {
+      await _apiClient.markAsRead(id);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
   }
 
   @override
-  Future<void> markAllAsRead() async {
-    // API call removed as requested.
-    return;
+  Future<List<NotificationModel>> markAllAsRead() async {
+    try {
+      final response = await _apiClient.markAllNotificationsRead();
+      final data = response.data;
+      List<dynamic> list = [];
+      if (data is List) {
+        list = data;
+      } else if (data is Map) {
+        if (data['data'] is List) {
+          list = data['data'] as List<dynamic>;
+        } else if (data['notifications'] is List) {
+          list = data['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+          list = data['data']['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['data'] is List) {
+          list = data['data']['data'] as List<dynamic>;
+        }
+      }
+      return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
   }
 }

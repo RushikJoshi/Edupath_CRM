@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:gtcrm/core/constants/app_enums.dart';
 import 'package:gtcrm/features/notification/domain/repositories/notification_repository.dart';
+import 'package:gtcrm/features/notification/data/models/notification_model.dart';
 import 'notification_event.dart';
 import 'notification_state.dart';
 
@@ -116,16 +117,23 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
-      await _repository.markAllAsRead();
+      final returnedItems = await _repository.markAllAsRead();
 
-      final updated = state.items.map((n) => n.copyWith(isRead: true)).toList();
+      List<NotificationModel> items = returnedItems;
+      if (items.isEmpty) {
+        try {
+          items = await _repository.fetchAll();
+        } catch (_) {
+          items = state.items.map((n) => n.copyWith(isRead: true)).toList();
+        }
+      }
 
       emit(
         state.copyWith(
           actionStatus: AppStatus.success,
           actionMessage: 'All notifications marked as read',
-          items: updated,
-          unreadCount: 0,
+          items: items,
+          unreadCount: items.where((n) => !n.isRead).length,
         ),
       );
     } catch (e) {

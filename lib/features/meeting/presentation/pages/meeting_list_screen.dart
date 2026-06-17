@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/features/meeting/presentation/bloc/meeting_bloc.dart';
@@ -30,10 +29,16 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       <String, List<FollowUpModel>>{};
   final Set<String> _fetchedLeadIds = <String>{};
 
+  DateTime _selectedDate = DateTime(2025, 5, 20);
+  DateTime? _filterDate;
+
   @override
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
+    _tc.addListener(() {
+      setState(() {});
+    });
     context.read<MeetingBloc>().add(MeetingFetched());
   }
 
@@ -79,25 +84,51 @@ class _MeetingListScreenState extends State<MeetingListScreen>
     });
   }
 
-  bool _isFollowUpMeeting(MeetingModel meeting) {
-    final leadId = (meeting.leadId ?? '').trim();
-    if (leadId.isEmpty) return false;
-    final followUps = _followUpsByLead[leadId];
-    if (followUps == null || followUps.isEmpty) return false;
 
-    final meetingUtc = meeting.startDate.toUtc();
-    final hasTimeMatch = followUps.any((f) {
-      if (f.status == FollowUpStatus.cancelled) return false;
-      final diffMinutes = f.scheduledAt
-          .toUtc()
-          .difference(meetingUtc)
-          .inMinutes
-          .abs();
-      return diffMinutes <= 120;
-    });
 
-    if (hasTimeMatch) return true;
-    return followUps.any((f) => f.status != FollowUpStatus.cancelled);
+  String _formatSelectedDateHeader(DateTime dt) {
+    const months = [
+      'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+      'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+    ];
+    final monthName = months[dt.month - 1];
+    return '${dt.day},$monthName, ${dt.year}';
+  }
+
+  String _formatMonthNameShort(DateTime dt) {
+    const months = [
+      'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+      'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+    ];
+    return months[dt.month - 1];
+  }
+
+  String _formatWeekday(int weekday) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[weekday - 1];
+  }
+
+  String _formatDate(DateTime dt) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${dt.day} ${months[dt.month - 1].toLowerCase()} ${dt.year}';
+  }
+
+  String _formatTimeRange(DateTime start, DateTime? end) {
+    String formatTime(DateTime time) {
+      final hour = time.hour;
+      final minute = time.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final formattedHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+      return '$formattedHour:$minute $period';
+    }
+
+    final startStr = formatTime(start.toLocal());
+    if (end == null) return startStr;
+    final endStr = formatTime(end.toLocal());
+    return '$startStr - $endStr';
   }
 
   @override
@@ -105,10 +136,8 @@ class _MeetingListScreenState extends State<MeetingListScreen>
     return Scaffold(
       backgroundColor: AppColors.background,
       drawer: const AppDrawer(activeRoute: AppRoutes.meetingList),
-
-      // ── AppBar — primary blue, same as InquiryListScreen ──
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: const Color(0xFF2E8EFF),
         elevation: 0,
         toolbarHeight: 64,
         leading: Builder(
@@ -117,65 +146,21 @@ class _MeetingListScreenState extends State<MeetingListScreen>
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Meetings',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              'Scheduled follow-ups',
-              style: GoogleFonts.poppins(
-                fontSize: 11,
-                color: Colors.white.withOpacity(0.7),
-              ),
-            ),
-          ],
+        title: Text(
+          'Meetings',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: Colors.white,
+          ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 14),
-            child: SvgPicture.asset(
-              'assets/svgs/meetings.svg',
-              width: 26,
-              height: 26,
-            ),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
+            onPressed: () {},
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48),
-          child: Container(
-            color: AppColors.primary,
-            child: TabBar(
-              controller: _tc,
-              tabs: const [
-                Tab(text: 'Scheduled'),
-                Tab(text: 'Completed'),
-                Tab(text: 'Cancelled'),
-              ],
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white.withOpacity(0.55),
-              indicatorColor: Colors.white,
-              indicatorWeight: 3,
-              dividerColor: Colors.transparent,
-              labelStyle: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
-              unselectedLabelStyle: GoogleFonts.poppins(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        ),
       ),
-
       body: ResponsiveConstraint(
         child: BlocConsumer<MeetingBloc, MeetingState>(
           listenWhen: (prev, curr) =>
@@ -195,32 +180,320 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 ),
               );
             }
-            return TabBarView(
-              controller: _tc,
+            return Column(
               children: [
-                _list(state, 'Scheduled'),
-                _list(state, 'Completed'),
-                _list(state, 'Cancelled'),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+                  child: _buildCustomTabs(state),
+                ),
+                _buildDateHeader(),
+                _buildDateScroller(),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tc,
+                    children: [
+                      _list(state, 'Scheduled'),
+                      _list(state, 'Completed'),
+                      _list(state, 'Cancelled'),
+                    ],
+                  ),
+                ),
               ],
             );
           },
         ),
       ),
-
-      // ── FAB ──
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         heroTag: 'schedule_meeting_fab',
         onPressed: () => Navigator.pushNamed(context, AppRoutes.addMeeting),
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: Text(
-          'Schedule',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
+        backgroundColor: const Color(0xFF2E8EFF),
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, color: Colors.white, size: 28),
+      ),
+    );
+  }
+
+  Widget _buildCustomTabs(MeetingState state) {
+    final scheduledCount = state.items.where((e) {
+      final s = e.status.toLowerCase();
+      return s == 'scheduled' || s == 'upcoming';
+    }).length;
+
+    final completedCount = state.items.where((e) {
+      final s = e.status.toLowerCase();
+      return s == 'completed';
+    }).length;
+
+    final cancelledCount = state.items.where((e) {
+      final s = e.status.toLowerCase();
+      return s == 'cancelled' || s == 'canceled';
+    }).length;
+
+    String formatCount(int count) {
+      return count.toString().padLeft(2, '0');
+    }
+
+    return Row(
+      children: [
+        _buildTabItem(
+          index: 0,
+          icon: Icons.calendar_today_rounded,
+          label: 'Scheduled',
+          count: formatCount(scheduledCount),
+          isSelected: _tc.index == 0,
+        ),
+        const SizedBox(width: 6),
+        _buildTabItem(
+          index: 1,
+          icon: Icons.check_circle_outline_rounded,
+          label: 'Completed',
+          count: formatCount(completedCount),
+          isSelected: _tc.index == 1,
+        ),
+        const SizedBox(width: 6),
+        _buildTabItem(
+          index: 2,
+          icon: Icons.cancel_outlined,
+          label: 'Canceled',
+          count: formatCount(cancelledCount),
+          isSelected: _tc.index == 2,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabItem({
+    required int index,
+    required IconData icon,
+    required String label,
+    required String count,
+    required bool isSelected,
+  }) {
+    final activeBgColor = const Color(0xFFE5F2FF);
+    final activeBorderColor = const Color(0xFF2E8EFF);
+    final inactiveBorderColor = const Color(0xFFE2E8F0);
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          _tc.animateTo(index);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          decoration: BoxDecoration(
+            color: isSelected ? activeBgColor : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? activeBorderColor : inactiveBorderColor,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+              ),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2E8EFF),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  count,
+                  style: GoogleFonts.poppins(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
+      ),
+    );
+  }
+
+  Widget _buildDateHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            _formatSelectedDateHeader(_selectedDate),
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          const SizedBox(width: 6),
+          const Icon(
+            Icons.calendar_today_rounded,
+            size: 14,
+            color: Colors.black54,
+          ),
+          const SizedBox(width: 4),
+          const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 16,
+            color: Colors.black54,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateScroller() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedDate = _selectedDate.subtract(const Duration(days: 1));
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 12,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(5, (index) {
+                  final dayDate = _selectedDate.add(Duration(days: index - 2));
+                  final isSelected = _filterDate != null &&
+                      dayDate.year == _filterDate!.year &&
+                      dayDate.month == _filterDate!.month &&
+                      dayDate.day == _filterDate!.day;
+                  final isHighlighted = isSelected || (_filterDate == null && index == 2);
+
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (_filterDate != null &&
+                              dayDate.year == _filterDate!.year &&
+                              dayDate.month == _filterDate!.month &&
+                              dayDate.day == _filterDate!.day) {
+                            _filterDate = null;
+                          } else {
+                            _filterDate = dayDate;
+                            _selectedDate = dayDate;
+                          }
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: isHighlighted ? const Color(0xFF2E8EFF) : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isHighlighted ? const Color(0xFF2E8EFF) : Colors.grey.shade200,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${dayDate.day}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: isHighlighted ? Colors.white : Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${_formatMonthNameShort(dayDate)} ${dayDate.year}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                                color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _formatWeekday(dayDate.weekday),
+                              style: GoogleFonts.poppins(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                                color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedDate = _selectedDate.add(const Duration(days: 1));
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 12,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -228,14 +501,28 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   Widget _list(MeetingState state, String status) {
     final items = state.items.where((e) {
       final s = e.status.toLowerCase();
-      if (status.toLowerCase() == 'cancelled') {
-        return s == 'cancelled' || s == 'canceled';
+      bool statusMatches = false;
+      if (status.toLowerCase() == 'scheduled') {
+        statusMatches = (s == 'scheduled' || s == 'upcoming');
+      } else if (status.toLowerCase() == 'cancelled') {
+        statusMatches = (s == 'cancelled' || s == 'canceled');
+      } else {
+        statusMatches = (s == status.toLowerCase());
       }
-      return s == status.toLowerCase();
+
+      if (!statusMatches) return false;
+
+      if (_filterDate != null) {
+        return e.startDate.year == _filterDate!.year &&
+            e.startDate.month == _filterDate!.month &&
+            e.startDate.day == _filterDate!.day;
+      }
+      return true;
     }).toList();
+
     if (items.isEmpty) {
       return RefreshIndicator(
-        color: AppColors.primary,
+        color: const Color(0xFF2E8EFF),
         onRefresh: () async =>
             context.read<MeetingBloc>().add(MeetingFetched()),
         child: ListView(
@@ -250,17 +537,17 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                     width: 70,
                     height: 70,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.08),
+                      color: const Color(0xFF2E8EFF).withOpacity(0.08),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: AppColors.primary.withOpacity(0.2),
+                        color: const Color(0xFF2E8EFF).withOpacity(0.2),
                       ),
                     ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        'assets/svgs/meetings.svg',
-                        width: 32,
-                        height: 32,
+                    child: const Center(
+                      child: Icon(
+                        Icons.event_busy_rounded,
+                        size: 32,
+                        color: Color(0xFF2E8EFF),
                       ),
                     ),
                   ),
@@ -270,7 +557,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
-                      color: AppColors.primary,
+                      color: const Color(0xFF2E8EFF),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -289,15 +576,15 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       );
     }
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: const Color(0xFF2E8EFF),
       onRefresh: () async => context.read<MeetingBloc>().add(MeetingFetched()),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: responsiveListPadding(context),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, __) => const SizedBox(height: 4),
         itemBuilder: (context, i) => TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: 1),
+          tween: Tween<double>(begin: 0.0, end: 1.0),
           duration: Duration(milliseconds: 150 + i * 40),
           builder: (_, v, child) => Opacity(
             opacity: v,
@@ -313,241 +600,267 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   }
 
   Widget _card(BuildContext context, MeetingModel m) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    final dt = m.startDate.toLocal();
-    final timeStr =
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    final isFollowUp = _isFollowUpMeeting(m);
+    final timeStr = _formatTimeRange(m.startDate, m.endDate);
+    final dateStr = _formatDate(m.startDate);
 
-    Color typeColor;
-    IconData typeIcon;
-    switch (m.meetingType.toLowerCase()) {
-      case 'call':
-        typeColor = AppColors.stageNew;
-        typeIcon = Icons.phone_rounded;
-        break;
-      case 'visit':
-        typeColor = AppColors.stageNegotiation;
-        typeIcon = Icons.location_on_rounded;
-        break;
-      case 'demo':
-        typeColor = AppColors.stageInterested;
-        typeIcon = Icons.present_to_all_rounded;
-        break;
-      default:
-        typeColor = AppColors.stageFollowUp;
-        typeIcon = Icons.event_rounded;
+    final isOnline = m.attendanceMode.toLowerCase().contains('online') ||
+        m.onlineUrl != null ||
+        m.meetingLink != null;
+
+    Color statusBgColor;
+    Color statusTextColor;
+    String statusLabel = m.status.toLowerCase();
+
+    if (m.status.toLowerCase() == 'scheduled' || m.status.toLowerCase() == 'upcoming') {
+      statusBgColor = const Color(0xFFE5F2FF);
+      statusTextColor = const Color(0xFF2E8EFF);
+      statusLabel = 'upcoming';
+    } else if (m.status.toLowerCase() == 'completed') {
+      statusBgColor = const Color(0xFFE8F5E9);
+      statusTextColor = const Color(0xFF2EC4AC);
+      statusLabel = 'Completed';
+    } else {
+      statusBgColor = const Color(0xFFFFEBEE);
+      statusTextColor = const Color(0xFFE53935);
+      statusLabel = 'Canceled';
     }
 
-    return InkWell(
-      onTap: () async {
-        final result = await Navigator.pushNamed(
-          context,
-          AppRoutes.meetingDetail,
-          arguments: m.id,
-        );
-        if (!context.mounted) return;
+    final isScheduledTab = _tc.index == 0;
 
-        if (result is String) {
-          final normalized = result.toLowerCase();
-          if (normalized == 'completed') {
-            _tc.animateTo(1);
-          } else if (normalized == 'cancelled' || normalized == 'canceled') {
-            _tc.animateTo(2);
-          } else {
-            _tc.animateTo(0);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      child: GestureDetector(
+        onTap: () async {
+          final result = await Navigator.pushNamed(
+            context,
+            AppRoutes.meetingDetail,
+            arguments: m.id,
+          );
+          if (!context.mounted) return;
+
+          if (result is String) {
+            final normalized = result.toLowerCase();
+            if (normalized == 'completed') {
+              _tc.animateTo(1);
+            } else if (normalized == 'cancelled' || normalized == 'canceled') {
+              _tc.animateTo(2);
+            } else {
+              _tc.animateTo(0);
+            }
           }
-        }
-        context.read<MeetingBloc>().add(MeetingFetched());
-      },
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 80),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // ── Date badge ──
-              Container(
-                width: 74,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      '${dt.day}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    Text(
-                      months[dt.month - 1],
-                      style: GoogleFonts.poppins(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
+          context.read<MeetingBloc>().add(MeetingFetched());
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: Offset.zero,
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        _meetingTitle(m),
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          color: AppColors.primary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+            ],
+          ),
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE5F2FF),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        isOnline ? Icons.videocam_rounded : Icons.business_rounded,
+                        size: 30,
+                        color: const Color(0xFF2E8EFF),
                       ),
-                      const SizedBox(height: 4),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _meetingTitle(m),
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: const Color(0xFF2E8EFF),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                              child: const Icon(
+                                Icons.person_rounded,
+                                size: 12,
+                                color: Color(0xFF2E8EFF),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              m.contactName ?? 'Admin',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF2E8EFF),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              isOnline ? 'Online' : 'Offline',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
                       Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today_rounded,
+                            size: 11,
+                            color: Colors.black54,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            dateStr,
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(
                             Icons.access_time_rounded,
-                            size: 13,
-                            color: AppColors.primary.withOpacity(0.5),
+                            size: 11,
+                            color: Colors.black54,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             timeStr,
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(
-                            Icons.videocam_rounded,
-                            size: 13,
-                            color: AppColors.primary.withOpacity(0.5),
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              m.attendanceMode.trim().isEmpty
-                                  ? '-'
-                                  : m.attendanceMode,
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 10, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: typeColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: typeColor.withOpacity(0.25)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(typeIcon, size: 11, color: typeColor),
-                          const SizedBox(width: 4),
-                          Text(
-                            m.meetingType,
-                            style: GoogleFonts.poppins(
                               fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              color: typeColor,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    if (isFollowUp) ...[
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
+                          horizontal: 10,
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.stageInterested.withOpacity(0.10),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
-                            color: AppColors.stageInterested.withOpacity(0.30),
-                          ),
+                          color: statusBgColor,
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          'Follow up',
+                          statusLabel,
                           style: GoogleFonts.poppins(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.stageInterested,
+                            color: statusTextColor,
                           ),
                         ),
                       ),
                     ],
-                    const Spacer(),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      size: 18,
-                      color: AppColors.primary.withOpacity(0.4),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+              if (isScheduledTab && isOnline) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: FilledButton(
+                    onPressed: () {
+                      final url = m.onlineUrl ?? m.meetingLink;
+                      if (url != null && url.isNotEmpty) {
+                        // Action to launch meeting URL
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'No meeting link available',
+                              style: GoogleFonts.poppins(fontSize: 13),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF2E8EFF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.videocam_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Join Now',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
