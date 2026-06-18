@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/features/auth/presentation/bloc/auth_bloc.dart';
@@ -25,7 +24,6 @@ class AddInquiryScreen extends StatefulWidget {
 class _AddInquiryScreenState extends State<AddInquiryScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers — match API: name, email, phone, companyName, message, source, sourceId, website, city, address, course, location, inquiryStatus, value, branchId
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
@@ -76,7 +74,6 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
         ? statusOptions.first
         : _inquiryStatus;
 
-    // Branch Managers are locked to their own branch
     final isMgr = RoleGuard.isBranchManager(role);
     if (isMgr && _branchId == null && myBranch.isNotEmpty) {
       _branchId = myBranch;
@@ -110,67 +107,41 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
+          backgroundColor: const Color(0xFF2E8EFF),
           elevation: 0,
           toolbarHeight: 64,
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back_ios_new_rounded,
               color: Colors.white,
-              size: 20,
+              size: 22,
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'New Enquiry',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Fill in enquiry details',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: SvgPicture.asset(
-                'assets/svgs/Enquiries.svg',
-                width: 26,
-                height: 26,
-              ),
+          title: Text(
+            'New Enquiry',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              color: Colors.white,
             ),
-          ],
+          ),
         ),
-
         body: ResponsiveConstraint(
           child: SingleChildScrollView(
             padding: EdgeInsets.fromLTRB(
               responsiveHorizontalPadding(context),
-              10,
+              16,
               responsiveHorizontalPadding(context),
-              10,
+              24,
             ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // ════════════════════════════════
-                  // SECTION 1 — Contact Info (API fields)
-                  // ════════════════════════════════
                   _section('Contact Info', Icons.person_outline_rounded, [
                     _field(
                       'Full Name *',
@@ -185,16 +156,16 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       'e.g. rahul@example.com',
                       Icons.email_outlined,
                       _emailCtrl,
-                      keyboard: TextInputType.emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       validator: Validators.email,
                     ),
                     const SizedBox(height: 14),
                     _field(
                       'Phone *',
-                      '9876543210',
+                      '9876555321',
                       Icons.phone_outlined,
                       _phoneCtrl,
-                      keyboard: TextInputType.phone,
+                      keyboardType: TextInputType.phone,
                       validator: Validators.phone10,
                     ),
                     const SizedBox(height: 14),
@@ -219,14 +190,10 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       _addressCtrl,
                     ),
                   ]),
-                  const SizedBox(height: 14),
-
-                  // ════════════════════════════════
-                  // SECTION 2 — Enquiry Details (API fields)
-                  // ════════════════════════════════
+                  const SizedBox(height: 16),
                   _section('Enquiry Details', Icons.info_outline_rounded, [
                     _label('Source'),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     _dropdownField<String>(
                       value: _source,
                       icon: Icons.alt_route_outlined,
@@ -253,7 +220,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       'https://example.com',
                       Icons.language_outlined,
                       _websiteCtrl,
-                      keyboard: TextInputType.url,
+                      keyboardType: TextInputType.url,
                     ),
                     const SizedBox(height: 14),
                     _field(
@@ -271,14 +238,15 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                     ),
                     const SizedBox(height: 14),
                     _label('Inquiry Status'),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     _dropdownField<String>(
                       value: effectiveStatus,
                       icon: Icons.flag_outlined,
                       items: statusOptions.isEmpty ? ['—'] : statusOptions,
                       onChanged: (v) {
-                        if (statusOptions.isNotEmpty)
+                        if (statusOptions.isNotEmpty) {
                           setState(() => _inquiryStatus = v ?? effectiveStatus);
+                        }
                       },
                     ),
                     const SizedBox(height: 14),
@@ -287,11 +255,11 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       'e.g. 15000',
                       Icons.currency_rupee_rounded,
                       _valueCtrl,
-                      keyboard: TextInputType.number,
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 14),
                     _label('Branch'),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     if (isMgr || branches.isEmpty)
                       _lockedBranch(
                         auth.user != null && auth.user!.branchName.isNotEmpty
@@ -301,20 +269,16 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                     else
                       _dropdownField<String>(
                         value: _branchId,
-                        icon: Icons.account_tree_outlined,
+                        icon: Icons.accessibility_new_outlined,
                         items: branches.map((b) => b.id).toList(),
                         labels: branches.map((b) => b.name).toList(),
                         onChanged: (v) => setState(() => _branchId = v),
                       ),
                   ]),
-                  const SizedBox(height: 14),
-
-                  // ════════════════════════════════
-                  // SECTION 3 — Message
-                  // ════════════════════════════════
+                  const SizedBox(height: 16),
                   _section('Message', Icons.message_outlined, [
                     _label('Message'),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     _textArea(_msgCtrl, 'e.g. Interested in SAP Training', 3),
                   ]),
                 ],
@@ -322,78 +286,85 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
             ),
           ),
         ),
-
-        // ── Bottom bar ──
         bottomNavigationBar: BlocBuilder<InquiryBloc, InquiryState>(
           buildWhen: (p, c) => c.actionStatus != p.actionStatus,
           builder: (context, state) {
             final loading = state.actionStatus == AppStatus.loading;
             return Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: AppColors.primary.withOpacity(0.15)),
-                ),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: loading ? null : () => Navigator.pop(context),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(0, 50),
-                        foregroundColor: AppColors.primary,
-                        side: const BorderSide(
-                          color: AppColors.primary,
-                          width: 1.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: Text(
-                        'Cancel',
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      height: 50,
-                      child: FilledButton(
-                        onPressed: loading ? null : _save,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          disabledBackgroundColor: Colors.grey.shade300,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: loading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                'Save Enquiry',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                    ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
                   ),
                 ],
+              ),
+              child: SafeArea(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: loading ? null : () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(0, 50),
+                          foregroundColor: const Color(0xFF2E8EFF),
+                          side: const BorderSide(
+                            color: Color(0xFF2E8EFF),
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        height: 50,
+                        child: FilledButton(
+                          onPressed: loading ? null : _save,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E8EFF),
+                            disabledBackgroundColor: Colors.grey.shade300,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: loading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Save Enquiry',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -402,7 +373,6 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     );
   }
 
-  // ── Save ──────────────────────────────────────────────────────────────────
   void _save() {
     if (_formKey.currentState?.validate() != true) return;
     final valueStr = _valueCtrl.text.trim();
@@ -445,8 +415,6 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     );
   }
 
-  // ── Widgets ───────────────────────────────────────────────────────────────
-
   SnackBar _snack(String msg, Color color) => SnackBar(
     content: Text(
       msg,
@@ -464,7 +432,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary, width: 1),
+        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,20 +440,20 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8),
+                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 14, color: AppColors.primary),
+                child: Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
               ),
             ],
@@ -501,9 +469,8 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     text,
     style: GoogleFonts.poppins(
       fontSize: 12,
-      fontWeight: FontWeight.w600,
-      color: Colors.grey.shade500,
-      letterSpacing: 0.3,
+      fontWeight: FontWeight.w500,
+      color: Colors.black87,
     ),
   );
 
@@ -512,19 +479,19 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     String hint,
     IconData icon,
     TextEditingController ctrl, {
-    TextInputType? keyboard,
+    TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _label(label),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         TextFormField(
           controller: ctrl,
-          keyboardType: keyboard,
+          keyboardType: keyboardType,
           validator: validator,
-          style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary),
+          style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
           decoration: _inputDeco(hint, icon),
         ),
       ],
@@ -535,30 +502,46 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     return TextFormField(
       controller: ctrl,
       maxLines: lines,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary),
+      style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.poppins(
           fontSize: 13,
           color: Colors.grey.shade400,
         ),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
+          child: Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.topCenter,
+            decoration: BoxDecoration(
+              color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Icon(Icons.edit_outlined, size: 18, color: Color(0xFF2E8EFF)),
+            ),
+          ),
+        ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 14,
-          horizontal: 16,
+          horizontal: 14,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
         ),
       ),
     );
@@ -573,7 +556,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
   }) {
     return DropdownButtonFormField<T>(
       value: value,
-      style: GoogleFonts.poppins(fontSize: 14, color: AppColors.primary),
+      style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
       decoration: _inputDeco('', icon),
       items: items.asMap().entries.map((e) {
         final label = labels != null ? labels[e.key] : e.value.toString();
@@ -581,7 +564,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
       }).toList(),
       onChanged: onChanged,
       dropdownColor: Colors.white,
-      iconEnabledColor: AppColors.primary,
+      iconEnabledColor: const Color(0xFF003055),
     );
   }
 
@@ -589,31 +572,40 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        color: const Color(0xFF2E8EFF).withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.account_tree_outlined,
-            size: 18,
-            color: AppColors.primary.withOpacity(0.5),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.accessibility_new_outlined,
+                size: 18,
+                color: Color(0xFF2E8EFF),
+              ),
+            ),
           ),
-          const SizedBox(width: 12),
           Text(
             name?.isNotEmpty == true ? name! : 'My Branch',
             style: GoogleFonts.poppins(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
             ),
           ),
           const Spacer(),
           Icon(
             Icons.lock_outline_rounded,
             size: 14,
-            color: AppColors.primary.withOpacity(0.4),
+            color: const Color(0xFF2E8EFF).withValues(alpha: 0.4),
           ),
         ],
       ),
@@ -623,29 +615,38 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
   InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
     hintText: hint,
     hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade400),
-    prefixIcon: Icon(icon, size: 18, color: AppColors.primary.withOpacity(0.5)),
+    prefixIcon: Padding(
+      padding: const EdgeInsets.all(6),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, size: 18, color: const Color(0xFF2E8EFF)),
+      ),
+    ),
     filled: true,
     fillColor: Colors.white,
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.error),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.red, width: 1.5),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+      borderRadius: BorderRadius.circular(10),
+      borderSide: const BorderSide(color: Colors.red, width: 1.5),
     ),
   );
 }

@@ -94,117 +94,9 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           final canSubmit = note.isNotEmpty;
           return Container(
             padding: EdgeInsets.only(
-              left: 10,
-              right: 10,
-              top: 10,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 10,
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Change status to $newStatus',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: noteController,
-                    maxLines: 2,
-                    onChanged: (_) => setModalState(() {}),
-                    decoration: InputDecoration(
-                      hintText: 'Remark (required)',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 10,
-                      ),
-                    ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty)
-                        return 'Remark is required';
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: Text(
-                            'Cancel',
-                            style: GoogleFonts.poppins(
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: FilledButton(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: canSubmit
-                                ? AppColors.primary
-                                : Colors.grey.shade400,
-                          ),
-                          onPressed: canSubmit
-                              ? () {
-                                  if (formKey.currentState?.validate() ??
-                                      true) {
-                                    onSubmitted(noteController.text.trim());
-                                    Navigator.pop(ctx);
-                                  }
-                                }
-                              : null,
-                          child: Text(
-                            'Save status',
-                            style: GoogleFonts.poppins(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _showFollowUpBottomSheet(BuildContext context, String leadId) {
-    final noteController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-    String type = 'call';
-    String priority = 'High';
-    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
-    TimeOfDay selectedTime = const TimeOfDay(hour: 10, minute: 0);
-
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setModalState) {
-          return Container(
-            padding: EdgeInsets.only(
-              left: 10,
-              right: 10,
-              top: 10,
+              left: 20,
+              right: 20,
+              top: 12,
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
             decoration: const BoxDecoration(
@@ -222,181 +114,436 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                        color: Colors.grey.shade400,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Schedule Follow-up',
+                    'Change status to $newStatus',
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: noteController,
+                    maxLines: 3,
+                    onChanged: (_) => setModalState(() {}),
+                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'Remark (required)',
+                      hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                      filled: true,
+                      fillColor: const Color(0xFFF2F6FE),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+                      ),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty)
+                        return 'Remark is required';
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
-                   DropdownButtonFormField<String>(
-                    value: type,
-                    iconEnabledColor: const Color(0xFF2E8EFF),
-                    decoration: InputDecoration(
-                      labelText: 'Type',
-                      prefixIcon: const Icon(
-                        Icons.category_rounded,
-                        color: Color(0xFF2E8EFF),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    items: const ['call', 'meeting', 'email', 'note']
-                        .map(
-                          (t) => DropdownMenuItem(
-                            value: t,
-                            child: Text(t.toUpperCase()),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (v) => setModalState(() => type = v ?? 'call'),
-                  ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    value: priority,
-                    iconEnabledColor: const Color(0xFF2E8EFF),
-                    decoration: InputDecoration(
-                      labelText: 'Priority',
-                      prefixIcon: const Icon(
-                        Icons.priority_high_rounded,
-                        color: Color(0xFF2E8EFF),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    items: const ['High', 'Medium', 'Low']
-                        .map((p) => DropdownMenuItem(value: p, child: Text(p)))
-                        .toList(),
-                    onChanged: (v) =>
-                        setModalState(() => priority = v ?? 'High'),
-                  ),
-                  const SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
-                        child: InkWell(
-                          onTap: () async {
-                            final d = await showDatePicker(
-                              context: ctx,
-                              initialDate: selectedDate,
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime.now().add(
-                                const Duration(days: 365),
-                              ),
-                            );
-                            if (d != null)
-                              setModalState(() => selectedDate = d);
-                          },
-                          child: InputDecorator(
-                            decoration: InputDecoration(
-                              labelText: 'Date',
-                              prefixIcon: const Icon(
-                                Icons.calendar_today_rounded,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF2E8EFF)),
+                            minimumSize: const Size(0, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(
-                              '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                              style: GoogleFonts.poppins(fontSize: 14),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: InkWell(
-                          onTap: () async {
-                            final t = await showTimePicker(
-                              context: ctx,
-                              initialTime: selectedTime,
-                            );
-                            if (t != null)
-                              setModalState(() => selectedTime = t);
-                          },
-                          child: InputDecorator(
-                            decoration: InputDecoration(
-                              labelText: 'Time',
-                              prefixIcon: const Icon(Icons.access_time_rounded),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                        child: FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: canSubmit
+                                ? const Color(0xFF2E8EFF)
+                                : Colors.grey.shade400,
+                            minimumSize: const Size(0, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(
-                              selectedTime.format(ctx),
-                              style: GoogleFonts.poppins(fontSize: 14),
+                          ),
+                          onPressed: canSubmit
+                              ? () {
+                                  if (formKey.currentState?.validate() ??
+                                      true) {
+                                    onSubmitted(noteController.text.trim());
+                                    Navigator.pop(ctx);
+                                  }
+                                }
+                              : null,
+                          child: Text(
+                            'Save status',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: noteController,
-                    maxLines: 2,
-                    decoration: InputDecoration(
-                      hintText: 'Notes...',
-                      prefixIcon: const Icon(Icons.note_rounded),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    validator: (v) => v == null || v.trim().isEmpty
-                        ? 'Note is required'
-                        : null,
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: () {
-                      if (formKey.currentState?.validate() ?? false) {
-                        final scheduled = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          selectedTime.hour,
-                          selectedTime.minute,
-                        );
-                        context.read<FollowUpBloc>().add(
-                          FollowUpCreated(
-                            leadId: leadId,
-                            title: 'Follow up ${type.toUpperCase()}',
-                            description: noteController.text.trim(),
-                            priority: priority,
-                            dueDate: scheduled.toUtc().toIso8601String(),
-                          ),
-                        );
-                        Navigator.pop(ctx);
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      minimumSize: const Size(0, 52),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      'SCHEDULE',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showFollowUpBottomSheet(BuildContext context, String leadId) {
+    final noteController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    String type = 'Call';
+    String priority = 'High';
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
+    TimeOfDay selectedTime = const TimeOfDay(hour: 10, minute: 0);
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          return Container(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 12,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Schedule Follow-Up',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF2E8EFF),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Type',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    DropdownButtonFormField<String>(
+                      initialValue: type,
+                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                      decoration: InputDecoration(
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.call_merge_rounded,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                      ),
+                      items: const ['Call', 'Meeting', 'Email', 'Note']
+                          .map((t) => DropdownMenuItem(
+                                value: t,
+                                child: Text(t, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
+                              ))
+                          .toList(),
+                      onChanged: (v) => setModalState(() => type = v ?? 'Call'),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Priority',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    DropdownButtonFormField<String>(
+                      initialValue: priority,
+                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                      decoration: InputDecoration(
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.priority_high_rounded,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                      ),
+                      items: const ['High', 'Medium', 'Low']
+                          .map((p) => DropdownMenuItem(
+                                value: p, 
+                                child: Text(p, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
+                              ))
+                          .toList(),
+                      onChanged: (v) => setModalState(() => priority = v ?? 'High'),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              final d = await showDatePicker(
+                                context: ctx,
+                                initialDate: selectedDate,
+                                firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                              );
+                              if (d != null) setModalState(() => selectedDate = d);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE8ECF3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF2F6FE),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.calendar_today_rounded,
+                                      color: Color(0xFF2E8EFF),
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              final t = await showTimePicker(
+                                context: ctx,
+                                initialTime: selectedTime,
+                              );
+                              if (t != null) setModalState(() => selectedTime = t);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE8ECF3)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF2F6FE),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.access_time_filled_rounded, // or access_time
+                                      color: Color(0xFF2E8EFF),
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    selectedTime.format(ctx),
+                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: noteController,
+                      maxLines: 2,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Notes',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.assignment_outlined,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                      ),
+                      validator: (v) => v == null || v.trim().isEmpty ? 'Note is required' : null,
+                    ),
+                    const SizedBox(height: 32),
+                    FilledButton(
+                      onPressed: () {
+                        if (formKey.currentState?.validate() ?? false) {
+                          final scheduled = DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            selectedTime.hour,
+                            selectedTime.minute,
+                          );
+                          context.read<FollowUpBloc>().add(
+                            FollowUpCreated(
+                              leadId: leadId,
+                              title: 'Follow up ${type.toUpperCase()}',
+                              description: noteController.text.trim(),
+                              priority: priority,
+                              dueDate: scheduled.toUtc().toIso8601String(),
+                            ),
+                          );
+                          Navigator.pop(ctx);
+                        }
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E8EFF),
+                        minimumSize: const Size(0, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Schedule',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -676,76 +823,127 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                         )
                                         .firstOrNull ??
                                     item.stage;
-                                return DropdownButtonFormField<String>(
-                                  value: options.contains(value)
-                                      ? value
-                                      : (options.isNotEmpty
-                                            ? options.first
-                                            : value),
-                                  iconEnabledColor: const Color(0xFF2E8EFF),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    color: const Color(0xFF2E8EFF),
-                                  ),
-                                  decoration: InputDecoration(
-                                    prefixIcon: const Icon(
-                                      Icons.flag_rounded,
-                                      size: 18,
-                                      color: Color(0xFF2E8EFF),
-                                    ),
-                                    labelText: 'Current Stage',
-                                    labelStyle: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 10,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        color: Color(0xFF2E8EFF),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        color: Color(0xFF2E8EFF),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
-                                        color: Color(0xFF2E8EFF),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                  ),
-                                  items: options
-                                      .map(
-                                        (s) => DropdownMenuItem(
-                                          value: s,
-                                          child: Text(
-                                            s,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  dropdownColor: Colors.white,
-                                  onChanged: stageNames.isEmpty
+                                final finalValue = options.contains(value)
+                                    ? value
+                                    : (options.isNotEmpty ? options.first : value);
+                                return GestureDetector(
+                                  onTap: stageNames.isEmpty
                                       ? null
-                                      : (val) => _onStatusChanged(item, val),
+                                      : () {
+                                          showModalBottomSheet(
+                                            context: context,
+                                            backgroundColor: Colors.white,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                            ),
+                                            builder: (BuildContext ctx) {
+                                              return Container(
+                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            'Select Current Stage',
+                                                            style: GoogleFonts.poppins(
+                                                              fontSize: 16,
+                                                              fontWeight: FontWeight.w600,
+                                                              color: Colors.black,
+                                                            ),
+                                                          ),
+                                                          IconButton(
+                                                            icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                                                            onPressed: () => Navigator.pop(ctx),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    const Divider(),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        itemCount: options.length,
+                                                        itemBuilder: (context, index) {
+                                                          final s = options[index];
+                                                          final isSelected = s == finalValue;
+                                                          return ListTile(
+                                                            leading: Icon(
+                                                              Icons.flag_rounded,
+                                                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+                                                            ),
+                                                            title: Text(
+                                                              s,
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                                                color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                                                              ),
+                                                            ),
+                                                            trailing: isSelected
+                                                                ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                                                                : null,
+                                                            onTap: () {
+                                                              Navigator.pop(ctx);
+                                                              _onStatusChanged(item, s);
+                                                            },
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.flag_rounded,
+                                        size: 18,
+                                        color: Color(0xFF2E8EFF),
+                                      ),
+                                      suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF2E8EFF)),
+                                      labelText: 'Current Stage',
+                                      labelStyle: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 10,
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF2E8EFF),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF2E8EFF),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      finalValue,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: const Color(0xFF2E8EFF),
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 );
                               },
                             ),

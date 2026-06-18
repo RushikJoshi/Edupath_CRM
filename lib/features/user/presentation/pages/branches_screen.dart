@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/features/branch/presentation/bloc/branch_bloc.dart';
@@ -20,14 +19,25 @@ class BranchesScreen extends StatefulWidget {
 }
 
 class _BranchesScreenState extends State<BranchesScreen> {
+  final _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     context.read<BranchBloc>().add(BranchFetched());
+    _searchController.addListener(_onSearchChanged);
   }
 
-  // ── Add Branch dialog ───────────────────────────────────────────────────────
+  void _onSearchChanged() {
+    setState(() {});
+  }
 
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
   void _showAddBranchDialog() {
     final formKey = GlobalKey<FormState>();
     final nameCtrl = TextEditingController();
@@ -36,18 +46,19 @@ class _BranchesScreenState extends State<BranchesScreen> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
                 Icons.add_business_rounded,
-                color: AppColors.primary,
+                color: Color(0xFF2E8EFF),
                 size: 20,
               ),
             ),
@@ -57,7 +68,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: AppColors.primary,
+                color: const Color(0xFF2E8EFF),
               ),
             ),
           ],
@@ -69,12 +80,126 @@ class _BranchesScreenState extends State<BranchesScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildField(nameCtrl, 'Branch Name', Icons.business_rounded),
-                const SizedBox(height: 12),
-                _buildField(
-                  locationCtrl,
-                  'Location',
-                  Icons.location_on_outlined,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x40000000),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                        offset: Offset.zero,
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: nameCtrl,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Enter branch name',
+                      hintStyle: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.grey.shade400,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.business_rounded,
+                        size: 18,
+                        color: Colors.black54,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                    ),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Branch Name is required' : null,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x40000000),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                        offset: Offset.zero,
+                      ),
+                    ],
+                  ),
+                  child: TextFormField(
+                    controller: locationCtrl,
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Enter location',
+                      hintStyle: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.grey.shade400,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.location_on_outlined,
+                        size: 18,
+                        color: Colors.black54,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                    ),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Location is required' : null,
+                  ),
                 ),
               ],
             ),
@@ -91,7 +216,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
           BlocBuilder<BranchBloc, BranchState>(
             builder: (_, state) => FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: const Color(0xFF2E8EFF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -129,35 +254,6 @@ class _BranchesScreenState extends State<BranchesScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildField(TextEditingController ctrl, String label, IconData icon) {
-    return TextFormField(
-      controller: ctrl,
-      style: GoogleFonts.poppins(fontSize: 14),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: GoogleFonts.poppins(
-          fontSize: 13,
-          color: Colors.grey.shade600,
-        ),
-        prefixIcon: Icon(
-          icon,
-          size: 18,
-          color: AppColors.primary.withOpacity(0.6),
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
-        ),
-      ),
-      validator: (v) => (v == null || v.isEmpty) ? '$label is required' : null,
     );
   }
 
@@ -205,205 +301,280 @@ class _BranchesScreenState extends State<BranchesScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
 
         // ── AppBar ──────────────────────────────────────────────────────────
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
+          backgroundColor: const Color(0xFF2E8EFF),
           elevation: 0,
-          toolbarHeight: 64,
           leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(
               Icons.arrow_back_ios_new_rounded,
               color: Colors.white,
-              size: 20,
+              size: 22,
             ),
-            onPressed: () => Navigator.pop(context),
           ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Branch Management',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Manage office branches',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-            ],
+          title: Text(
+            'Branch Management',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
           ),
           actions: [
             IconButton(
-              tooltip: 'Refresh',
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: const Icon(
+                Icons.refresh_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
               onPressed: () => context.read<BranchBloc>().add(BranchFetched()),
             ),
-            Container(
-              margin: const EdgeInsets.only(right: 16),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.account_tree_rounded,
-                    color: Colors.white,
-                    size: 15,
-                  ),
-                  const SizedBox(width: 5),
-                  BlocBuilder<BranchBloc, BranchState>(
-                    builder: (_, state) => Text(
-                      '${state.items.length} Branches',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const SizedBox(width: 8),
           ],
         ),
 
         // ── Body ─────────────────────────────────────────────────────────────
         body: ResponsiveConstraint(
-          child: BlocBuilder<BranchBloc, BranchState>(
-            builder: (context, state) {
-              // Loading
-              if (state.status == AppStatus.loading) {
-                return ShimmerLoading.listPlaceholder();
-              }
+          child: Column(
+            children: [
+              // Search & Branches Count Row
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: BlocBuilder<BranchBloc, BranchState>(
+                  builder: (context, state) {
+                    final query = _searchController.text.toLowerCase().trim();
+                    final filteredBranches = state.items.where((branch) {
+                      return query.isEmpty ||
+                          branch.name.toLowerCase().contains(query) ||
+                          branch.location.toLowerCase().contains(query);
+                    }).toList();
 
-              // Error
-              if (state.status == AppStatus.failure) {
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.cloud_off_rounded,
-                        size: 48,
-                        color: AppColors.error,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        state.errorMessage ?? 'Failed to load branches',
-                        style: GoogleFonts.poppins(
-                          color: AppColors.textSecondary,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      FilledButton.icon(
-                        onPressed: () =>
-                            context.read<BranchBloc>().add(BranchFetched()),
-                        icon: const Icon(Icons.refresh_rounded),
-                        label: Text(
-                          'Retry',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
+                    return Row(
+                      children: [
+                        // Search Bar
+                        Expanded(
+                          child: Container(
+                            height: 46,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x1F000000),
+                                  blurRadius: 4,
+                                  spreadRadius: 0,
+                                  offset: Offset.zero,
+                                ),
+                              ],
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Search...',
+                                hintStyle: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                                prefixIcon: const Icon(
+                                  Icons.search_rounded,
+                                  color: Colors.black,
+                                  size: 22,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 12,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              // Empty
-              if (state.items.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: AppColors.primary.withOpacity(0.2),
+                        const SizedBox(width: 10),
+                        // Branches Badge
+                        Container(
+                          height: 46,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x1F000000),
+                                blurRadius: 4,
+                                spreadRadius: 0,
+                                offset: Offset.zero,
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.account_tree_rounded,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                '${filteredBranches.length} Branches',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        child: const Icon(
-                          Icons.account_tree_rounded,
-                          size: 36,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No branches found',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Tap + to add your first branch',
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.grey.shade500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
+                      ],
+                    );
+                  },
+                ),
+              ),
 
-              // List
-              return ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                itemCount: state.items.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (context, i) =>
-                    _BranchCard(branch: state.items[i], index: i),
-              );
-            },
+              // List/Empty/Error state
+              Expanded(
+                child: BlocBuilder<BranchBloc, BranchState>(
+                  builder: (context, state) {
+                    // Loading
+                    if (state.status == AppStatus.loading && state.items.isEmpty) {
+                      return ShimmerLoading.listPlaceholder();
+                    }
+
+                    // Error
+                    if (state.status == AppStatus.failure && state.items.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.cloud_off_rounded,
+                              size: 48,
+                              color: AppColors.error,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              state.errorMessage ?? 'Failed to load branches',
+                              style: GoogleFonts.poppins(
+                                color: AppColors.textSecondary,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: () =>
+                                  context.read<BranchBloc>().add(BranchFetched()),
+                              icon: const Icon(Icons.refresh_rounded),
+                              label: Text(
+                                'Retry',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    final query = _searchController.text.toLowerCase().trim();
+                    final filteredBranches = state.items.where((branch) {
+                      return query.isEmpty ||
+                          branch.name.toLowerCase().contains(query) ||
+                          branch.location.toLowerCase().contains(query);
+                    }).toList();
+
+                    // Empty
+                    if (filteredBranches.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(
+                                  color: AppColors.primary.withOpacity(0.2),
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.account_tree_rounded,
+                                size: 36,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No branches found',
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              query.isNotEmpty
+                                  ? 'Try refining your search query'
+                                  : 'Tap + to add your first branch',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    // List
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                      itemCount: filteredBranches.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, i) =>
+                          _BranchCard(branch: filteredBranches[i], index: i),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
 
         // ── FAB ──────────────────────────────────────────────────────────────
-        floatingActionButton: InnerShadow(
-          shadows: [
-            BoxShadow(
-              color: Colors.transparent,
-              blurRadius: 10,
-              offset: const Offset(3, 3),
-            ),
-          ],
-          child: FloatingActionButton.extended(
-            heroTag: 'add_branch_fab',
-            onPressed: _showAddBranchDialog,
-            icon: const Icon(Icons.add_business_rounded, color: Colors.white),
-            label: Text(
-              'Add Branch',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: AppColors.primary,
-            elevation: 0,
-          ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'add_branch_fab',
+          onPressed: _showAddBranchDialog,
+          backgroundColor: const Color(0xFF2E8EFF),
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add, color: Colors.white, size: 28),
         ),
       ),
     );
@@ -417,6 +588,279 @@ class _BranchCard extends StatelessWidget {
 
   final BranchModel branch;
   final int index;
+
+  void _showEditDialog(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+    final nameCtrl = TextEditingController(text: branch.name);
+    final locationCtrl = TextEditingController(text: branch.location);
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xFF2E8EFF), width: 1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.edit_outlined,
+                            color: Color(0xFF2E8EFF),
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Edit Branch',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: const Color(0xFF2E8EFF),
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(ctx),
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.black,
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: nameCtrl,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Enter branch name',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: const Icon(
+                          Icons.business_outlined,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                        ),
+                      ),
+                      validator: (v) => (v == null || v.isEmpty) ? 'Branch name is required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: locationCtrl,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Enter location',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: const Icon(
+                          Icons.location_on_outlined,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                        ),
+                      ),
+                      validator: (v) => (v == null || v.isEmpty) ? 'Location is required' : null,
+                    ),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E8EFF),
+                        minimumSize: const Size(0, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        if (formKey.currentState?.validate() ?? false) {
+                          context.read<BranchBloc>().add(
+                            BranchUpdated(branch.id, {
+                              'name': nameCtrl.text.trim(),
+                              'address': locationCtrl.text.trim(),
+                            }),
+                          );
+                          Navigator.pop(ctx);
+                        }
+                      },
+                      child: Text(
+                        'Save',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xFFF44336), width: 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: Color(0xFFF44336),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Delete Branch',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: const Color(0xFF2E8EFF),
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(ctx),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Are you sure you want to delete this branch?',
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFEA4335),
+                  minimumSize: const Size(0, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<BranchBloc>().add(
+                    BranchDeleted(branch.id),
+                  );
+                  Navigator.pop(ctx);
+                },
+                child: Text(
+                  'Delete',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(TextEditingController ctrl, String label, IconData icon) {
+    return TextFormField(
+      controller: ctrl,
+      style: GoogleFonts.poppins(fontSize: 14),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.poppins(
+          fontSize: 13,
+          color: Colors.grey.shade600,
+        ),
+        prefixIcon: Icon(
+          icon,
+          size: 18,
+          color: const Color(0xFF2E8EFF).withOpacity(0.6),
+        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+      ),
+      validator: (v) => (v == null || v.isEmpty) ? '$label is required' : null,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -432,247 +876,190 @@ class _BranchCard extends StatelessWidget {
           child: child,
         ),
       ),
-      child: InnerShadow(
-        shadows: [
-          BoxShadow(
-            color: Colors.transparent,
-            blurRadius: 10,
-            offset: const Offset(2, 2),
-          ),
-        ],
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.primary, width: 1),
-          ),
-          child: Row(
-            children: <Widget>[
-              // Icon badge
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? AppColors.primary.withOpacity(0.08)
-                      : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(13),
-                  border: Border.all(
-                    color: isActive
-                        ? AppColors.primary.withOpacity(0.2)
-                        : Colors.grey.shade300,
-                  ),
-                ),
-                child: Icon(
-                  Icons.business_rounded,
-                  size: 20,
-                  color: isActive ? AppColors.primary : Colors.grey.shade400,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x40000000),
+              blurRadius: 4,
+              spreadRadius: 0,
+              offset: Offset.zero,
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left Building Icon Container
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: const Color(0xFF2E8EFF).withOpacity(0.2),
                 ),
               ),
-              const SizedBox(width: 14),
+              child: const Icon(
+                Icons.business_rounded,
+                size: 22,
+                color: Color(0xFF2E8EFF),
+              ),
+            ),
+            const SizedBox(width: 12),
 
-              // Info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      branch.name,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: AppColors.primary,
+            // Content Column
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title & Action Icons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          branch.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
-                    ),
-                    if (branch.location.isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            size: 12,
-                            color: AppColors.primary.withOpacity(0.5),
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            branch.location,
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 8),
+                      // Action Buttons
+                      GestureDetector(
+                        onTap: () => _showEditDialog(context),
+                        child: const Icon(
+                          Icons.edit_rounded,
+                          size: 18,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () => _showDeleteDialog(context),
+                        child: const Icon(
+                          Icons.delete_rounded,
+                          size: 18,
+                          color: Colors.black87,
+                        ),
                       ),
                     ],
-                    const SizedBox(height: 3),
-                    Row(
-                      children: <Widget>[
-                        if (branch.userCount > 0) ...[
-                          Icon(
+                  ),
+                  const SizedBox(height: 6),
+
+                  // Location Info
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 14,
+                        color: Colors.black54,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          branch.location.isEmpty ? 'No address' : branch.location,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Bottom Row: Users count & Status badge
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Users count
+                      Row(
+                        children: [
+                          const Icon(
                             Icons.people_outline_rounded,
-                            size: 12,
-                            color: AppColors.primary.withOpacity(0.5),
+                            size: 14,
+                            color: Colors.black54,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '${branch.userCount} users',
                             style: GoogleFonts.poppins(
                               fontSize: 12,
-                              color: Colors.grey.shade600,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(width: 10),
                         ],
-                        InkWell(
-                          onTap: () {
-                            context.read<BranchBloc>().add(
-                              BranchStatusToggled(branch.id),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
+                      ),
+
+                      // Status pill badge with dot
+                      GestureDetector(
+                        onTap: () {
+                          context.read<BranchBloc>().add(
+                                BranchStatusToggled(branch.id),
+                              );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? const Color(0xFFE8F5E9)
+                                : const Color(0xFFFFEBEE),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
                               color: isActive
-                                  ? AppColors.stageWon.withOpacity(0.1)
-                                  : Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: isActive
-                                    ? AppColors.stageWon.withOpacity(0.3)
-                                    : Colors.grey.shade300,
-                              ),
-                            ),
-                            child: Text(
-                              isActive ? 'Active' : 'Inactive',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: isActive
-                                    ? AppColors.stageWon
-                                    : Colors.grey.shade400,
-                              ),
+                                  ? const Color(0xFFC8E6C9)
+                                  : const Color(0xFFFFCDD2),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // Action buttons
-              Row(
-                children: <Widget>[
-                  _iconBtn(Icons.edit_rounded, AppColors.primary, () {
-                    final formKey = GlobalKey<FormState>();
-                    final nameCtrl = TextEditingController(text: branch.name);
-                    final locationCtrl = TextEditingController(
-                      text: branch.location,
-                    );
-                    showDialog<void>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Edit Branch'),
-                        content: Form(
-                          key: formKey,
-                          child: Column(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              TextFormField(
-                                controller: nameCtrl,
-                                decoration: const InputDecoration(
-                                  labelText: 'Branch Name',
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: isActive ? Colors.green : Colors.red,
+                                  shape: BoxShape.circle,
                                 ),
-                                validator: (v) =>
-                                    v!.isEmpty ? 'Required' : null,
                               ),
-                              TextFormField(
-                                controller: locationCtrl,
-                                decoration: const InputDecoration(
-                                  labelText: 'Location',
+                              const SizedBox(width: 6),
+                              Text(
+                                isActive ? 'Active' : 'Inactive',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: isActive
+                                      ? Colors.green.shade700
+                                      : Colors.red.shade700,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                context.read<BranchBloc>().add(
-                                  BranchUpdated(branch.id, {
-                                    'name': nameCtrl.text.trim(),
-                                    'address': locationCtrl.text.trim(),
-                                  }),
-                                );
-                                Navigator.pop(ctx);
-                              }
-                            },
-                            child: const Text('Save'),
-                          ),
-                        ],
                       ),
-                    );
-                  }),
-                  const SizedBox(width: 6),
-                  _iconBtn(Icons.delete_rounded, AppColors.error, () {
-                    showDialog<void>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Delete Branch'),
-                        content: const Text(
-                          'Are you sure you want to delete this branch?',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              context.read<BranchBloc>().add(
-                                BranchDeleted(branch.id),
-                              );
-                              Navigator.pop(ctx);
-                            },
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _iconBtn(IconData icon, Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, size: 16, color: color),
       ),
     );
   }

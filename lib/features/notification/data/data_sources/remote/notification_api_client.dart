@@ -17,5 +17,7 @@ abstract class NotificationApiClient {
 
   @PUT(ApiEndpoints.notificationReadAll)
   Future<HttpResponse<dynamic>> markAllNotificationsRead();
+
+
 }
 

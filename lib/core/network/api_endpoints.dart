@@ -5,6 +5,12 @@ class ApiEndpoints {
   );
 
 
+  // Auth Endpoints
+  static const String login = '/api/auth/login';
+  static const String fetchMe = '/api/auth/me';
+  static const String updateProfile = '/api/auth/profile';
+  static const String changePassword = '/api/auth/change-password';
+
   // Users Endpoints
   static const String users = '/api/users';
   static const String userDetail = '/api/users/{id}';
@@ -23,7 +29,6 @@ class ApiEndpoints {
   // Notifications Endpoints
   static const String notifications = '/api/notifications';
   static const String notificationRead = '/api/notifications/{id}/read';
-  //static const String notificationReadAll = '/api/notifications/read-all';
   static const String notificationReadAll = '/api/notifications/all-read';
 
   // Meetings Endpoints

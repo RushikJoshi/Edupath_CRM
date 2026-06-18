@@ -8,6 +8,7 @@ import 'package:gtcrm/features/meeting/data/models/meeting_model.dart';
 
 // Feature Pages
 import 'package:gtcrm/features/user/presentation/pages/branches_screen.dart';
+import 'package:gtcrm/features/user/presentation/pages/add_branch_screen.dart';
 import 'package:gtcrm/features/customer/presentation/pages/add_customer_screen.dart';
 import 'package:gtcrm/features/customer/presentation/pages/customer_detail_screen.dart';
 import 'package:gtcrm/features/customer/presentation/pages/customer_list_screen.dart';
@@ -16,6 +17,7 @@ import 'package:gtcrm/features/deal/presentation/pages/deal_detail_screen.dart';
 import 'package:gtcrm/features/deal/presentation/pages/deal_list_screen.dart';
 import 'package:gtcrm/features/user/presentation/pages/stages_screen.dart';
 import 'package:gtcrm/features/user/presentation/pages/users_screen.dart';
+import 'package:gtcrm/features/user/presentation/pages/add_user_screen.dart';
 import 'package:gtcrm/features/auth/presentation/pages/login_screen.dart';
 import 'package:gtcrm/features/dashboard/presentation/pages/home_screen.dart';
 import 'package:gtcrm/features/inquiry/presentation/pages/add_inquiry_screen.dart';
@@ -60,6 +62,7 @@ class AppRoutes {
   static const users = '/users';
   static const addUser = '/add-user';
   static const branches = '/branches';
+  static const addBranch = '/add-branch';
   static const stages = '/stages';
 
   static const profile = '/profile';
@@ -167,7 +170,7 @@ class AppRoutes {
           return animated(DealDetailScreen(deal: args as DealModel?));
         }
       case addUser:
-        return animated(const UsersScreen());
+        return animated(const AddUserScreen());
       case addMeeting:
         final addArgs = settings.arguments;
         if (addArgs is MeetingModel) {
@@ -187,6 +190,8 @@ class AppRoutes {
         return animated(const UsersScreen());
       case branches:
         return animated(const BranchesScreen());
+      case addBranch:
+        return animated(const AddBranchScreen());
       case stages:
         return animated(const StagesScreen());
       case tasks:

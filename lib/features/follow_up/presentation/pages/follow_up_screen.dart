@@ -64,7 +64,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
   void _showFollowUpBottomSheet(BuildContext context, String leadId) {
     final noteController = TextEditingController();
     final formKey = GlobalKey<FormState>();
-    String type = 'call';
+    String type = 'Call';
     String priority = 'High';
     DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
     TimeOfDay selectedTime = const TimeOfDay(hour: 10, minute: 0);
@@ -77,9 +77,9 @@ class _FollowUpScreenState extends State<FollowUpScreen>
         builder: (ctx, setModalState) {
           return Container(
             padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 16,
+              left: 20,
+              right: 20,
+              top: 12,
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
             decoration: const BoxDecoration(
@@ -98,65 +98,123 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: Colors.grey.shade400,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Schedule Follow-up',
+                      'Schedule Follow-Up',
                       style: GoogleFonts.poppins(
                         fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF2E8EFF),
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Text(
+                      'Type',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
                     DropdownButtonFormField<String>(
                       initialValue: type,
-                      iconEnabledColor: AppColors.primary,
+                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
                       decoration: InputDecoration(
-                        labelText: 'Type',
-                        prefixIcon: const Icon(
-                          Icons.category_rounded,
-                          color: AppColors.primary,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.call_merge_rounded,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
                         ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                       ),
-                      items: const ['call', 'meeting', 'email', 'note']
-                          .map(
-                            (t) => DropdownMenuItem(
-                              value: t,
-                              child: Text(t.toUpperCase()),
-                            ),
-                          )
+                      items: const ['Call', 'Meeting', 'Email', 'Note']
+                          .map((t) => DropdownMenuItem(
+                                value: t,
+                                child: Text(t, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
+                              ))
                           .toList(),
-                      onChanged: (v) => setModalState(() => type = v ?? 'call'),
+                      onChanged: (v) => setModalState(() => type = v ?? 'Call'),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Priority',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
                     DropdownButtonFormField<String>(
                       initialValue: priority,
-                      iconEnabledColor: AppColors.primary,
+                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
                       decoration: InputDecoration(
-                        labelText: 'Priority',
-                        prefixIcon: const Icon(
-                          Icons.priority_high_rounded,
-                          color: AppColors.primary,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.priority_high_rounded,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
                         ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                       ),
                       items: const ['High', 'Medium', 'Low']
-                          .map((p) => DropdownMenuItem(value: p, child: Text(p)))
+                          .map((p) => DropdownMenuItem(
+                                value: p, 
+                                child: Text(p, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
+                              ))
                           .toList(),
-                      onChanged: (v) =>
-                          setModalState(() => priority = v ?? 'High'),
+                      onChanged: (v) => setModalState(() => priority = v ?? 'High'),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
@@ -166,28 +224,36 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                                 context: ctx,
                                 initialDate: selectedDate,
                                 firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                                lastDate: DateTime.now().add(
-                                  const Duration(days: 365),
-                                ),
+                                lastDate: DateTime.now().add(const Duration(days: 365)),
                               );
-                              if (d != null) {
-                                setModalState(() => selectedDate = d);
-                              }
+                              if (d != null) setModalState(() => selectedDate = d);
                             },
-                            child: InputDecorator(
-                              decoration: InputDecoration(
-                                labelText: 'Date',
-                                prefixIcon: const Icon(
-                                  Icons.calendar_today_rounded,
-                                  color: AppColors.primary,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
-                              child: Text(
-                                '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                                style: GoogleFonts.poppins(fontSize: 14),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF2F6FE),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.calendar_today_rounded,
+                                      color: Color(0xFF2E8EFF),
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -200,50 +266,80 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                                 context: ctx,
                                 initialTime: selectedTime,
                               );
-                              if (t != null) {
-                                setModalState(() => selectedTime = t);
-                              }
+                              if (t != null) setModalState(() => selectedTime = t);
                             },
-                            child: InputDecorator(
-                              decoration: InputDecoration(
-                                labelText: 'Time',
-                                prefixIcon: const Icon(
-                                  Icons.access_time_rounded,
-                                  color: AppColors.primary,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
-                              child: Text(
-                                selectedTime.format(ctx),
-                                style: GoogleFonts.poppins(fontSize: 14),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF2F6FE),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: const Icon(
+                                      Icons.access_time_filled_rounded, // or access_time
+                                      color: Color(0xFF2E8EFF),
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    selectedTime.format(ctx),
+                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: noteController,
                       maxLines: 2,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
                       decoration: InputDecoration(
-                        labelText: 'Notes',
-                        hintText: 'Enter description or follow-up details...',
-                        prefixIcon: const Icon(
-                          Icons.note_rounded,
-                          color: AppColors.primary,
+                        hintText: 'Notes',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF2F6FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.assignment_outlined,
+                              color: Color(0xFF2E8EFF),
+                              size: 18,
+                            ),
+                          ),
                         ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                       ),
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Note is required'
-                          : null,
+                      validator: (v) => v == null || v.trim().isEmpty ? 'Note is required' : null,
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     FilledButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
@@ -267,7 +363,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         }
                       },
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: const Color(0xFF2E8EFF),
                         minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -276,8 +372,9 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                       child: Text(
                         'Schedule',
                         style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

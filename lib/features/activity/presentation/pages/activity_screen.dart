@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gtcrm/features/activity/presentation/bloc/activity_bloc.dart';
 import 'package:gtcrm/features/activity/presentation/bloc/activity_event.dart';
 import 'package:gtcrm/features/activity/presentation/bloc/activity_state.dart';
-import 'package:gtcrm/core/constants/app_colors.dart';
 import 'package:gtcrm/core/constants/app_enums.dart';
 import 'package:gtcrm/core/widgets/responsive_wrapper.dart';
 import 'package:gtcrm/core/widgets/shimmer_loading.dart';
@@ -19,6 +18,8 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _ActivityScreenState extends State<ActivityScreen> {
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
@@ -29,157 +30,157 @@ class _ActivityScreenState extends State<ActivityScreen> {
 
   String _formatDate(DateTime dt) {
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final logDay = DateTime(dt.year, dt.month, dt.day);
-    if (logDay == today) {
-      return 'Today ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    final difference = now.difference(dt);
+    if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else {
+      return '${difference.inDays}d ago';
     }
-    final yesterday = today.subtract(const Duration(days: 1));
-    if (logDay == yesterday) {
-      return 'Yesterday ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    }
-    return '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: AppColors.primaryGradient),
-          ),
-        ),
+        backgroundColor: const Color(0xFF2E8EFF),
         elevation: 0,
-        toolbarHeight: 70,
+        toolbarHeight: 64,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
             color: Colors.white,
-            size: 20,
+            size: 22,
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Activity',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              'Track team activity',
-              style: GoogleFonts.poppins(
-                fontSize: 11,
-                color: Colors.white.withOpacity(0.7),
-              ),
-            ),
-          ],
+        title: Text(
+          'Activity',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: Colors.white,
+          ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 14),
-            child: Icon(
-              Icons.history_rounded,
-              size: 28,
-              color: Colors.white.withOpacity(0.8),
+          IconButton(
+            icon: const Icon(
+              Icons.refresh_rounded,
+              color: Colors.white,
+              size: 26,
             ),
+            onPressed: () {
+              context.read<ActivityBloc>().add(
+                const ActivitiesTimelineFetched(type: 'meeting'),
+              );
+            },
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: ResponsiveConstraint(
-        child: BlocBuilder<ActivityBloc, ActivityState>(
-          buildWhen: (prev, curr) =>
-              prev.status != curr.status || prev.items != curr.items,
-          builder: (context, state) {
-            if (state.status == AppStatus.loading && state.items.isEmpty) {
-              return ShimmerLoading.listPlaceholder();
-            }
-            if (state.status == AppStatus.failure && state.items.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        state.errorMessage ?? 'Failed to load activity',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(color: AppColors.error),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => context.read<ActivityBloc>().add(
-                          const ActivitiesTimelineFetched(type: 'meeting'),
-                        ),
-                        child: const Text('Retry'),
-                      ),
-                    ],
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x40000000),
+                      blurRadius: 4,
+                      offset: Offset.zero,
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  onChanged: (value) => setState(() => _searchQuery = value),
+                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    hintStyle: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey.shade500,
+                    ),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black, size: 22),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 14,
+                    ),
                   ),
                 ),
-              );
-            }
-            final items = state.items;
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<ActivityBloc>().add(
-                  const ActivitiesTimelineFetched(type: 'meeting'),
-                );
-                await Future.delayed(const Duration(milliseconds: 500));
-              },
-              color: AppColors.primary,
-              child: items.isEmpty
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.2,
-                        ),
-                        Center(
-                          child: Column(
+              ),
+            ),
+            Expanded(
+              child: BlocBuilder<ActivityBloc, ActivityState>(
+                buildWhen: (prev, curr) =>
+                    prev.status != curr.status || prev.items != curr.items,
+                builder: (context, state) {
+                  if (state.status == AppStatus.loading && state.items.isEmpty) {
+                    return ShimmerLoading.listPlaceholder();
+                  }
+                  if (state.status == AppStatus.failure && state.items.isEmpty) {
+                    return Center(
+                      child: Text(
+                        state.errorMessage ?? 'Failed to load activity',
+                        style: GoogleFonts.poppins(color: Colors.red),
+                      ),
+                    );
+                  }
+
+                  final filteredItems = state.items.where((item) {
+                    if (_searchQuery.isEmpty) return true;
+                    final q = _searchQuery.toLowerCase();
+                    return item.userName.toLowerCase().contains(q) ||
+                        item.note.toLowerCase().contains(q) ||
+                        item.type.toLowerCase().contains(q);
+                  }).toList();
+
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<ActivityBloc>().add(
+                        const ActivitiesTimelineFetched(type: 'meeting'),
+                      );
+                      await Future.delayed(const Duration(milliseconds: 500));
+                    },
+                    color: const Color(0xFF2E8EFF),
+                    child: filteredItems.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
                             children: [
-                              Container(
-                                padding: const EdgeInsets.all(24),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.08),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.history_toggle_off_rounded,
-                                  size: 48,
-                                  color: AppColors.primary.withOpacity(0.4),
-                                ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.2,
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No activity yet',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
-                                  fontSize: 16,
+                              Center(
+                                child: Text(
+                                  'No activity found',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey.shade500,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                             ],
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: filteredItems.length,
+                            itemBuilder: (context, index) => _ActivityTile(
+                              item: filteredItems[index],
+                              formatDate: _formatDate,
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  : ListView.builder(
-                      padding: responsiveListPadding(context),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) => _ActivityTile(
-                        item: items[index],
-                        formatDate: _formatDate,
-                      ),
-                    ),
-            );
-          },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -192,151 +193,122 @@ class _ActivityTile extends StatelessWidget {
   final ActivityModel item;
   final String Function(DateTime) formatDate;
 
-  Color _actionColor(String actionType) {
-    final a = actionType.toLowerCase();
-    if (a.contains('create') || a.contains('added')) return Colors.teal;
-    if (a.contains('delete') || a.contains('remove')) return Colors.red;
-    if (a.contains('update') || a.contains('edit') || a.contains('change'))
-      return AppColors.primary;
-    if (a.contains('meeting')) return AppColors.stageFollowUp;
-    return Colors.grey.shade700;
-  }
-
   @override
   Widget build(BuildContext context) {
     final initials = item.userName.isNotEmpty
         ? item.userName
-              .trim()
-              .split(' ')
-              .map((p) => p[0])
-              .take(2)
-              .join()
-              .toUpperCase()
+            .trim()
+            .split(' ')
+            .map((p) => p.isNotEmpty ? p[0] : '')
+            .take(2)
+            .join()
+            .toUpperCase()
         : 'EP';
 
-    final actionColor = _actionColor(item.type);
     final displayType = item.type.replaceAll('_', ' ').replaceAll('-', ' ');
-    final noteText = item.note.trim();
-    final headline = noteText.isNotEmpty ? noteText : 'Activity logged';
+    final headline = item.note.trim().isNotEmpty ? item.note.trim() : 'Activity logged';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primary.withOpacity(0.15),
-          width: 1,
-        ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.transparent,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Color(0x40000000),
+            blurRadius: 4,
+            offset: Offset.zero,
           ),
         ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: IntrinsicHeight(
+        child: Padding(
+          padding: const EdgeInsets.all(14),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Side color indicator
-              Container(width: 4, color: actionColor),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                // User Avatar
-                                Container(
-                                  width: 28,
-                                  height: 28,
-                                  decoration: BoxDecoration(
-                                    color: actionColor.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      initials,
-                                      style: GoogleFonts.poppins(
-                                        color: actionColor,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    item.userName.isNotEmpty
-                                        ? item.userName
-                                        : 'System',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 13,
-                                      color: AppColors.primary,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            formatDate(item.createdAt),
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              color: Colors.grey.shade500,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        headline,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.grey.shade800,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      // Small context tag
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: actionColor.withOpacity(0.05),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          displayType.isEmpty
-                              ? 'ACTIVITY'
-                              : displayType.toUpperCase(),
-                          style: GoogleFonts.poppins(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w700,
-                            color: actionColor.withOpacity(0.7),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ],
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    initials.isEmpty ? 'G' : initials,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF2E8EFF),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.userName.isNotEmpty ? item.userName : 'System',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      headline,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    formatDate(item.createdAt),
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2E8EFF).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      displayType.isEmpty ? 'Activity' : displayType,
+                      style: GoogleFonts.poppins(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

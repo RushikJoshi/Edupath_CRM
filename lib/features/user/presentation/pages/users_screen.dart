@@ -96,184 +96,6 @@ class _UsersScreenState extends State<UsersScreen> {
     ];
   }
 
-  // ── Add User dialog ────────────────────────────────────────────────────────
-
-  void _showAddDialog() {
-    final formKey = GlobalKey<FormState>();
-    final nameCtrl = TextEditingController();
-    final emailCtrl = TextEditingController();
-    final passCtrl = TextEditingController();
-    String selectedRole = 'sales';
-
-    final auth = context.read<AuthBloc>().state;
-    final branchState = context.read<BranchBloc>().state;
-    final currentRole = auth.user?.role ?? '';
-    final branches = _availableBranches(auth, branchState);
-    final branchesLoading =
-        RoleGuard.isCompanyAdmin(currentRole) &&
-        branchState.status == AppStatus.loading;
-
-    String? selectedBranchId = branches.isNotEmpty ? branches.first.id : null;
-
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setLocal) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.person_add_rounded,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Add User',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Form(
-              key: formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildTextField(
-                      nameCtrl,
-                      'Full Name',
-                      Icons.person_outline_rounded,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildTextField(
-                      emailCtrl,
-                      'Email',
-                      Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return 'Email is required';
-                        if (!v.contains('@')) return 'Enter a valid email';
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildTextField(
-                      passCtrl,
-                      'Password',
-                      Icons.lock_outline_rounded,
-                      obscure: true,
-                      validator: (v) {
-                        if (v == null || v.isEmpty)
-                          return 'Password is required';
-                        if (v.length < 6) return 'Min 6 characters';
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _buildBranchDropdown(
-                      branches: branches,
-                      value: selectedBranchId,
-                      onChanged: (v) => setLocal(() => selectedBranchId = v),
-                      isLoading: branchesLoading,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildRoleDropdown(
-                      value: selectedRole,
-                      onChanged: (v) =>
-                          setLocal(() => selectedRole = v ?? selectedRole),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.poppins(color: Colors.grey.shade600),
-              ),
-            ),
-            BlocBuilder<UserBloc, UserState>(
-              builder: (_, state) => FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: state.actionStatus == AppStatus.loading
-                    ? null
-                    : () {
-                        if (formKey.currentState?.validate() ?? false) {
-                          if (selectedBranchId == null ||
-                              selectedBranchId!.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Please select a branch',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                backgroundColor: AppColors.error,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                            return;
-                          }
-                          context.read<UserBloc>().add(
-                            UserCreated(
-                              name: nameCtrl.text.trim(),
-                              email: emailCtrl.text.trim(),
-                              password: passCtrl.text,
-                              role: selectedRole,
-                              branchId: selectedBranchId!,
-                            ),
-                          );
-                          Navigator.pop(ctx);
-                        }
-                      },
-                child: state.actionStatus == AppStatus.loading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        'Add',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // ── Edit User dialog ───────────────────────────────────────────────────────
 
@@ -294,120 +116,244 @@ class _UsersScreenState extends State<UsersScreen> {
         ? user.branchId
         : (branches.isNotEmpty ? branches.first.id : null);
 
+    const roles = <String>['company_admin', 'branch_manager', 'sales', 'sales_user'];
+    const roleLabels = <String, String>{
+      'company_admin': 'Company Admin',
+      'branch_manager': 'Branch Manager',
+      'sales': 'Sales',
+      'sales_user': 'Sales User',
+    };
+    if (!roles.contains(selectedRole)) selectedRole = roles.first;
+
     showDialog<void>(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setLocal) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.stageInterested.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.edit_rounded,
-                  color: AppColors.stageInterested,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Edit User',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Form(
-              key: formKey,
+        builder: (ctx, setLocal) {
+          final isSingleOption = branches.length == 1;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            backgroundColor: Colors.white,
+            contentPadding: EdgeInsets.zero,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            content: SizedBox(
+              width: double.maxFinite,
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildTextField(
-                      nameCtrl,
-                      'Full Name',
-                      Icons.person_outline_rounded,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildBranchDropdown(
-                      branches: branches,
-                      value: selectedBranchId,
-                      onChanged: (v) => setLocal(() => selectedBranchId = v),
-                      isLoading: branchesLoading,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildRoleDropdown(
-                      value: selectedRole,
-                      onChanged: (v) =>
-                          setLocal(() => selectedRole = v ?? selectedRole),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.poppins(color: Colors.grey.shade600),
-              ),
-            ),
-            BlocBuilder<UserBloc, UserState>(
-              builder: (_, state) => FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: state.actionStatus == AppStatus.loading
-                    ? null
-                    : () {
-                        if (formKey.currentState?.validate() ?? false) {
-                          context.read<UserBloc>().add(
-                            UserUpdated(
-                              userId: user.id,
-                              name: nameCtrl.text.trim(),
-                              role: selectedRole,
-                              branchId: selectedBranchId,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: const Color(0xFF2E8EFF), width: 1),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                          Navigator.pop(ctx);
-                        }
-                      },
-                child: state.actionStatus == AppStatus.loading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
+                            child: const Icon(
+                              Icons.edit_outlined,
+                              color: Color(0xFF2E8EFF),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Edit User',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: const Color(0xFF2E8EFF),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(ctx),
+                            child: const Icon(
+                              Icons.close_rounded,
+                              color: Colors.black,
+                              size: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: nameCtrl,
+                        style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: 'User Name',
+                          hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                          prefixIcon: const Icon(
+                            Icons.person_outline_rounded,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          ),
                         ),
-                      )
-                    : Text(
-                        'Save',
+                        validator: (v) => (v == null || v.isEmpty) ? 'Name is required' : null,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Branch',
                         style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
                         ),
                       ),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        initialValue: selectedBranchId,
+                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.account_tree_outlined,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          ),
+                        ),
+                        items: branches.isEmpty && branchesLoading
+                            ? [
+                                DropdownMenuItem(
+                                  value: selectedBranchId,
+                                  child: Text('Loading...', style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500)),
+                                )
+                              ]
+                            : branches.map((b) => DropdownMenuItem(
+                                  value: b.id,
+                                  child: Text(
+                                    b.location.isNotEmpty ? '${b.name} · ${b.location}' : b.name,
+                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )).toList(),
+                        onChanged: isSingleOption ? null : (v) => setLocal(() => selectedBranchId = v),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Role',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        initialValue: selectedRole,
+                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.work_outline_rounded,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          ),
+                        ),
+                        items: roles.map((r) => DropdownMenuItem(
+                              value: r,
+                              child: Text(roleLabels[r] ?? r, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
+                            )).toList(),
+                        onChanged: (v) => setLocal(() => selectedRole = v ?? selectedRole),
+                      ),
+                      const SizedBox(height: 24),
+                      BlocBuilder<UserBloc, UserState>(
+                        builder: (_, state) => FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E8EFF),
+                            minimumSize: const Size(0, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: state.actionStatus == AppStatus.loading
+                              ? null
+                              : () {
+                                  if (formKey.currentState?.validate() ?? false) {
+                                    context.read<UserBloc>().add(
+                                      UserUpdated(
+                                        userId: user.id,
+                                        name: nameCtrl.text.trim(),
+                                        role: selectedRole,
+                                        branchId: selectedBranchId,
+                                      ),
+                                    );
+                                    Navigator.pop(ctx);
+                                  }
+                                },
+                          child: state.actionStatus == AppStatus.loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(
+                                  'Save',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -417,80 +363,86 @@ class _UsersScreenState extends State<UsersScreen> {
   void _confirmDelete(UserModel user) {
     showDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.delete_rounded,
-                color: AppColors.error,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Delete User',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        content: RichText(
-          text: TextSpan(
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.grey.shade700,
-            ),
+        backgroundColor: Colors.white,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const TextSpan(text: 'Are you sure you want to delete '),
-              TextSpan(
-                text: user.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xFFF44336), width: 1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: Color(0xFFF44336),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Delete User',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: const Color(0xFF2E8EFF),
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(ctx),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      color: Colors.black,
+                      size: 24,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Are you sure you want to delete this user?',
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: Colors.black87,
                 ),
               ),
-              const TextSpan(text: '? This action cannot be undone.'),
+              const SizedBox(height: 24),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFFEA4335), // Google Red
+                  minimumSize: const Size(0, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<UserBloc>().add(UserDeleted(user.id));
+                  Navigator.pop(ctx);
+                },
+                child: Text(
+                  'Delete',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.poppins(color: Colors.grey.shade600),
-            ),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: () {
-              context.read<UserBloc>().add(UserDeleted(user.id));
-              Navigator.pop(ctx);
-            },
-            child: Text(
-              'Delete',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -1302,7 +1254,7 @@ class _UsersScreenState extends State<UsersScreen> {
         // ── FAB ──────────────────────────────────────────────────────────────
         floatingActionButton: FloatingActionButton(
           heroTag: 'add_user_fab',
-          onPressed: _showAddDialog,
+          onPressed: () => Navigator.of(context).pushNamed('/add-user'),
           backgroundColor: const Color(0xFF2E8EFF),
           elevation: 4,
           shape: const CircleBorder(),

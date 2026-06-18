@@ -424,6 +424,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
     const allBranchesValue = '__all_branches__';
     String selectedBranchId = allBranchesValue;
     String searchQuery = '';
+    String? tappedUserId;
 
     final assigned = await showModalBottomSheet<String>(
       context: context,
@@ -468,83 +469,166 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                   return queryOk && branchOk;
                 }).toList();
 
+                // Get currently assigned user for this inquiry
+                final inqState = context.read<InquiryBloc>().state;
+                final currentlyAssigned = inqState.items
+                    .where((inq) => inq.id == id)
+                    .map((e) => e.assignedTo)
+                    .isNotEmpty 
+                        ? inqState.items.firstWhere((inq) => inq.id == id).assignedTo 
+                        : null;
+
+                // Color generators for avatars
+                Color getAvatarBg(String name) {
+                  final colors = [
+                    const Color(0xFFE3F2FD),
+                    const Color(0xFFF3E5F5),
+                    const Color(0xFFE8F5E9),
+                    const Color(0xFFFFF3E0),
+                    const Color(0xFFFFEBEE),
+                  ];
+                  if (name.isEmpty) return colors[0];
+                  return colors[name.codeUnitAt(0) % colors.length];
+                }
+
+                Color getAvatarText(String name) {
+                  final colors = [
+                    const Color(0xFF1976D2),
+                    const Color(0xFF7B1FA2),
+                    const Color(0xFF388E3C),
+                    const Color(0xFFF57C00),
+                    const Color(0xFFD32F2F),
+                  ];
+                  if (name.isEmpty) return colors[0];
+                  return colors[name.codeUnitAt(0) % colors.length];
+                }
+
                 return AnimatedPadding(
                   duration: const Duration(milliseconds: 120),
                   padding: EdgeInsets.only(
                     bottom: MediaQuery.of(ctx).viewInsets.bottom,
                   ),
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF9FAFB),
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
                       ),
-                      border: Border.all(color: AppColors.primary),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        const SizedBox(height: 24),
+                        // HEADER ROW
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 18, 20, 8),
-                          child: Text(
-                            'Assign to Sales User',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
-                            ),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () => Navigator.pop(ctx, ''), // Unassign
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFDF2F2),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: Color(0xFFFF4B4B),
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Assign to Sales User',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    width: 32,
+                                    height: 2.5,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF2E8EFF),
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.pop(ctx),
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF0F4FC),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const Divider(height: 1),
+                        const SizedBox(height: 20),
+                        
+                        // SEARCH ROW
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
                             children: [
                               Expanded(
-                                child: TextField(
-                                  onChanged: (value) =>
-                                      setSheetState(() => searchQuery = value),
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    color: AppColors.primary,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF5F7FA),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  decoration: InputDecoration(
-                                    hintText: 'Search user...',
-                                    hintStyle: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade500,
+                                  child: TextField(
+                                    onChanged: (value) =>
+                                        setSheetState(() => searchQuery = value),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      color: Colors.black,
                                     ),
-                                    prefixIcon: const Icon(
-                                      Icons.search_rounded,
-                                      size: 18,
-                                      color: AppColors.primary,
-                                    ),
-                                    isDense: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.primary.withOpacity(
-                                          0.25,
-                                        ),
+                                    decoration: InputDecoration(
+                                      hintText: 'Search user...',
+                                      hintStyle: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        color: Colors.grey.shade500,
                                       ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: AppColors.primary.withOpacity(
-                                          0.25,
-                                        ),
+                                      prefixIcon: Icon(
+                                        Icons.search_rounded,
+                                        size: 20,
+                                        color: Colors.grey.shade500,
                                       ),
+                                      isDense: true,
+                                      filled: false,
+                                      contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 14,
+                                      ),
+                                      border: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 12),
                               PopupMenuButton<String>(
                                 tooltip: 'Filter by branch',
                                 onSelected: (value) => setSheetState(
@@ -564,19 +648,16 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                     )
                                     .toList(),
                                 child: Container(
-                                  width: 44,
-                                  height: 44,
+                                  width: 48,
+                                  height: 48,
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                      color: AppColors.primary.withOpacity(0.2),
-                                    ),
+                                    color: const Color(0xFFF5F7FA),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Icon(
-                                    Icons.filter_alt_rounded,
-                                    color: AppColors.primary,
-                                    size: 20,
+                                    Icons.filter_alt_outlined,
+                                    color: Color(0xFF2E8EFF),
+                                    size: 22,
                                   ),
                                 ),
                               ),
@@ -585,7 +666,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                         ),
                         if (selectedBranchId != allBranchesValue)
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
@@ -594,30 +675,29 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.08),
+                                  color: const Color(0xFFE8EEFE),
                                   borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: AppColors.primary.withOpacity(0.2),
-                                  ),
                                 ),
                                 child: Text(
                                   'Branch: ${branchMap[selectedBranchId] ?? 'Selected'}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.primary,
+                                    color: const Color(0xFF2E8EFF),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        const Divider(height: 1),
+                        const SizedBox(height: 20),
+                        
+                        // USER LIST
                         if (state.status == AppStatus.loading)
                           const Padding(
                             padding: EdgeInsets.all(16),
                             child: Center(
                               child: CircularProgressIndicator(
-                                color: AppColors.primary,
+                                color: Color(0xFF2E8EFF),
                                 strokeWidth: 2,
                               ),
                             ),
@@ -640,44 +720,149 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                           Flexible(
                             child: ListView.builder(
                               shrinkWrap: true,
+                              padding: EdgeInsets.zero,
                               itemCount: filteredUsers.length,
                               itemBuilder: (_, i) {
                                 final u = filteredUsers[i];
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 16,
-                                    backgroundColor: AppColors.primary
-                                        .withOpacity(0.1),
-                                    child: Text(
-                                      u.name.isNotEmpty
-                                          ? u.name[0].toUpperCase()
-                                          : '?',
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w700,
-                                        color: AppColors.primary,
+                                final isSelected = (tappedUserId != null)
+                                    ? u.id == tappedUserId
+                                    : u.id == currentlyAssigned;
+                                    
+                                return Container(
+                                  margin: const EdgeInsets.only(
+                                    bottom: 12,
+                                    left: 16,
+                                    right: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? const Color(0xFFF2F6FE)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? const Color(0xFF83A9FF)
+                                          : const Color(0xFFF0F0F0),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(12),
+                                      onTap: () {
+                                        setSheetState(() => tappedUserId = u.id);
+                                        Future.delayed(const Duration(milliseconds: 300), () {
+                                          if (ctx.mounted) Navigator.pop(ctx, u.id);
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 14,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  width: 44,
+                                                  height: 44,
+                                                  decoration: BoxDecoration(
+                                                    color: getAvatarBg(u.name),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      u.name.isNotEmpty
+                                                          ? u.name[0].toUpperCase()
+                                                          : '?',
+                                                      style: GoogleFonts.poppins(
+                                                        fontWeight: FontWeight.w700,
+                                                        fontSize: 16,
+                                                        color: getAvatarText(u.name),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  child: Container(
+                                                    width: 12,
+                                                    height: 12,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(0xFF4CAF50),
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 2,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    u.name,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w700,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${u.email}${u.branchName.trim().isNotEmpty ? '   |   ${u.branchName}' : ''}',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 11,
+                                                      color: Colors.grey.shade500,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Container(
+                                              width: 20,
+                                              height: 20,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: isSelected
+                                                    ? const Color(0xFF3D78FF)
+                                                    : Colors.transparent,
+                                                border: Border.all(
+                                                  color: isSelected
+                                                      ? const Color(0xFF3D78FF)
+                                                      : const Color(0xFFD3E0FB),
+                                                  width: isSelected ? 0 : 1.5,
+                                                ),
+                                              ),
+                                              child: isSelected
+                                                  ? const Icon(
+                                                      Icons.check_rounded,
+                                                      size: 14,
+                                                      color: Colors.white,
+                                                    )
+                                                  : null,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  title: Text(
-                                    u.name,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    '${u.email}${u.branchName.trim().isNotEmpty ? ' • ${u.branchName}' : ''}',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                  ),
-                                  onTap: () => Navigator.pop(ctx, u.id),
                                 );
                               },
                             ),
                           ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),

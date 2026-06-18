@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_bloc.dart';
@@ -76,39 +75,37 @@ class _StagesScreenState extends State<StagesScreen> {
         final errorMsg = state.errorMessage;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: const Color(0xFFF9FAFB),
           appBar: AppBar(
-            backgroundColor: AppColors.primary,
+            backgroundColor: const Color(0xFF2E8EFF),
             elevation: 0,
-            toolbarHeight: 64,
             leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: Colors.white,
-                size: 20,
+                size: 22,
               ),
-              onPressed: () => Navigator.pop(context),
             ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pipeline & Stages',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  'Select pipeline to view or add stages',
-                  style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    color: Colors.white.withOpacity(0.7),
-                  ),
-                ),
-              ],
+            title: Text(
+              'Pipeline & Stages',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+                onPressed: () => context.read<PipelineBloc>().add(PipelinesFetched()),
+              ),
+              const SizedBox(width: 8),
+            ],
           ),
           body: ResponsiveConstraint(
             child: SizedBox.expand(
@@ -160,7 +157,7 @@ class _StagesScreenState extends State<StagesScreen> {
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: AppColors.primary,
+                                color: Colors.black,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -171,8 +168,15 @@ class _StagesScreenState extends State<StagesScreen> {
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(color: AppColors.primary),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x40000000),
+                                    blurRadius: 4,
+                                    spreadRadius: 0,
+                                    offset: Offset.zero,
+                                  ),
+                                ],
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
@@ -181,8 +185,14 @@ class _StagesScreenState extends State<StagesScreen> {
                                   hint: Text(
                                     'Select pipeline',
                                     style: GoogleFonts.poppins(
-                                      color: Colors.grey.shade600,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w500,
                                     ),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: Colors.black,
+                                    size: 24,
                                   ),
                                   items: [
                                     ...pipelines.map(
@@ -192,6 +202,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                           p.name,
                                           style: GoogleFonts.poppins(
                                             fontWeight: FontWeight.w600,
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ),
@@ -208,7 +219,7 @@ class _StagesScreenState extends State<StagesScreen> {
                               Text(
                                 'No pipelines yet. Add one using the button below.',
                                 style: GoogleFonts.poppins(
-                                  color: Colors.grey.shade600,
+                                  color: Colors.black54,
                                   fontSize: 13,
                                 ),
                               ),
@@ -224,7 +235,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                     style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
-                                      color: AppColors.primary,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   if (state.selectedPipelineId ==
@@ -235,7 +246,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: AppColors.primary,
+                                        color: Color(0xFF2E8EFF),
                                       ),
                                     ),
                                 ],
@@ -266,7 +277,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                   child: Text(
                                     'No stages in this pipeline. Add one below.',
                                     style: GoogleFonts.poppins(
-                                      color: Colors.grey.shade600,
+                                      color: Colors.black54,
                                       fontSize: 13,
                                     ),
                                   ),
@@ -278,70 +289,59 @@ class _StagesScreenState extends State<StagesScreen> {
                     ),
             ),
           ),
-          floatingActionButton: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              InnerShadow(
-                shadows: [
-                  BoxShadow(
-                    color: Colors.transparent,
-                    blurRadius: 10,
-                    offset: const Offset(3, 3),
+          floatingActionButton: FloatingActionButton(
+            heroTag: 'add_pipeline_stage_fab',
+            onPressed: () {
+              if (_selectedPipelineId == null) {
+                _showAddPipelineDialog(context);
+              } else {
+                showModalBottomSheet<void>(
+                  context: context,
+                  backgroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   ),
-                ],
-                child: FloatingActionButton.extended(
-                  heroTag: 'add_pipeline_fab',
-                  onPressed: () => _showAddPipelineDialog(context),
-                  icon: const Icon(
-                    Icons.add_chart_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  label: Text(
-                    'Add Pipeline',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
-                      color: Colors.white,
+                  builder: (ctx) => SafeArea(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.add_chart_rounded, color: Color(0xFF2E8EFF)),
+                          title: Text(
+                            'Add New Pipeline',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(ctx);
+                            _showAddPipelineDialog(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.add_rounded, color: Color(0xFF2E8EFF)),
+                          title: Text(
+                            'Add Stage to Current Pipeline',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(ctx);
+                            _showAddStageDialog(context, _selectedPipelineId!);
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  backgroundColor: AppColors.primary,
-                  elevation: 0,
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (_selectedPipelineId != null)
-                InnerShadow(
-                  shadows: [
-                    BoxShadow(
-                      color: Colors.transparent,
-                      blurRadius: 10,
-                      offset: const Offset(3, 3),
-                    ),
-                  ],
-                  child: FloatingActionButton.extended(
-                    heroTag: 'add_stage_fab',
-                    onPressed: () =>
-                        _showAddStageDialog(context, _selectedPipelineId!),
-                    icon: const Icon(
-                      Icons.add_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    label: Text(
-                      'Add Stage',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    backgroundColor: AppColors.primary,
-                    elevation: 0,
-                  ),
-                ),
-            ],
+                );
+              }
+            },
+            backgroundColor: const Color(0xFF2E8EFF),
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add, color: Colors.white, size: 28),
           ),
         );
       },
@@ -354,36 +354,139 @@ class _StagesScreenState extends State<StagesScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Add Pipeline',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary,
-          ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.insights_rounded,
+                color: Color(0xFF2E8EFF),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Add Pipeline',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  color: const Color(0xFF2E8EFF),
+                ),
+              ),
+            ),
+          ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(
-              controller: nameCtrl,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                hintText: 'e.g. Sales Pipeline',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x40000000),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: nameCtrl,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'e.g. Sales Pipeline',
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.grey.shade400,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.badge_outlined,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: descCtrl,
-              maxLines: 2,
-              decoration: InputDecoration(
-                labelText: 'Description (optional)',
-                hintText: 'e.g. CRM Sales Flow',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 14),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x40000000),
+                    blurRadius: 4,
+                    spreadRadius: 0,
+                    offset: Offset.zero,
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: descCtrl,
+                maxLines: 2,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'e.g. CRM Sales Flow',
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: Colors.grey.shade400,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.description_outlined,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
@@ -412,9 +515,9 @@ class _StagesScreenState extends State<StagesScreen> {
               Navigator.pop(ctx);
             },
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: const Color(0xFF2E8EFF),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
@@ -577,86 +680,84 @@ class _StageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _colorForIndex(index);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: InnerShadow(
-        shadows: [
-          BoxShadow(
-            color: Colors.transparent,
-            blurRadius: 10,
-            offset: const Offset(2, 2),
-          ),
-        ],
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.primary, width: 1),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    '${index + 1}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primary,
-                    ),
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x40000000),
+              blurRadius: 4,
+              spreadRadius: 0,
+              offset: Offset.zero,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  '${index + 1}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(11),
-                  border: Border.all(color: color.withOpacity(0.25)),
-                ),
-                child: Icon(Icons.label_rounded, size: 18, color: color),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(11),
+                border: Border.all(color: color.withOpacity(0.25)),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+              child: Icon(Icons.label_rounded, size: 18, color: color),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    stage.name,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  if (stage.order > 0 ||
+                      stage.probability > 0 ||
+                      stage.winLikelihood.isNotEmpty)
                     Text(
-                      stage.name,
+                      'Order: ${stage.order} · ${stage.probability}% · ${stage.winLikelihood}',
                       style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        color: AppColors.primary,
+                        fontSize: 11,
+                        color: Colors.black54,
                       ),
                     ),
-                    if (stage.order > 0 ||
-                        stage.probability > 0 ||
-                        stage.winLikelihood.isNotEmpty)
-                      Text(
-                        'Order: ${stage.order} · ${stage.probability}% · ${stage.winLikelihood}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 11,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-              ),
-            ],
-          ),
+            ),
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+          ],
         ),
       ),
     );

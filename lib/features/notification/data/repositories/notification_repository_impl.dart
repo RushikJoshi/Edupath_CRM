@@ -56,8 +56,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<List<NotificationModel>> markAllAsRead() async {
     try {
       final response = await _apiClient.markAllNotificationsRead();
-      final data = response.data;
-      List<dynamic> list = [];
+      final data = response.data;/// data store in variable///response.data is json
+      List<dynamic> list = [];/// store notification
       if (data is List) {
         list = data;
       } else if (data is Map) {
