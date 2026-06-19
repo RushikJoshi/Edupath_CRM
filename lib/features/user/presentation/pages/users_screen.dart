@@ -106,11 +106,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
     final auth = context.read<AuthBloc>().state;
     final branchState = context.read<BranchBloc>().state;
-    final currentRole = auth.user?.role ?? '';
     final branches = _availableBranches(auth, branchState);
-    final branchesLoading =
-        RoleGuard.isCompanyAdmin(currentRole) &&
-        branchState.status == AppStatus.loading;
 
     String? selectedBranchId = branches.any((b) => b.id == user.branchId)
         ? user.branchId
@@ -221,46 +217,125 @@ class _UsersScreenState extends State<UsersScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        initialValue: selectedBranchId,
-                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(
-                            Icons.account_tree_outlined,
-                            size: 20,
-                            color: Colors.grey,
+                      GestureDetector(
+                        onTap: isSingleOption
+                            ? null
+                            : () {
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  backgroundColor: Colors.white,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  ),
+                                  builder: (BuildContext sheetCtx) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Select Branch',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                                                  onPressed: () => Navigator.pop(sheetCtx),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: branches.length,
+                                              itemBuilder: (context, index) {
+                                                final b = branches[index];
+                                                final isSelected = b.id == selectedBranchId;
+                                                return ListTile(
+                                                  leading: Icon(
+                                                    Icons.account_tree_outlined,
+                                                    color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+                                                  ),
+                                                  title: Text(
+                                                    b.name,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                                      color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                                                    ),
+                                                  ),
+                                                  subtitle: b.location.isNotEmpty
+                                                      ? Text(
+                                                          b.location,
+                                                          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade600),
+                                                        )
+                                                      : null,
+                                                  trailing: isSelected
+                                                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                                                      : null,
+                                                  onTap: () {
+                                                    setLocal(() {
+                                                      selectedBranchId = b.id;
+                                                    });
+                                                    Navigator.pop(sheetCtx);
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.account_tree_outlined,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
+                            suffixIcon: isSingleOption
+                                ? Tooltip(
+                                    message: 'Your branch',
+                                    child: Icon(
+                                      Icons.lock_outline_rounded,
+                                      size: 16,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  )
+                                : const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          child: Text(
+                            branches.where((b) => b.id == selectedBranchId).firstOrNull?.name ?? 'Select branch',
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              color: Colors.grey.shade700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        items: branches.isEmpty && branchesLoading
-                            ? [
-                                DropdownMenuItem(
-                                  value: selectedBranchId,
-                                  child: Text('Loading...', style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500)),
-                                )
-                              ]
-                            : branches.map((b) => DropdownMenuItem(
-                                  value: b.id,
-                                  child: Text(
-                                    b.location.isNotEmpty ? '${b.name} · ${b.location}' : b.name,
-                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )).toList(),
-                        onChanged: isSingleOption ? null : (v) => setLocal(() => selectedBranchId = v),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -272,35 +347,108 @@ class _UsersScreenState extends State<UsersScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        initialValue: selectedRole,
-                        icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(
-                            Icons.work_outline_rounded,
-                            size: 20,
-                            color: Colors.grey,
+                      GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            backgroundColor: Colors.white,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                            builder: (BuildContext sheetCtx) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Select Role',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                                            onPressed: () => Navigator.pop(sheetCtx),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemCount: roles.length,
+                                        itemBuilder: (context, index) {
+                                          final r = roles[index];
+                                          final isSelected = r == selectedRole;
+                                          return ListTile(
+                                            leading: Icon(
+                                              Icons.badge_outlined,
+                                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+                                            ),
+                                            title: Text(
+                                              roleLabels[r] ?? r,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                                color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                                              ),
+                                            ),
+                                            trailing: isSelected
+                                                ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                                                : null,
+                                            onTap: () {
+                                              setLocal(() {
+                                                selectedRole = r;
+                                              });
+                                              Navigator.pop(sheetCtx);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.work_outline_rounded,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
+                            suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          child: Text(
+                            roleLabels[selectedRole] ?? selectedRole,
+                            style: GoogleFonts.poppins(
+                              fontSize: 13,
+                              color: Colors.grey.shade700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        items: roles.map((r) => DropdownMenuItem(
-                              value: r,
-                              child: Text(roleLabels[r] ?? r, style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700)),
-                            )).toList(),
-                        onChanged: (v) => setLocal(() => selectedRole = v ?? selectedRole),
                       ),
                       const SizedBox(height: 24),
                       BlocBuilder<UserBloc, UserState>(
@@ -695,7 +843,7 @@ class _UsersScreenState extends State<UsersScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF9FAFB),
 
         // ── AppBar ───────────────────────────────────────────────────────────
         appBar: AppBar(
@@ -806,11 +954,11 @@ class _UsersScreenState extends State<UsersScreen> {
                             ),
                             child: TextField(
                               controller: _searchCtrl,
-                              style: GoogleFonts.poppins(fontSize: 13),
+                              style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
                               decoration: InputDecoration(
                                 hintText: 'Search Users by name, email...',
                                 hintStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade500),
-                                prefixIcon: const Icon(Icons.search_rounded, color: Colors.grey, size: 20),
+                                prefixIcon: const Icon(Icons.search_rounded, color: Colors.black, size: 20),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                               ),

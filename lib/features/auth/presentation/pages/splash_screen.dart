@@ -100,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
         _navigateByAuthState(state.hasToken);
       },
       child: Scaffold(
-        backgroundColor: _bgColor,
+        backgroundColor: const Color(0xFFF9FAFB),
         body: SizedBox(
           width: double.infinity,
           height: double.infinity,

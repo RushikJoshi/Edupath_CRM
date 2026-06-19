@@ -95,7 +95,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       drawer: const AppDrawer(activeRoute: AppRoutes.inquiryList),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2E8EFF),

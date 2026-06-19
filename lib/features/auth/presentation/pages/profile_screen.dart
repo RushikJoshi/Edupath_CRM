@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : 'EP';
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       drawer: const AppDrawer(activeRoute: AppRoutes.profile),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2E8EFF),

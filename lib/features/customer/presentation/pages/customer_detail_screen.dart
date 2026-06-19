@@ -220,7 +220,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     final customer = widget.customer;
     if (customer == null) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(backgroundColor: AppColors.primary, elevation: 0),
         body: Center(
           child: Text(
@@ -232,7 +232,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,

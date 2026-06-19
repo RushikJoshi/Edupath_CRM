@@ -428,58 +428,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                         const Divider(height: 1, color: Color(0x332E8EFF)),
                                         const SizedBox(height: 10),
 
-                                        // --- MIDDLE ROW ---
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(width: 14),
-                                            // Phone Icon and text
-                                            const Icon(
-                                              Icons.phone_outlined,
-                                              size: 16,
-                                              color: Color(0xFF2E8EFF),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Flexible(
-                                              child: Text(
-                                                lead.phone.isNotEmpty ? lead.phone : 'No phone',
-                                                style: GoogleFonts.poppins(
-                                                  color: const Color(0xE5000000),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 16),
-                                            // Email Icon and text
-                                            const Icon(
-                                              Icons.email_outlined,
-                                              size: 16,
-                                              color: Color(0xFF2E8EFF),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Expanded(
-                                              child: Text(
-                                                lead.email.isNotEmpty ? lead.email : 'No email',
-                                                style: GoogleFonts.poppins(
-                                                  color: const Color(0xE5000000),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 14),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        const Divider(height: 1, color: Color(0x332E8EFF)),
-                                        const SizedBox(height: 10),
-
-                                        // --- BOTTOM ROW ---
+                                        // --- MIDDLE ROW (Was Bottom Row) ---
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 14),
                                           child: Row(
@@ -506,7 +455,62 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        const Divider(height: 1, color: Color(0x332E8EFF)),
+                                        const SizedBox(height: 10),
 
+                                        // --- BOTTOM ROW (Was Middle Row) ---
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.phone_outlined,
+                                                    size: 16,
+                                                    color: Color(0xFF2E8EFF),
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Flexible(
+                                                    child: Text(
+                                                      lead.phone.isNotEmpty ? lead.phone : 'No phone',
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xE5000000),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.email_outlined,
+                                                    size: 16,
+                                                    color: Color(0xFF2E8EFF),
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(
+                                                    child: Text(
+                                                      lead.email.isNotEmpty ? lead.email : 'No email',
+                                                      style: GoogleFonts.poppins(
+                                                        color: const Color(0xE5000000),
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         ),

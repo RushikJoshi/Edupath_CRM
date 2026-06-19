@@ -172,7 +172,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF9FAFB),
 
         // ── AppBar ───────────────────────────────────────────────────────
         appBar: AppBar(

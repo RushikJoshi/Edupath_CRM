@@ -83,7 +83,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF9FAFB),
       drawer: const AppDrawer(activeRoute: AppRoutes.accounts),
 
       // ── AppBar ───────────────────────────────────────────────────────────

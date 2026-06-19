@@ -66,11 +66,21 @@ class _TaskListScreenState extends State<TaskListScreen>
         return StatefulBuilder(
           builder: (ctx, setModalState) {
             final users = context.watch<UserBloc>().state.items;
+            String assignedName = 'Unassigned';
+            if (assignedTo.isNotEmpty) {
+              for (final u in users) {
+                if (u.id == assignedTo) {
+                  assignedName = u.name;
+                  break;
+                }
+              }
+            }
+
             return Container(
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
-                top: 16,
+                top: 10,
                 bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
               ),
               decoration: const BoxDecoration(
@@ -83,87 +93,107 @@ class _TaskListScreenState extends State<TaskListScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
                       Text(
                         'Create Task',
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: const Color(0xFF2E8EFF),
                         ),
                       ),
                       const SizedBox(height: 14),
                       TextFormField(
                         controller: titleCtrl,
-                        decoration: _dec('Title', Icons.title_rounded),
+                        decoration: _fieldDec('Title', Icons.text_fields_rounded),
                         validator: (v) => v == null || v.trim().isEmpty
                             ? 'Title is required'
                             : null,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: descCtrl,
                         maxLines: 2,
-                        decoration: _dec(
+                        decoration: _fieldDec(
                           'Description',
-                          Icons.description_rounded,
+                          Icons.description_outlined,
                         ),
                         validator: (v) => v == null || v.trim().isEmpty
                             ? 'Description is required'
                             : null,
                       ),
-                      const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        initialValue: priority,
-                        decoration: _dec(
-                          'Priority',
-                          Icons.priority_high_rounded,
-                        ),
-                        items: const ['High', 'Medium', 'Low']
-                            .map(
-                              (p) => DropdownMenuItem(value: p, child: Text(p)),
-                            )
-                            .toList(),
-                        onChanged: (v) =>
-                            setModalState(() => priority = v ?? 'High'),
+                      const SizedBox(height: 12),
+                      _buildSelectorField(
+                        context: context,
+                        label: 'Priority',
+                        value: priority,
+                        prefixIcon: Icons.priority_high_rounded,
+                        onTap: () {
+                          _showPriorityPicker(
+                            context: context,
+                            currentValue: priority,
+                            onSelected: (val) {
+                              setModalState(() {
+                                priority = val;
+                              });
+                            },
+                          );
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        initialValue: status,
-                        decoration: _dec('Status', Icons.flag_rounded),
-                        items: _statuses
-                            .map(
-                              (s) => DropdownMenuItem(value: s, child: Text(s)),
-                            )
-                            .toList(),
-                        onChanged: (v) =>
-                            setModalState(() => status = v ?? 'Pending'),
+                      const SizedBox(height: 12),
+                      _buildSelectorField(
+                        context: context,
+                        label: 'Status',
+                        value: status,
+                        prefixIcon: Icons.flag_rounded,
+                        onTap: () {
+                          _showStatusPicker(
+                            context: context,
+                            currentValue: status,
+                            onSelected: (val) {
+                              setModalState(() {
+                                status = val;
+                              });
+                            },
+                          );
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      DropdownButtonFormField<String>(
-                        initialValue: users.any((u) => u.id == assignedTo)
-                            ? assignedTo
-                            : '',
-                        decoration: _dec(
-                          'Assigned To',
-                          Icons.person_pin_rounded,
-                        ),
-                        items: <DropdownMenuItem<String>>[
-                          const DropdownMenuItem(
-                            value: '',
-                            child: Text('Unassigned'),
-                          ),
-                          ...users.map(
-                            (u) => DropdownMenuItem(
-                              value: u.id,
-                              child: Text(u.name),
-                            ),
-                          ),
-                        ],
-                        onChanged: (v) =>
-                            setModalState(() => assignedTo = v ?? ''),
+                      const SizedBox(height: 12),
+                      _buildSelectorField(
+                        context: context,
+                        label: 'Assigned To',
+                        value: assignedName,
+                        prefixIcon: Icons.person_outline_rounded,
+                        onTap: () {
+                          _showAssignedToPicker(
+                            context: context,
+                            currentValue: assignedTo,
+                            users: users,
+                            onSelected: (val) {
+                              setModalState(() {
+                                assignedTo = val;
+                              });
+                            },
+                          );
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      InkWell(
+                      const SizedBox(height: 12),
+                      _buildSelectorField(
+                        context: context,
+                        label: 'Due Date',
+                        value: '${dueDate.day}/${dueDate.month}/${dueDate.year}',
+                        prefixIcon: Icons.calendar_today_rounded,
+                        showDropdownArrow: false,
                         onTap: () async {
                           final d = await showDatePicker(
                             context: ctx,
@@ -187,17 +217,8 @@ class _TaskListScreenState extends State<TaskListScreen>
                             });
                           }
                         },
-                        child: InputDecorator(
-                          decoration: _dec(
-                            'Due Date',
-                            Icons.calendar_today_rounded,
-                          ),
-                          child: Text(
-                            '${dueDate.day}/${dueDate.month}/${dueDate.year}',
-                          ),
-                        ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
                       FilledButton(
                         onPressed: () {
                           if (!(formKey.currentState?.validate() ?? false)) {
@@ -221,17 +242,18 @@ class _TaskListScreenState extends State<TaskListScreen>
                           Navigator.pop(ctx);
                         },
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          minimumSize: const Size(0, 48),
+                          backgroundColor: const Color(0xFF2E8EFF),
+                          minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(25),
                           ),
                         ),
                         child: Text(
                           'Create Task',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -241,6 +263,300 @@ class _TaskListScreenState extends State<TaskListScreen>
               ),
             );
           },
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectorField({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required IconData prefixIcon,
+    bool showDropdownArrow = true,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        const SizedBox(height: 6),
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: InputDecorator(
+            decoration: InputDecoration(
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF2F6FE),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    prefixIcon,
+                    color: const Color(0xFF2E8EFF),
+                    size: 18,
+                  ),
+                ),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value,
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                if (showDropdownArrow)
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.grey,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showPriorityPicker({
+    required BuildContext context,
+    required String currentValue,
+    required ValueChanged<String> onSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Select Priority',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: const Color(0xFF2E8EFF),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+              ...['High', 'Medium', 'Low'].map((p) {
+                final isSelected = p.toLowerCase() == currentValue.toLowerCase();
+                return ListTile(
+                  title: Text(
+                    p,
+                    style: GoogleFonts.poppins(
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                    ),
+                  ),
+                  trailing: isSelected
+                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                      : null,
+                  onTap: () {
+                    onSelected(p);
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showStatusPicker({
+    required BuildContext context,
+    required String currentValue,
+    required ValueChanged<String> onSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Select Status',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: const Color(0xFF2E8EFF),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+              ..._statuses.map((s) {
+                final isSelected = s.toLowerCase() == currentValue.toLowerCase();
+                return ListTile(
+                  title: Text(
+                    s,
+                    style: GoogleFonts.poppins(
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                    ),
+                  ),
+                  trailing: isSelected
+                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                      : null,
+                  onTap: () {
+                    onSelected(s);
+                    Navigator.pop(ctx);
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAssignedToPicker({
+    required BuildContext context,
+    required String currentValue,
+    required List<dynamic> users,
+    required ValueChanged<String> onSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Select Assignee',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: const Color(0xFF2E8EFF),
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Divider(),
+              ListTile(
+                title: Text(
+                  'Unassigned',
+                  style: GoogleFonts.poppins(
+                    fontWeight: currentValue.isEmpty ? FontWeight.w600 : FontWeight.w400,
+                    color: currentValue.isEmpty ? const Color(0xFF2E8EFF) : Colors.black87,
+                  ),
+                ),
+                trailing: currentValue.isEmpty
+                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                    : null,
+                onTap: () {
+                  onSelected('');
+                  Navigator.pop(ctx);
+                },
+              ),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: users.length,
+                  itemBuilder: (context, i) {
+                    final u = users[i];
+                    final isSelected = u.id == currentValue;
+                    return ListTile(
+                      title: Text(
+                        u.name,
+                        style: GoogleFonts.poppins(
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                          : null,
+                      onTap: () {
+                        onSelected(u.id);
+                        Navigator.pop(ctx);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -271,7 +587,7 @@ class _TaskListScreenState extends State<TaskListScreen>
         );
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
         drawer: const AppDrawer(activeRoute: AppRoutes.tasks),
         appBar: AppBar(
           backgroundColor: AppColors.primary,
@@ -312,14 +628,23 @@ class _TaskListScreenState extends State<TaskListScreen>
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(48),
             child: Container(
-              color: AppColors.primary,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.shade200,
+                    width: 1,
+                  ),
+                ),
+              ),
               child: TabBar(
                 controller: _tc,
                 tabs: _statuses.map((s) => Tab(text: s)).toList(),
                 isScrollable: true,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white.withValues(alpha: 0.6),
-                indicatorColor: Colors.white,
+                tabAlignment: TabAlignment.start,
+                labelColor: const Color(0xFF2E8EFF),
+                unselectedLabelColor: const Color(0xFF000000),
+                indicatorColor: const Color(0xFF2E8EFF),
                 indicatorWeight: 3,
                 labelStyle: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
@@ -433,25 +758,88 @@ class _TaskListScreenState extends State<TaskListScreen>
     );
   }
 
-  InputDecoration _dec(String label, IconData icon) {
+  InputDecoration _fieldDec(String hint, IconData prefixIcon) {
     return InputDecoration(
-      labelText: label,
-      prefixIcon: Icon(icon, color: AppColors.primary),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.primary.withValues(alpha: 0.45),
+      hintText: hint,
+      hintStyle: GoogleFonts.poppins(
+        fontSize: 13,
+        color: Colors.grey.shade500,
+      ),
+      prefixIcon: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF2F6FE),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            prefixIcon,
+            color: const Color(0xFF2E8EFF),
+            size: 18,
+          ),
         ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.primary.withValues(alpha: 0.45),
-        ),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
       ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+      ),
+    );
+  }
+}
+
+class _PriorityBadge extends StatelessWidget {
+  const _PriorityBadge({required this.priority});
+  final String priority;
+
+  Color _getBgColor() {
+    switch (priority.toLowerCase()) {
+      case 'high':
+        return const Color(0xFFFFEBEE); // Light Red
+      case 'medium':
+        return const Color(0xFFFFF0E6); // Light Orange/Peach
+      case 'low':
+      default:
+        return const Color(0xFFE8F8F5); // Light Green/Teal
+    }
+  }
+
+  Color _getTextColor() {
+    switch (priority.toLowerCase()) {
+      case 'high':
+        return const Color(0xFFE53935); // Red
+      case 'medium':
+        return const Color(0xFFFF6D00); // Orange
+      case 'low':
+      default:
+        return const Color(0xFF2ECC71); // Green
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _getBgColor(),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        priority,
+        style: GoogleFonts.poppins(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: _getTextColor(),
+        ),
       ),
     );
   }
@@ -475,6 +863,34 @@ class _TaskCard extends StatelessWidget {
     'Overdue',
   ];
 
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'in progress':
+        return const Color(0xFFFFB300); // Amber
+      case 'completed':
+        return const Color(0xFF2ECC71); // Green
+      case 'overdue':
+        return const Color(0xFFE53935); // Red
+      case 'pending':
+      default:
+        return const Color(0xFF2E8EFF); // Blue
+    }
+  }
+
+  Color _getStatusBg(String status) {
+    switch (status.toLowerCase()) {
+      case 'in progress':
+        return const Color(0xFFFFF8E1); // Light Amber
+      case 'completed':
+        return const Color(0xFFE8F8F5); // Light Green
+      case 'overdue':
+        return const Color(0xFFFFEBEE); // Light Red
+      case 'pending':
+      default:
+        return const Color(0xFFF2F6FE); // Light Blue
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final due = task.dueDate.toLocal();
@@ -486,106 +902,257 @@ class _TaskCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.45)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000), // #00000040 (25% opacity)
+            blurRadius: 4,
+            spreadRadius: 0,
+            offset: Offset(0, 0), // x 0, y 0
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  task.title,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                  ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF2F6FE),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.calendar_today_rounded,
+                  color: Color(0xFF2E8EFF),
+                  size: 22,
                 ),
               ),
-              Text(
-                task.priority,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                  color: AppColors.primary,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      task.title,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    if (task.description.trim().isNotEmpty) ...[
+                      Text(
+                        task.description,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                    ],
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.person_outline_rounded,
+                          size: 14,
+                          color: Color(0xFF2E8EFF),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          task.assignedToName.isNotEmpty ? task.assignedToName : 'Unassigned',
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time_rounded,
+                          size: 14,
+                          color: Color(0xFF2E8EFF),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          dueText,
+                          style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                        if (assignedName.trim().isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            height: 12,
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(
+                            Icons.person_rounded,
+                            size: 14,
+                            color: Color(0xFF2E8EFF),
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              'Assigned: $assignedName',
+                              style: GoogleFonts.poppins(
+                                fontSize: 11,
+                                color: Colors.grey.shade700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _PriorityBadge(priority: task.priority),
+                  const SizedBox(height: 4),
+                  const Icon(
+                    Icons.more_vert_rounded,
+                    color: Colors.grey,
+                    size: 18,
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          Text(
-            task.description,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              color: Colors.grey.shade700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(
-                Icons.schedule_rounded,
-                size: 14,
-                color: Colors.grey.shade600,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  dueText,
-                  style: GoogleFonts.poppins(
-                    fontSize: 11,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          if (assignedName.trim().isNotEmpty)
-            Text(
-              'Assigned: $assignedName',
-              style: GoogleFonts.poppins(
-                fontSize: 11,
-                color: Colors.grey.shade700,
-              ),
-            ),
-          const SizedBox(height: 10),
-          DropdownButtonFormField<String>(
-            initialValue: _statuses.contains(task.status)
-                ? task.status
-                : _statuses.first,
-            items: _statuses
-                .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                .toList(),
-            onChanged: (v) {
-              if (v == null || v == task.status) return;
-              onStatusChanged(v);
+          const Divider(height: 20, thickness: 1, color: Color(0xFFF2F6FE)),
+          const SizedBox(height: 4),
+          InkWell(
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                backgroundColor: Colors.transparent,
+                isScrollControlled: true,
+                builder: (ctx) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Update Status',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: const Color(0xFF2E8EFF),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Divider(),
+                        Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: _statuses.length,
+                            itemBuilder: (context, i) {
+                              final statusOption = _statuses[i];
+                              final isSelected = task.status.toLowerCase() == statusOption.toLowerCase();
+                              final statusColor = _getStatusColor(statusOption);
+                              return ListTile(
+                                leading: Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: statusColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                title: Text(
+                                  statusOption,
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                    color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                                  ),
+                                ),
+                                trailing: isSelected
+                                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                                    : null,
+                                onTap: () {
+                                  if (task.status.toLowerCase() != statusOption.toLowerCase()) {
+                                    onStatusChanged(statusOption);
+                                  }
+                                  Navigator.pop(ctx);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
             },
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 10,
-              ),
-              border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: _getStatusBg(task.status),
                 borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: AppColors.primary.withValues(alpha: 0.45),
-                ),
+                border: task.status.toLowerCase() == 'pending'
+                    ? null
+                    : Border.all(
+                        color: _getStatusColor(task.status).withValues(alpha: 0.2),
+                      ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: AppColors.primary.withValues(alpha: 0.45),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                  color: AppColors.primary,
-                  width: 1.4,
-                ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(task.status),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      task.status,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: _getStatusColor(task.status),
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: task.status.toLowerCase() == 'pending'
+                        ? Colors.black
+                        : _getStatusColor(task.status),
+                    size: 20,
+                  ),
+                ],
               ),
             ),
           ),

@@ -82,7 +82,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         );
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
           backgroundColor: const Color(0xFF2E8EFF),
           elevation: 0,

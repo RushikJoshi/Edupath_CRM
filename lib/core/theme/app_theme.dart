@@ -262,9 +262,9 @@ class AppTheme {
 
       // TabBar
       tabBarTheme: TabBarThemeData(
-        labelColor: AppColors.accent,
-        unselectedLabelColor: AppColors.textMuted,
-        indicatorColor: AppColors.accent,
+        labelColor: const Color(0xFF2E8EFF),
+        unselectedLabelColor: const Color(0xFF000000),
+        indicatorColor: const Color(0xFF2E8EFF),
         indicatorSize: TabBarIndicatorSize.label,
         labelStyle: GoogleFonts.poppins(
           fontWeight: FontWeight.w700,
@@ -274,7 +274,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
           fontSize: 13,
         ),
-        dividerColor: AppColors.border,
+        dividerColor: Colors.transparent,
       ),
 
       // Divider

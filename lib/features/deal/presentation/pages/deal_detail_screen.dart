@@ -80,7 +80,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
 
         if (item == null) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: const Color(0xFFF9FAFB),
             appBar: AppBar(backgroundColor: AppColors.primary, elevation: 0),
             body: Center(
               child: Text(
@@ -94,7 +94,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         final sc = AppColors.primary;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: const Color(0xFFF9FAFB),
           appBar: AppBar(
             backgroundColor: AppColors.primary,
             elevation: 0,

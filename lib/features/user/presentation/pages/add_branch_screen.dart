@@ -89,7 +89,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF9FAFB),
 
         // ── AppBar ───────────────────────────────────────────────────────
         appBar: AppBar(
@@ -171,64 +171,38 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         // Branch Name
                         _buildLabel('Branch Name'),
                         const SizedBox(height: 6),
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x40000000),
-                                blurRadius: 4,
-                                spreadRadius: 0,
-                                offset: Offset.zero,
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(10),
+                        TextFormField(
+                          controller: _nameCtrl,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black,
                           ),
-                          child: TextFormField(
-                            controller: _nameCtrl,
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                            decoration: _inputDecoration(
-                              hint: 'e.g. Main Office',
-                              icon: Icons.business_rounded,
-                            ),
-                            validator: (v) => v == null || v.isEmpty
-                                ? 'Branch name is required'
-                                : null,
+                          decoration: _inputDecoration(
+                            hint: 'e.g. Main Office',
+                            icon: Icons.business_rounded,
                           ),
+                          validator: (v) => v == null || v.isEmpty
+                              ? 'Branch name is required'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
                         // Location
                         _buildLabel('Location'),
                         const SizedBox(height: 6),
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x40000000),
-                                blurRadius: 4,
-                                spreadRadius: 0,
-                                offset: Offset.zero,
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(10),
+                        TextFormField(
+                          controller: _locationCtrl,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.black,
                           ),
-                          child: TextFormField(
-                            controller: _locationCtrl,
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                            decoration: _inputDecoration(
-                              hint: 'e.g. Ahmedabad, Gujarat',
-                              icon: Icons.location_on_outlined,
-                            ),
-                            validator: (v) => v == null || v.isEmpty
-                                ? 'Location is required'
-                                : null,
+                          decoration: _inputDecoration(
+                            hint: 'e.g. Ahmedabad, Gujarat',
+                            icon: Icons.location_on_outlined,
                           ),
+                          validator: (v) => v == null || v.isEmpty
+                              ? 'Location is required'
+                              : null,
                         ),
                       ],
                     ),
@@ -348,38 +322,38 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
         hintText: hint,
         hintStyle: GoogleFonts.poppins(
           fontSize: 13,
-          color: Colors.grey.shade400,
+          color: Colors.grey.shade500,
         ),
         prefixIcon: Icon(
           icon,
-          size: 18,
-          color: Colors.black54,
+          size: 20,
+          color: Colors.grey,
         ),
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 12,
+          vertical: 14,
+          horizontal: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: Colors.red),
         ),
       );
 }

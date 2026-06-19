@@ -50,7 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
         if (state.status == AppStatus.failure) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: const Color(0xFFF9FAFB),
             body: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -107,7 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final data = state.data;
         if (data == null) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: const Color(0xFFF9FAFB),
             body: Center(
               child: Text(
                 'No dashboard data available yet.',
@@ -163,7 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // ];
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: const Color(0xFFF9FAFB),
           appBar: AppBar(
             backgroundColor: AppColors.primary,
             elevation: 0,
@@ -433,7 +433,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildShimmerLoading() {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,

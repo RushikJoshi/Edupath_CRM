@@ -90,7 +90,7 @@ class _DealListScreenState extends State<DealListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       drawer: const AppDrawer(activeRoute: AppRoutes.deals),
       appBar: AppBar(
         backgroundColor: AppColors.primary,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/features/lead/presentation/bloc/lead_bloc.dart';
@@ -8,9 +7,7 @@ import 'package:gtcrm/features/lead/presentation/bloc/lead_event.dart';
 import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_bloc.dart';
 import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_event.dart';
 import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_state.dart';
-import 'package:gtcrm/core/constants/app_colors.dart';
 import 'package:gtcrm/core/constants/app_enums.dart';
-import 'package:gtcrm/features/pipeline/data/models/stage_model.dart';
 
 class PipelineScreen extends StatefulWidget {
   const PipelineScreen({super.key});
@@ -32,29 +29,44 @@ class _PipelineScreenState extends State<PipelineScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: AppColors.primaryGradient),
-          ),
-        ),
+        backgroundColor: const Color(0xFF2E8EFF),
         elevation: 0,
-        toolbarHeight: 110,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Text(
           'Sales Pipeline',
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.bold,
             fontSize: 20,
             color: Colors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<PipelineBloc>().add(const PipelinesFetched());
+              context.read<LeadBloc>().add(const LeadFetched());
+            },
+            icon: const Icon(
+              Icons.refresh_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
       body: BlocBuilder<PipelineBloc, PipelineState>(
         builder: (context, state) {
           if (state.status == AppStatus.loading) {
             return const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: Color(0xFF2E8EFF)),
             );
           }
 
@@ -65,9 +77,9 @@ class _PipelineScreenState extends State<PipelineScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.error.withOpacity(0.9),
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      color: Colors.red,
                       size: 34,
                     ),
                     const SizedBox(height: 10),
@@ -77,15 +89,16 @@ class _PipelineScreenState extends State<PipelineScreen> {
                           : 'Failed to load pipeline',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
-                        color: AppColors.error,
+                        color: Colors.red,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 12),
                     OutlinedButton.icon(
-                      onPressed: () => context.read<PipelineBloc>().add(
-                        const PipelinesFetched(),
-                      ),
+                      onPressed: () {
+                        context.read<PipelineBloc>().add(const PipelinesFetched());
+                        context.read<LeadBloc>().add(const LeadFetched());
+                      },
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry'),
                     ),
@@ -120,166 +133,247 @@ class _PipelineScreenState extends State<PipelineScreen> {
                   .where((s) => s.name.trim().isNotEmpty)
                   .toList();
 
-          return Column(
-            children: [
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: AppColors.primary.withOpacity(0.25),
-                          ),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: selectedPipeline?.id,
-                            isExpanded: true,
-                            hint: Text(
-                              'Select Pipeline',
-                              style: GoogleFonts.poppins(
-                                color: Colors.grey.shade600,
-                                fontSize: 13,
+          if (leadStages.isEmpty) {
+            return Column(
+              children: [
+                _buildSelectorButton(context, state, selectedPipeline),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'No stages found',
+                      style: GoogleFonts.poppins(color: Colors.grey),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return DefaultTabController(
+            key: ValueKey(selectedPipeline?.id),
+            length: leadStages.length,
+            child: Column(
+              children: [
+                _buildSelectorButton(context, state, selectedPipeline),
+                const Divider(height: 1, thickness: 1, color: Color(0xFFE2E8F0)),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x40000000),
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                        offset: Offset.zero,
+                      ),
+                    ],
+                  ),
+                  child: TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    labelColor: const Color(0xFF2E8EFF),
+                    unselectedLabelColor: Colors.black87,
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    labelStyle: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    indicatorColor: const Color(0xFF2E8EFF),
+                    indicatorWeight: 2.5,
+                    tabs: leadStages.map((stage) {
+                      final count = _getCount(stage.name);
+                      return Tab(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(stage.name),
+                            if (count > 0) ...[
+                              const SizedBox(width: 6),
+                              _StageBadge(
+                                count: count,
+                                color: const Color(0xFF2E8EFF),
                               ),
-                            ),
-                            items: state.pipelines
-                                .map(
-                                  (p) => DropdownMenuItem<String>(
-                                    value: p.id,
-                                    child: Text(
-                                      p.name,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primary,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (id) =>
-                                setState(() => _selectedPipelineId = id),
-                          ),
+                            ],
+                          ],
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      onPressed: () => context.read<PipelineBloc>().add(
-                        const PipelinesFetched(),
-                      ),
-                      icon: const Icon(
-                        Icons.refresh_rounded,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _buildKanbanView(
-                  stages: leadStages.map((s) => s.name).toList(),
-                  allStages: leadStages,
+                const Divider(height: 1, thickness: 1, color: Color(0xFFE2E8F0)),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0x0D2E8EFF),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0x0D2E8EFF)),
+                    ),
+                    padding: const EdgeInsets.all(12),
+                    child: TabBarView(
+                      children: leadStages.map((stage) {
+                        return _buildCardsList(stage.name);
+                      }).toList(),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildKanbanView({
-    required List<String> stages,
-    required List<StageModel> allStages,
-  }) {
-    if (stages.isEmpty) {
-      return Center(
-        child: Text(
-          'No pipelines found',
-          style: GoogleFonts.poppins(color: Colors.grey),
-        ),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [AppColors.primary.withOpacity(0.05), AppColors.background],
-        ),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: stages.map((stage) {
-            final sm = allStages.firstWhere(
-              (s) => s.name == stage,
-              orElse: () => const StageModel(id: '', name: '', pipelineId: ''),
-            );
-            return _buildStageColumn(sm);
-          }).toList(),
+  Widget _buildSelectorButton(
+    BuildContext context,
+    PipelineState state,
+    dynamic selectedPipeline,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: GestureDetector(
+        onTap: () => _showPipelineSelector(context, state, selectedPipeline),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 4,
+                spreadRadius: 1,
+                offset: Offset.zero,
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2E8EFF),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.account_tree_outlined,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  selectedPipeline?.name ?? 'Select Pipeline',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: selectedPipeline != null ? Colors.black87 : Colors.grey.shade500,
+                  ),
+                ),
+              ),
+              const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Colors.black54,
+                size: 20,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildStageColumn(StageModel stage) {
-    Color sc;
-    try {
-      if (stage.color.isNotEmpty) {
-        final hex = stage.color.replaceAll('#', '');
-        sc = Color(int.parse('FF$hex', radix: 16));
-      } else {
-        sc = AppColors.primary;
-      }
-    } catch (_) {
-      sc = AppColors.primary;
-    }
-
-    return Container(
-      width: 280,
-      margin: const EdgeInsets.only(right: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Stage Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text(
-                    stage.name.toUpperCase(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: sc,
-                      letterSpacing: 1.2,
+  void _showPipelineSelector(
+    BuildContext context,
+    PipelineState state,
+    dynamic selectedPipeline,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext sheetCtx) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Select Pipeline',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                      onPressed: () => Navigator.pop(sheetCtx),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              if (state.pipelines.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text('No pipelines available', style: GoogleFonts.poppins(color: Colors.grey)),
+                )
+              else
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.pipelines.length,
+                    itemBuilder: (context, index) {
+                      final p = state.pipelines[index];
+                      final isSelected = p.id == selectedPipeline?.id;
+                      return ListTile(
+                        leading: Icon(
+                          Icons.schema_outlined,
+                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+                        ),
+                        title: Text(
+                          p.name,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                            color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                          ),
+                        ),
+                        trailing: isSelected
+                            ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                            : null,
+                        onTap: () {
+                          setState(() {
+                            _selectedPipelineId = p.id;
+                          });
+                          Navigator.pop(sheetCtx);
+                        },
+                      );
+                    },
                   ),
                 ),
-                _StageBadge(count: _getCount(stage.name), color: sc),
-              ],
-            ),
+            ],
           ),
-          const SizedBox(height: 12),
-          // Scrollable Cards Area
-          Expanded(child: _buildCardsList(stage.name)),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -299,20 +393,21 @@ class _PipelineScreenState extends State<PipelineScreen> {
         .toList();
 
     if (items.isEmpty) {
-      return _EmptyStageCard();
+      return Center(
+        child: Text(
+          'No items',
+          style: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 13),
+        ),
+      );
     }
 
-    return ListView.builder(
+    return ListView.separated(
       physics: const BouncingScrollPhysics(),
       itemCount: items.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
       itemBuilder: (context, index) {
         final item = items[index];
-        return _KanbanCard(
-          title: (item as dynamic).name,
-          subtitle: (item as dynamic).phone,
-          amount: (item as dynamic).value?.toString() ?? '0',
-          branch: (item as dynamic).branchName ?? '',
-        );
+        return _PipelineCard(item: item);
       },
     );
   }
@@ -326,15 +421,17 @@ class _StageBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      width: 18,
+      height: 18,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        color: color.withValues(alpha: 0.12),
+        shape: BoxShape.circle,
       ),
       child: Text(
         count.toString(),
         style: GoogleFonts.poppins(
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: FontWeight.bold,
           color: color,
         ),
@@ -343,120 +440,127 @@ class _StageBadge extends StatelessWidget {
   }
 }
 
-class _EmptyStageCard extends StatelessWidget {
+class _PipelineCard extends StatelessWidget {
+  const _PipelineCard({required this.item});
+  final dynamic item;
+
   @override
   Widget build(BuildContext context) {
+    final name = item.name ?? '';
+    final phone = item.phone ?? '';
+    final amount = item.value?.toString() ?? '0';
+    final branch = item.branchName ?? '';
+
+    final initials = name.isNotEmpty
+        ? name
+              .trim()
+              .split(' ')
+              .map((p) => p[0])
+              .take(2)
+              .join()
+              .toUpperCase()
+        : '?';
+
     return Container(
-      width: double.infinity,
-      height: 100,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.2),
-          style: BorderStyle.solid,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Center(
-        child: Text(
-          'No items',
-          style: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 13),
-        ),
-      ),
-    );
-  }
-}
-
-class _KanbanCard extends StatelessWidget {
-  const _KanbanCard({
-    required this.title,
-    required this.subtitle,
-    required this.amount,
-    required this.branch,
-  });
-
-  final String title;
-  final String subtitle;
-  final String amount;
-  final String branch;
-
-  @override
-  Widget build(BuildContext context) {
-    return InnerShadow(
-      shadows: [
-        BoxShadow(
-          color: Colors.transparent,
-          blurRadius: 10,
-          offset: const Offset(2, 2),
-        ),
-      ],
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withOpacity(0.05)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Text(
-                  '₹$amount',
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
+      child: Row(
+        children: [
+          // Initials Avatar
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF2E8EFF).withValues(alpha: 0.12),
             ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.grey.shade600,
+            child: Center(
+              child: Text(
+                initials,
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF2E8EFF),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            Row(
+          ),
+          const SizedBox(width: 12),
+          // Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  size: 14,
-                  color: Colors.grey,
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: Text(
-                    branch,
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      color: Colors.grey.shade500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                Text(
+                  name,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    Text(
+                      phone,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                    if (branch.isNotEmpty) ...[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            size: 14,
+                            color: Color(0xFF2E8EFF),
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            branch,
+                            style: GoogleFonts.poppins(
+                              fontSize: 11,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          // Value
+          Text(
+            '₹$amount',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF2E8EFF),
+            ),
+          ),
+        ],
       ),
     );
   }

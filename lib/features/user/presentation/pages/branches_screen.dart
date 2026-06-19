@@ -46,213 +46,162 @@ class _BranchesScreenState extends State<BranchesScreen> {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.add_business_rounded,
-                color: Color(0xFF2E8EFF),
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Add Branch',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                color: const Color(0xFF2E8EFF),
-              ),
-            ),
-          ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         content: SizedBox(
           width: double.maxFinite,
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x40000000),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                        offset: Offset.zero,
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: nameCtrl,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xFF2E8EFF), width: 1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.business_rounded,
+                            color: Color(0xFF2E8EFF),
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Add Branch',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: const Color(0xFF2E8EFF),
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(ctx),
+                          child: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.black,
+                            size: 24,
+                          ),
+                        ),
+                      ],
                     ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter branch name',
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: Colors.grey.shade400,
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: nameCtrl,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Enter branch name',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: const Icon(
+                          Icons.business_outlined,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                        ),
                       ),
-                      prefixIcon: const Icon(
-                        Icons.business_rounded,
-                        size: 18,
-                        color: Colors.black54,
+                      validator: (v) => (v == null || v.isEmpty) ? 'Branch name is required' : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: locationCtrl,
+                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: 'Enter location',
+                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        prefixIcon: const Icon(
+                          Icons.location_on_outlined,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
+                      validator: (v) => (v == null || v.isEmpty) ? 'Location is required' : null,
+                    ),
+                    const SizedBox(height: 24),
+                    BlocBuilder<BranchBloc, BranchState>(
+                      builder: (_, state) => FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF2E8EFF),
+                          minimumSize: const Size(0, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: state.actionStatus == AppStatus.loading
+                            ? null
+                            : () {
+                                if (formKey.currentState?.validate() ?? false) {
+                                  context.read<BranchBloc>().add(
+                                    BranchCreated({
+                                      'name': nameCtrl.text.trim(),
+                                      'address': locationCtrl.text.trim(),
+                                    }),
+                                  );
+                                  Navigator.pop(ctx);
+                                }
+                              },
+                        child: state.actionStatus == AppStatus.loading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Add',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
-                    validator: (v) => (v == null || v.isEmpty) ? 'Branch Name is required' : null,
-                  ),
+                  ],
                 ),
-                const SizedBox(height: 14),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x40000000),
-                        blurRadius: 4,
-                        spreadRadius: 0,
-                        offset: Offset.zero,
-                      ),
-                    ],
-                  ),
-                  child: TextFormField(
-                    controller: locationCtrl,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'Enter location',
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: Colors.grey.shade400,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.location_on_outlined,
-                        size: 18,
-                        color: Colors.black54,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                    ),
-                    validator: (v) => (v == null || v.isEmpty) ? 'Location is required' : null,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              'Cancel',
-              style: GoogleFonts.poppins(color: Colors.grey.shade600),
-            ),
-          ),
-          BlocBuilder<BranchBloc, BranchState>(
-            builder: (_, state) => FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF2E8EFF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: state.actionStatus == AppStatus.loading
-                  ? null
-                  : () {
-                      if (formKey.currentState?.validate() ?? false) {
-                        context.read<BranchBloc>().add(
-                          BranchCreated({
-                            'name': nameCtrl.text.trim(),
-                            'address': locationCtrl.text.trim(),
-                          }),
-                        );
-                        Navigator.pop(ctx);
-                      }
-                    },
-              child: state.actionStatus == AppStatus.loading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : Text(
-                      'Add',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-            ),
-          ),
-        ],
       ),
     );
   }

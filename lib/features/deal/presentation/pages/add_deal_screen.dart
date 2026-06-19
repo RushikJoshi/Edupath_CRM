@@ -154,7 +154,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
           backgroundColor: AppColors.primary,
           elevation: 0,

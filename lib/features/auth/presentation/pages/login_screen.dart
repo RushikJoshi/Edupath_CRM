@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF9FAFB),
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state.status == AppStatus.success && state.hasToken) {

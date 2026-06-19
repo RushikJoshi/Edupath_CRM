@@ -187,7 +187,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
           backgroundColor: AppColors.primary,
           elevation: 0,
@@ -373,7 +373,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                     Expanded(
                                       child: Text(
                                         _startDate == null ? 'Select Date' : '${_startDate!.day} ${_getMonth(_startDate!.month)} ${_startDate!.year}\n${_getWeekday(_startDate!.weekday)}',
-                                        style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black87),
+                                        style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.black87),
                                       ),
                                     ),
                                   ],
@@ -403,7 +403,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                     Expanded(
                                       child: Text(
                                         _startTime == null ? 'Select Time' : '${_startTime!.format(context)}\n($_duration)',
-                                        style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black87),
+                                        style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.black87),
                                       ),
                                     ),
                                   ],
@@ -414,17 +414,17 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                               child: Row(
                                 children: [
                                   const Icon(Icons.videocam_outlined, size: 18, color: Colors.black54),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: 5),
                                   Expanded(
                                     child: TextFormField(
                                       controller: _meetingLinkCtrl,
-                                      style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black87),
+                                      style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black87),
                                       decoration: InputDecoration(
                                         isDense: true,
                                         contentPadding: EdgeInsets.zero,
                                         border: InputBorder.none,
                                         hintText: 'Google Meet\nJoin Meeting',
-                                        hintStyle: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.black54),
+                                        hintStyle: GoogleFonts.poppins(fontSize: 10, fontWeight: FontWeight.w500, color: Colors.black54),
                                       ),
                                     ),
                                   ),
@@ -935,7 +935,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 12,
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
                 ),
@@ -946,7 +946,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                   isDense: true,
                   icon: const SizedBox.shrink(),
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 13,
                     color: Colors.black54,
                     fontWeight: FontWeight.w600,
                   ),
@@ -984,7 +984,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 12,
                   color: enabled ? Colors.black87 : Colors.black38,
                   fontWeight: FontWeight.w500,
                 ),
@@ -994,7 +994,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                 controller: controller,
                 enabled: enabled,
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 12,
                   color: enabled ? Colors.black54 : Colors.black38,
                   fontWeight: FontWeight.w600,
                 ),
@@ -1004,7 +1004,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                   border: InputBorder.none,
                   hintText: hint,
                   hintStyle: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 12,
                     color: Colors.grey.shade400,
                   ),
                 ),

@@ -224,6 +224,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                     _dropdownField<String>(
                       value: effectiveStatus,
                       icon: Icons.flag_outlined,
+                      title: 'Select Lead Status',
                       items: statusOptions.isEmpty ? ['-'] : statusOptions,
                       onChanged: (v) {
                         if (statusOptions.isNotEmpty) {
@@ -252,6 +253,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                       _dropdownField<String>(
                         value: _branchId,
                         icon: Icons.accessibility_new_outlined,
+                        title: 'Select Branch',
                         items: branches.map((b) => b.id).toList(),
                         labels: branches.map((b) => b.name).toList(),
                         onChanged: (v) => setState(() => _branchId = v),
@@ -532,19 +534,100 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
     required IconData icon,
     required List<T> items,
     List<String>? labels,
+    String? title,
     required void Function(T?) onChanged,
   }) {
-    return DropdownButtonFormField<T>(
-      value: value,
-      style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
-      decoration: _inputDeco('', icon),
-      items: items.asMap().entries.map((e) {
-        final label = labels != null ? labels[e.key] : e.value.toString();
-        return DropdownMenuItem<T>(value: e.value, child: Text(label));
-      }).toList(),
-      onChanged: onChanged,
-      dropdownColor: Colors.white,
-      iconEnabledColor: const Color(0xFF003055),
+    String displayLabel = '';
+    if (value != null) {
+      final index = items.indexOf(value);
+      if (index != -1 && labels != null && index < labels.length) {
+        displayLabel = labels[index];
+      } else {
+        displayLabel = value.toString();
+      }
+    }
+
+    return InkWell(
+      onTap: () {
+        showModalBottomSheet<void>(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (ctx) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    title ?? 'Select Option',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: const Color(0xFF2E8EFF),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Divider(),
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      itemBuilder: (context, i) {
+                        final item = items[i];
+                        final label = labels != null ? labels[i] : item.toString();
+                        final isSelected = value == item;
+                        return ListTile(
+                          title: Text(
+                            label,
+                            style: GoogleFonts.poppins(
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                            ),
+                          ),
+                          trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF)) : null,
+                          onTap: () {
+                            onChanged(item);
+                            Navigator.pop(ctx);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      borderRadius: BorderRadius.circular(10),
+      child: InputDecorator(
+        decoration: _inputDeco('', icon),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                displayLabel,
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+              ),
+            ),
+            const Icon(Icons.arrow_drop_down, color: Color(0xFF003055)),
+          ],
+        ),
+      ),
     );
   }
 

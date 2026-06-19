@@ -134,7 +134,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF9FAFB),
       drawer: const AppDrawer(activeRoute: AppRoutes.meetingList),
       appBar: AppBar(
         backgroundColor: const Color(0xFF2E8EFF),

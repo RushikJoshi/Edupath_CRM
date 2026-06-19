@@ -132,7 +132,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
         final loading = state.actionStatus == AppStatus.loading;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: const Color(0xFFF9FAFB),
           appBar: AppBar(
             backgroundColor: const Color(0xFF2E8EFF),
             elevation: 0,
