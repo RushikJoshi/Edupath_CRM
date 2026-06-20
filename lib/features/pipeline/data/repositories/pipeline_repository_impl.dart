@@ -22,8 +22,14 @@ class PipelineRepositoryImpl implements PipelineRepository {
         list = data['data'] as List<dynamic>;
       } else if (data is Map && data['pipelines'] is List) {
         list = data['pipelines'] as List<dynamic>;
+      } else if (data is Map && data['data'] is Map) {
+        list = [data['data']];
+      } else if (data is Map && data['pipeline'] is Map) {
+        list = [data['pipeline']];
+      } else if (data is Map && (data.containsKey('stages') || data.containsKey('name'))) {
+        list = [data];
       }
-      return list.map((e) => PipelineModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list.map((e) => PipelineModel.fromJson(Map<String, dynamic>.from(e as Map))).toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

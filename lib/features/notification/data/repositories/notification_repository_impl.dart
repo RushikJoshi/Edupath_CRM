@@ -34,10 +34,35 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
+  Future<List<NotificationModel>> fetchUnread() async {
+    try {
+      final response = await _apiClient.getUnreadNotifications();
+      final data = response.data;
+      List<dynamic> list = [];
+      if (data is List) {
+        list = data;
+      } else if (data is Map) {
+        if (data['data'] is List) {
+          list = data['data'] as List<dynamic>;
+        } else if (data['notifications'] is List) {
+          list = data['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+          list = data['data']['notifications'] as List<dynamic>;
+        } else if (data['data'] is Map && data['data']['data'] is List) {
+          list = data['data']['data'] as List<dynamic>;
+        }
+      }
+      return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
   Future<int> fetchUnreadCount() async {
     try {
-      final list = await fetchAll();
-      return list.where((n) => !n.isRead).length;
+      final list = await fetchUnread();
+      return list.length;
     } catch (e) {
       rethrow;
     }

@@ -54,6 +54,8 @@ dependencies:
   retrofit:
   get_it:
   json_annotation:
+  package_info_plus: ^9.0.1
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:

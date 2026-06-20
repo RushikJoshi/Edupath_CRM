@@ -9,9 +9,9 @@ class UserRepositoryImpl implements UserRepository {
   final UserApiClient _apiClient;
 
   @override
-  Future<List<UserModel>> fetchAll({String? search, String? role}) async {
+  Future<List<UserModel>> fetchAll({String? search, String? role, String? status}) async {
     try {
-      final response = await _apiClient.getUsers(search: search, role: role);
+      final response = await _apiClient.getUsers(search: search, role: role, status: status);
       final data = response.data;
       List<dynamic> list;
       if (data is List) {
@@ -29,47 +29,50 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  UserModel _parseUserFromResponse(dynamic responseData) {
+    Map<String, dynamic> userMap;
+    if (responseData is Map) {
+      final dataObj = responseData['data'];
+      if (dataObj is Map && dataObj['user'] != null) {
+        userMap = dataObj['user'] as Map<String, dynamic>;
+      } else if (responseData['user'] != null) {
+        userMap = responseData['user'] as Map<String, dynamic>;
+      } else if (dataObj is Map) {
+        userMap = dataObj as Map<String, dynamic>;
+      } else {
+        userMap = responseData as Map<String, dynamic>;
+      }
+    } else {
+      throw Exception('Invalid user response format');
+    }
+    return UserModel.fromJson(userMap);
+  }
+
   @override
-  Future<UserModel> createUser({
-    required String name,
-    required String email,
-    required String password,
-    required String role,
-    required String branchId,
-  }) async {
+  Future<UserModel> createUser(Map<String, dynamic> userData) async {
     try {
-      return await _apiClient.createUser({
-        'name': name,
-        'email': email,
-        'password': password,
-        'role': role,
-        'branchId': branchId,
-      });
+      final response = await _apiClient.createUser(userData);
+      return _parseUserFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
   }
 
   @override
-  Future<UserModel> updateUser({
-    required String userId,
-    required String name,
-    required String role,
-    String? branchId,
-    String? email,
-    String? password,
-    String? status,
-  }) async {
+  Future<UserModel> getUserById(String userId) async {
     try {
-      final body = <String, dynamic>{'name': name, 'role': role};
-      if (branchId != null && branchId.isNotEmpty) body['branchId'] = branchId;
-      if (email != null && email.isNotEmpty) body['email'] = email;
-      if (password != null && password.isNotEmpty) body['password'] = password;
-      if (status != null) {
-        body['status'] = status;
-        body['isActive'] = (status == 'active');
-      }
-      return await _apiClient.updateUser(userId, body);
+      final response = await _apiClient.getUserById(userId);
+      return _parseUserFromResponse(response.data);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<UserModel> updateUser(String userId, Map<String, dynamic> updateData) async {
+    try {
+      final response = await _apiClient.updateUser(userId, updateData);
+      return _parseUserFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

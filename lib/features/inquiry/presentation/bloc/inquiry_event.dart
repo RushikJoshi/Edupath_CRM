@@ -119,3 +119,33 @@ class InquiryAdded extends InquiryEvent {
   @override
   List<Object?> get props => [inquiry];
 }
+
+class InquiryUpdated extends InquiryEvent {
+  const InquiryUpdated({
+    required this.inquiryId,
+    this.name,
+    this.phone,
+    this.status,
+  });
+
+  final String inquiryId;
+  final String? name;
+  final String? phone;
+  final String? status;
+
+  @override
+  List<Object?> get props => [inquiryId, name, phone, status];
+}
+
+class InquiryMerged extends InquiryEvent {
+  const InquiryMerged({
+    required this.sourceId,
+    required this.targetId,
+  });
+
+  final String sourceId;
+  final String targetId;
+
+  @override
+  List<Object?> get props => [sourceId, targetId];
+}

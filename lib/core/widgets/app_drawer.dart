@@ -118,12 +118,6 @@ class AppDrawer extends StatelessWidget {
                 ),
                 _routeItem(
                   context,
-                  'assets/svgs/stages.svg',
-                  'Sales Pipeline',
-                  AppRoutes.pipeline,
-                ),
-                _routeItem(
-                  context,
                   'assets/svgs/follow-up.svg',
                   'Follow-ups',
                   AppRoutes.followUp,

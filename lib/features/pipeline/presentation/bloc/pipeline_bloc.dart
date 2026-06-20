@@ -43,17 +43,17 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
         if (leadPipeline == null && n.contains('lead')) leadPipeline = p;
         if (dealPipeline == null && (n.contains('deal') || n.contains('sales'))) dealPipeline = p;
       }
-      
+
       leadPipeline ??= state.pipelines.first;
       dealPipeline ??= state.pipelines.length > 1 ? state.pipelines[1] : state.pipelines.first;
 
-      List<StageModel> leadStages = leadPipeline.stages;
-      List<StageModel> dealStages = dealPipeline.stages;
+      final leadStages = leadPipeline.stages;
+      final dealStages = dealPipeline.stages;
 
-      // If still empty despite all tries, use the existing state defaults (don't overwrite them)
+      // Always update from API — empty API result means no stages (not fallback)
       emit(state.copyWith(
-        leadStages: leadStages.isNotEmpty ? leadStages : state.leadStages,
-        dealStages: dealStages.isNotEmpty ? dealStages : state.dealStages,
+        leadStages: leadStages,
+        dealStages: dealStages,
       ));
     } catch (_) {}
   }

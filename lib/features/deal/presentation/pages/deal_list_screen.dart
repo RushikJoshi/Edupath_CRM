@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -32,14 +33,14 @@ class _DealListScreenState extends State<DealListScreen> {
   String _searchQuery = '';
 
   Future<void> _refreshDeals() async {
-    context.read<DealBloc>().add(const DealFetched());
+    context.read<DealBloc>().add(DealFetched());
     await Future<void>.delayed(const Duration(milliseconds: 350));
   }
 
   @override
   void initState() {
     super.initState();
-    context.read<DealBloc>().add(const DealFetched());
+    context.read<DealBloc>().add(DealFetched());
     _searchCtrl.addListener(_onSearchChanged);
   }
 
@@ -98,7 +99,7 @@ class _DealListScreenState extends State<DealListScreen> {
         toolbarHeight: 64,
         leading: Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Colors.white),
+            icon: Icon(Icons.menu_rounded, color: Colors.white),
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
@@ -109,14 +110,14 @@ class _DealListScreenState extends State<DealListScreen> {
               'Accounts',
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
-                fontSize: 18,
+                fontSize: 18.sp,
                 color: Colors.white,
               ),
             ),
             Text(
               'Manage your pipeline',
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.white.withOpacity(0.7),
               ),
             ),
@@ -127,8 +128,8 @@ class _DealListScreenState extends State<DealListScreen> {
             padding: const EdgeInsets.only(right: 14),
             child: SvgPicture.asset(
               'assets/svgs/deal.svg',
-              width: 26,
-              height: 26,
+              width: 26.w,
+              height: 26.h,
             ),
           ),
         ],
@@ -138,14 +139,14 @@ class _DealListScreenState extends State<DealListScreen> {
         onPressed: () =>
             Navigator.pushNamed(context, AppRoutes.addDeal).then((_) {
               if (context.mounted)
-                context.read<DealBloc>().add(const DealFetched());
+                context.read<DealBloc>().add(DealFetched());
             }),
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        icon: Icon(Icons.add_rounded, color: Colors.white),
         label: Text(
           'ADD ACCOUNTS',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
-            fontSize: 12,
+            fontSize: 12.sp,
             color: Colors.white,
             letterSpacing: 0.6,
           ),
@@ -174,13 +175,13 @@ class _DealListScreenState extends State<DealListScreen> {
                 child: TextField(
                   controller: _searchCtrl,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: AppColors.primary,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Search by title or stage...',
                     hintStyle: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.grey.shade400,
                     ),
                     prefixIcon: const Icon(
@@ -199,34 +200,34 @@ class _DealListScreenState extends State<DealListScreen> {
                         : null,
                     fillColor: Colors.white,
                     filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 12.h,
+                      horizontal: 16.w,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide(
                         color: AppColors.primary.withOpacity(0.3),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       borderSide: BorderSide(
                         color: AppColors.primary.withOpacity(0.3),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide(
                         color: AppColors.primary,
-                        width: 1.5,
+                        width: 1.5.w,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            Container(height: 1, color: AppColors.primary.withOpacity(0.1)),
+            Container(height: 1.h, color: AppColors.primary.withOpacity(0.1)),
             Expanded(
               child: BlocBuilder<DealBloc, DealState>(
                 builder: (context, state) {
@@ -277,11 +278,11 @@ class _DealListScreenState extends State<DealListScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  width: 80,
-                                  height: 80,
+                                  width: 80.w,
+                                  height: 80.h,
                                   decoration: BoxDecoration(
                                     color: AppColors.primary.withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(24.r),
                                     border: Border.all(
                                       color: AppColors.primary.withOpacity(0.2),
                                     ),
@@ -289,8 +290,8 @@ class _DealListScreenState extends State<DealListScreen> {
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/svgs/deal.svg',
-                                      width: 36,
-                                      height: 36,
+                                      width: 36.w,
+                                      height: 36.h,
                                       colorFilter: ColorFilter.mode(
                                         AppColors.primary.withOpacity(0.6),
                                         BlendMode.srcIn,
@@ -298,22 +299,22 @@ class _DealListScreenState extends State<DealListScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16.h),
                                 Text(
                                   'No accounts found',
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     color: AppColors.primary,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Text(
                                   _searchQuery.isEmpty
                                       ? 'Pull down to refresh'
                                       : 'Try another search term',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                     color: Colors.grey.shade500,
                                   ),
                                 ),
@@ -331,7 +332,7 @@ class _DealListScreenState extends State<DealListScreen> {
                     child: ListView.separated(
                       padding: responsiveListPadding(context),
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      separatorBuilder: (_, __) => SizedBox(height: 10.h),
                       itemBuilder: (context, i) {
                         final deal = filtered[i];
                         final sc = _getStageColor(deal.stage, allStages);
@@ -378,24 +379,24 @@ class _DealCard extends StatelessWidget {
       child: InkWell(
         onTap: () =>
             Navigator.pushNamed(context, AppRoutes.dealDetail, arguments: deal),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary, width: 1),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: AppColors.primary, width: 1.w),
           ),
           child: IntrinsicHeight(
             child: Row(
               children: [
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 14),
-                  width: 44,
-                  height: 44,
+                  margin: EdgeInsets.symmetric(vertical: 14.h),
+                  width: 44.w,
+                  height: 44.h,
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
                       color: AppColors.primary.withOpacity(0.15),
                     ),
@@ -406,15 +407,15 @@ class _DealCard extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w800,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -425,7 +426,7 @@ class _DealCard extends StatelessWidget {
                                 deal.title,
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   color: AppColors.primary,
                                 ),
                                 maxLines: 1,
@@ -433,13 +434,13 @@ class _DealCard extends StatelessWidget {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 9,
-                                vertical: 3,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 9.w,
+                                vertical: 3.h,
                               ),
                               decoration: BoxDecoration(
                                 color: color.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8.r),
                                 border: Border.all(
                                   color: color.withOpacity(0.3),
                                 ),
@@ -448,14 +449,14 @@ class _DealCard extends StatelessWidget {
                                 deal.stage,
                                 style: GoogleFonts.poppins(
                                   color: color,
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 3),
+                        SizedBox(height: 3.h),
                         Row(
                           children: [
                             Icon(
@@ -463,28 +464,28 @@ class _DealCard extends StatelessWidget {
                               size: 12,
                               color: Colors.grey.shade500,
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               '${deal.value} ${deal.currency}',
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: Colors.grey.shade600,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Icon(
                               Icons.person_outline,
                               size: 12,
                               color: Colors.grey.shade500,
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Expanded(
                               child: Text(
                                 deal.assignedTo.isEmpty
                                     ? 'Unassigned'
                                     : deal.assignedTo,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   color: Colors.grey.shade600,
                                 ),
                                 maxLines: 1,

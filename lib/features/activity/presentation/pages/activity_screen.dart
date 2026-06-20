@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
           'Activity',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
@@ -77,7 +78,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
               );
             },
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
       body: ResponsiveConstraint(
@@ -88,7 +89,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x40000000),
@@ -99,18 +100,18 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 ),
                 child: TextField(
                   onChanged: (value) => setState(() => _searchQuery = value),
-                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                  style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
                   decoration: InputDecoration(
                     hintText: 'Search...',
                     hintStyle: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade500,
                     ),
                     prefixIcon: const Icon(Icons.search, color: Colors.black, size: 22),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 14,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 14.h,
+                      horizontal: 14.w,
                     ),
                   ),
                 ),
@@ -162,14 +163,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.grey.shade500,
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                   ),
                                 ),
                               ),
                             ],
                           )
                         : ListView.builder(
-                            padding: const EdgeInsets.all(16),
+                            padding: EdgeInsets.all(16.w),
                             itemCount: filteredItems.length,
                             itemBuilder: (context, index) => _ActivityTile(
                               item: filteredItems[index],
@@ -212,7 +213,7 @@ class _ActivityTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: const [
           BoxShadow(
             color: Color(0x40000000),
@@ -222,18 +223,18 @@ class _ActivityTile extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(14.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 46,
-                height: 46,
+                width: 46.w,
+                height: 46.h,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Center(
                   child: Text(
@@ -241,12 +242,12 @@ class _ActivityTile extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF2E8EFF),
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,17 +257,17 @@ class _ActivityTile extends StatelessWidget {
                       item.userName.isNotEmpty ? item.userName : 'System',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         color: Colors.black,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       headline,
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
                       ),
@@ -276,7 +277,7 @@ class _ActivityTile extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -284,25 +285,25 @@ class _ActivityTile extends StatelessWidget {
                   Text(
                     formatDate(item.createdAt),
                     style: GoogleFonts.poppins(
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2E8EFF).withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(6),
+                      color: Color(0xFF2E8EFF).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
                       displayType.isEmpty ? 'Activity' : displayType,
                       style: GoogleFonts.poppins(
-                        fontSize: 9,
+                        fontSize: 9.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),

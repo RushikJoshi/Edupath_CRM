@@ -14,6 +14,17 @@ class LeadFetched extends LeadEvent {
   List<Object?> get props => [search];
 }
 
+class LeadByIdFetched extends LeadEvent {
+  const LeadByIdFetched(this.leadId);
+  final String leadId;
+  @override
+  List<Object?> get props => [leadId];
+}
+
+class LostLeadsFetched extends LeadEvent {
+  const LostLeadsFetched();
+}
+
 class LeadCreated extends LeadEvent {
   const LeadCreated({
     required this.name,
@@ -117,6 +128,15 @@ class LeadStatusUpdated extends LeadEvent {
   final String status;
   @override
   List<Object?> get props => [leadId, status];
+}
+
+class LeadStageMoved extends LeadEvent {
+  LeadStageMoved({required this.leadId, required this.status, this.remark});
+  final String leadId;
+  final String status;
+  final String? remark;
+  @override
+  List<Object?> get props => [leadId, status, remark];
 }
 
 /// Status change with mandatory remark. Use this for pipeline stepper; status is saved only after remark.

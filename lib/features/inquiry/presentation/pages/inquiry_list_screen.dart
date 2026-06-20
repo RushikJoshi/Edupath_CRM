@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +27,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<InquiryBloc>().add(const InquiryFetched());
+    context.read<InquiryBloc>().add(InquiryFetched());
     _searchCtrl.addListener(_onSearchChanged);
   }
 
@@ -72,18 +73,18 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
         });
       },
       child: Container(
-        height: 28,
+        height: 28.h,
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF2E8EFF).withOpacity(0.12)
+              ? Color(0xFF2E8EFF).withOpacity(0.12)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(6.r),
         ),
         alignment: Alignment.center,
         child: Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             color: isSelected ? const Color(0xFF2E8EFF) : Colors.grey.shade700,
           ),
@@ -103,7 +104,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
         toolbarHeight: 64,
         leading: Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+            icon: Icon(Icons.menu_rounded, color: Colors.white, size: 28),
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
@@ -111,16 +112,16 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
           'Enquiries',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none_outlined, color: Colors.white, size: 24),
+            icon: Icon(Icons.notifications_none_outlined, color: Colors.white, size: 24),
             onPressed: () {},
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
 
@@ -133,7 +134,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x40000000),
@@ -146,14 +147,14 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                 child: TextField(
                   controller: _searchCtrl,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: const Color(0xFF000000),
                   ),
                   decoration: InputDecoration(
                     hintText: 'Search enquiries...',
                     hintStyle: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: const Color(0xFF000000).withOpacity(0.5),
+                      fontSize: 14.sp,
+                      color: Color(0xFF000000).withOpacity(0.5),
                     ),
                     prefixIcon: const Icon(
                       Icons.search_rounded,
@@ -162,29 +163,29 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                     ),
                     fillColor: Colors.white,
                     filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10.h,
+                      horizontal: 12.w,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide(
                         color: Colors.grey.shade200,
-                        width: 1,
+                        width: 1.w,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide(
                         color: Colors.grey.shade200,
-                        width: 1,
+                        width: 1.w,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
                         color: Colors.black,
-                        width: 1.5,
+                        width: 1.5.w,
                       ),
                     ),
                   ),
@@ -196,11 +197,11 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
               child: Container(
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.all(4.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade200, width: 1),
+                  borderRadius: BorderRadius.circular(10.r),
+                  border: Border.all(color: Colors.grey.shade200, width: 1.w),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x40000000),
@@ -227,7 +228,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                 listenWhen: (p, c) => c.actionStatus != p.actionStatus,
                 listener: (context, state) {
                   if (state.actionStatus == AppStatus.success) {
-                    context.read<InquiryBloc>().add(const InquiryFetched());
+                    context.read<InquiryBloc>().add(InquiryFetched());
                   }
                 },
                 builder: (context, state) {
@@ -244,21 +245,21 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                             size: 48,
                             color: Colors.grey.shade300,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           Text(
                             state.errorMessage ?? 'Failed to load enquiries',
                             style: GoogleFonts.poppins(
                               color: AppColors.textSecondary,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           OutlinedButton.icon(
                             onPressed: () => context.read<InquiryBloc>().add(
                               const InquiryFetched(),
                             ),
-                            icon: const Icon(Icons.refresh_rounded, size: 16),
+                            icon: Icon(Icons.refresh_rounded, size: 16),
                             label: Text(
                               'Retry',
                               style: GoogleFonts.poppins(
@@ -269,7 +270,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                               foregroundColor: AppColors.primary,
                               side: const BorderSide(color: AppColors.primary),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                             ),
                           ),
@@ -306,11 +307,11 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                   return RefreshIndicator(
                     color: const Color(0xFF2E8EFF),
                     onRefresh: () async =>
-                        context.read<InquiryBloc>().add(const InquiryFetched()),
+                        context.read<InquiryBloc>().add(InquiryFetched()),
                     child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      separatorBuilder: (_, __) => SizedBox(height: 10.h),
                       itemBuilder: (context, i) {
                         final inq = filtered[i];
                         final sc = _statusColor(inq.status);
@@ -351,14 +352,14 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                 );
                               }
                             },
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                                 border: Border.all(
                                   color: isSelected ? const Color(0xFF2E8EFF) : Colors.transparent,
-                                  width: 1.5,
+                                  width: 1.5.w,
                                 ),
                                 boxShadow: const [
                                   BoxShadow(
@@ -381,17 +382,17 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                           // Avatar
                                           CircleAvatar(
                                             radius: 24,
-                                            backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                            backgroundColor: Color(0xFF2E8EFF).withOpacity(0.1),
                                             child: Text(
                                               initials,
                                               style: GoogleFonts.poppins(
                                                 color: const Color(0xFF2E8EFF),
                                                 fontWeight: FontWeight.w700,
-                                                fontSize: 14,
+                                                fontSize: 14.sp,
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 14),
+                                          SizedBox(width: 14.w),
                                           // Content
                                           Expanded(
                                             child: Column(
@@ -405,18 +406,18 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                         inq.name,
                                                         style: GoogleFonts.poppins(
                                                           fontWeight: FontWeight.w600,
-                                                          fontSize: 15,
+                                                          fontSize: 15.sp,
                                                           color: Colors.black,
                                                         ),
                                                         maxLines: 1,
                                                         overflow: TextOverflow.ellipsis,
                                                       ),
                                                     ),
-                                                    const SizedBox(width: 8),
+                                                    SizedBox(width: 8.w),
                                                     _pill(_cap(inq.status), sc),
                                                   ],
                                                 ),
-                                                const SizedBox(height: 6),
+                                                SizedBox(height: 6.h),
                                                 // Email
                                                 Row(
                                                   children: [
@@ -425,14 +426,14 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                       size: 14,
                                                       color: Color(0xFF2E8EFF),
                                                     ),
-                                                    const SizedBox(width: 6),
+                                                    SizedBox(width: 6.w),
                                                     Expanded(
                                                       child: Text(
                                                         inq.email.isNotEmpty
                                                             ? inq.email
                                                             : 'No email address',
                                                         style: GoogleFonts.poppins(
-                                                          fontSize: 12,
+                                                          fontSize: 12.sp,
                                                           color: Colors.grey.shade600,
                                                         ),
                                                         maxLines: 1,
@@ -441,7 +442,7 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                     ),
                                                   ],
                                                 ),
-                                                const SizedBox(height: 4),
+                                                SizedBox(height: 4.h),
                                                 // Phone
                                                 Row(
                                                   children: [
@@ -450,13 +451,13 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                                       size: 14,
                                                       color: Color(0xFF2E8EFF),
                                                     ),
-                                                    const SizedBox(width: 6),
+                                                    SizedBox(width: 6.w),
                                                     Text(
                                                       inq.phone.isNotEmpty
                                                           ? inq.phone
                                                           : 'No phone number',
                                                       style: GoogleFonts.poppins(
-                                                        fontSize: 12,
+                                                        fontSize: 12.sp,
                                                         color: Colors.grey.shade600,
                                                       ),
                                                     ),
@@ -487,41 +488,41 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
                                       }
                                     },
                                     child: Container(
-                                      width: 26,
-                                      height: 46,
-                                      decoration: const BoxDecoration(
+                                      width: 26.w,
+                                      height: 46.h,
+                                      decoration: BoxDecoration(
                                         color: Color(0xFF2E8EFF),
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
+                                          topLeft: Radius.circular(10.r),
+                                          bottomLeft: Radius.circular(10.r),
                                         ),
                                       ),
-                                      child: const Column(
+                                      child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 3),
+                                          SizedBox(height: 3.h),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 3),
+                                          SizedBox(height: 3.h),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
@@ -545,32 +546,33 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_inquiry_fab',
         onPressed: () async {
           await Navigator.pushNamed(context, AppRoutes.addInquiry);
           if (context.mounted) {
-            context.read<InquiryBloc>().add(const InquiryFetched());
+            context.read<InquiryBloc>().add(InquiryFetched());
           }
         },
         backgroundColor: const Color(0xFF2E8EFF),
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
+        child: Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
 
   Widget _pill(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         label,
         style: GoogleFonts.poppins(
           color: color,
-          fontSize: 10,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -582,12 +584,12 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Container(
-          width: 80,
-          height: 80,
+          width: 80.w,
+          height: 80.h,
           decoration: BoxDecoration(
-            color: const Color(0xFF2E8EFF).withOpacity(0.08),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFF2E8EFF).withOpacity(0.2)),
+            color: Color(0xFF2E8EFF).withOpacity(0.08),
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(color: Color(0xFF2E8EFF).withOpacity(0.2)),
           ),
           child: const Center(
             child: Icon(
@@ -597,19 +599,19 @@ class _InquiryListScreenState extends State<InquiryListScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Text(
           'No enquiries found',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
-            fontSize: 16,
+            fontSize: 16.sp,
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Text(
           'Tap + to add a new enquiry',
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
         ),
       ],
     ),
@@ -622,8 +624,8 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 4,
-      height: 4,
+      width: 4.w,
+      height: 4.h,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,

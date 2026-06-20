@@ -45,4 +45,20 @@ abstract class InquiryRepository {
     required String inquiryId,
     required String assignedTo,
   });
+
+  Future<InquiryModel> fetchById(String id);
+
+  Future<InquiryModel> updateInquiry(
+    String id, {
+    String? name,
+    String? phone,
+    String? status,
+  });
+
+  Future<List<InquiryModel>> getDuplicates(String id);
+
+  Future<InquiryModel> mergeInquiry({
+    required String sourceId,
+    required String targetId,
+  });
 }

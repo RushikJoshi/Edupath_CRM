@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -78,7 +79,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           'New Account',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
@@ -105,7 +106,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                     backgroundColor: const Color(0xFF2ECC71),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     duration: const Duration(seconds: 2),
                   ),
@@ -129,7 +130,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                     backgroundColor: Colors.red,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                 );
@@ -138,7 +139,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -151,7 +152,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       validator: (v) =>
                           v == null || v.isEmpty ? 'Name is required' : null,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Email *',
                       'e.g. rahul@example.com',
@@ -164,7 +165,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Phone *',
                       '9876555321',
@@ -174,7 +175,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       validator: (v) =>
                           v == null || v.isEmpty ? 'Phone is required' : null,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Company Name',
                       'e.g. ABC Pvt Ltd',
@@ -182,7 +183,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       _companyCtrl,
                     ),
                   ]),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _section('Address', Icons.location_on_outlined, [
                     _field(
                       'Street Address',
@@ -190,7 +191,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       Icons.location_on_outlined,
                       _addressCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     Row(
                       children: [
                         Expanded(
@@ -201,7 +202,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                             _cityCtrl,
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        SizedBox(width: 14.w),
                         Expanded(
                           child: _field(
                             'State',
@@ -212,7 +213,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     Row(
                       children: [
                         Expanded(
@@ -223,7 +224,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                             _countryCtrl,
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        SizedBox(width: 14.w),
                         Expanded(
                           child: _field(
                             'Pincode',
@@ -247,7 +248,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
         builder: (context, state) {
           final isLoading = state.actionStatus == AppStatus.loading;
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -267,42 +268,42 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(0, 50),
                         foregroundColor: const Color(0xFF2E8EFF),
-                        side: const BorderSide(
+                        side: BorderSide(
                           color: Color(0xFF2E8EFF),
-                          width: 1.5,
+                          width: 1.5.w,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
+                          borderRadius: BorderRadius.circular(25.r),
                         ),
                       ),
                       child: Text(
                         'Cancel',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
                   Expanded(
                     flex: 2,
                     child: SizedBox(
-                      height: 50,
+                      height: 50.h,
                       child: FilledButton(
                         onPressed: isLoading ? null : _onSubmit,
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF2E8EFF),
                           disabledBackgroundColor: Colors.grey.shade300,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(25.r),
                           ),
                           elevation: 0,
                         ),
                         child: isLoading
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
+                            ? SizedBox(
+                                height: 20.h,
+                                width: 20.w,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.5,
                                   color: Colors.white,
@@ -312,7 +313,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                                 'Create Account',
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 15,
+                                  fontSize: 15.sp,
                                   color: Colors.white,
                                 ),
                               ),
@@ -330,11 +331,11 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
 
   Widget _section(String title, IconData icon, List<Widget> children) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200, width: 1.5),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.grey.shade200, width: 1.5.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,25 +343,25 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ...children,
         ],
       ),
@@ -381,58 +382,58 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: ctrl,
           keyboardType: keyboardType,
           validator: validator,
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: GoogleFonts.poppins(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: Colors.grey.shade400,
             ),
             prefixIcon: Padding(
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(6.w),
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(icon, size: 18, color: const Color(0xFF2E8EFF)),
               ),
             ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 14,
-              horizontal: 14,
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 14.h,
+              horizontal: 14.w,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5.w),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5.w),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: Colors.red, width: 1.5.w),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide(color: Colors.red, width: 1.5.w),
             ),
           ),
         ),

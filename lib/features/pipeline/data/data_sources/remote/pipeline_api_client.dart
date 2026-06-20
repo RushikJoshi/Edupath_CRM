@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:gtcrm/core/network/api_endpoints.dart';
-import 'package:gtcrm/features/pipeline/data/models/pipeline_model.dart';
 
 part 'pipeline_api_client.g.dart';
 

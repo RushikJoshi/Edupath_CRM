@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +11,6 @@ import 'package:gtcrm/core/constants/app_colors.dart';
 import 'package:gtcrm/core/widgets/responsive_wrapper.dart';
 import 'package:gtcrm/core/utils/role_guard.dart';
 import 'package:gtcrm/routes/app_routes.dart';
-import 'package:gtcrm/core/widgets/app_drawer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,9 +20,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isAccountDetailsExpanded = true;
-  bool _isSettingsExpanded = true;
-
   @override
   void initState() {
     super.initState();
@@ -74,76 +71,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : 'EP';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
-      drawer: const AppDrawer(activeRoute: AppRoutes.profile),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF2E8EFF),
-        elevation: 0,
-        toolbarHeight: 64,
-        leading: Builder(
-          builder: (ctx) => IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.white,
-              size: 20,
-            ),
-            onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              } else {
-                Scaffold.of(ctx).openDrawer();
-              }
-            },
-          ),
-        ),
-        title: Text(
-          'Profile',
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      backgroundColor: const Color(0xFFF4F7FC),
       body: ResponsiveConstraint(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          children: [
-            // ── Header Profile Card ──
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF2E8EFF), width: 1.5),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x40000000),
-                    blurRadius: 4,
-                    spreadRadius: 0,
-                    offset: Offset.zero,
-                  ),
-                ],
-              ),
-              child: Row(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: Column(
+            children: [
+              // ── Header Section ──
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.bottomCenter,
                 children: [
                   Container(
-                    width: 56,
-                    height: 56,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                    height: 160.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: AppColors.primaryGradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40.r),
+                        bottomRight: Radius.circular(40.r),
+                      ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(28),
-                      child: Container(
-                        color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                        child: Center(
+                    child: SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+                              onPressed: () {
+                                if (Navigator.canPop(context)) {
+                                  Navigator.pop(context);
+                                }
+                              },
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  'My Profile',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 48.w), // Balance for back button
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -50,
+                    child: Container(
+                      padding: EdgeInsets.all(6.w),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF4F7FC),
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircleAvatar(
+                        radius: 54,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundColor: const Color(0xFFEFF5FF),
                           child: Text(
                             initials,
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF2E8EFF),
-                              fontSize: 20,
+                              color: AppColors.primary,
+                              fontSize: 32.sp,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -151,225 +157,224 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user?.name ?? 'EduPath User',
-                          style: GoogleFonts.poppins(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          user?.email ?? '-',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 18),
+              SizedBox(height: 60.h),
 
-            // ── Account Details Section ──
-            _buildCollapsibleHeader(
-              title: 'Account Details',
-              icon: Icons.person_outline_rounded,
-              isExpanded: _isAccountDetailsExpanded,
-              onToggle: () {
-                setState(() {
-                  _isAccountDetailsExpanded = !_isAccountDetailsExpanded;
-                });
-              },
-            ),
-            if (_isAccountDetailsExpanded) ...[
-              const SizedBox(height: 10),
-              _buildItemRow(
-                icon: Icons.badge_outlined,
-                label: 'Full Name',
-                value: user?.name ?? '-',
+              // ── User Info ──
+              Text(
+                user?.name ?? 'EduPath User',
+                style: GoogleFonts.poppins(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1E293B),
+                ),
               ),
-              _buildItemRow(
-                icon: Icons.mail_outline_rounded,
-                label: 'Email',
-                value: user?.email ?? '-',
+              SizedBox(height: 4.h),
+              Text(
+                user?.email ?? '-',
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF64748B),
+                ),
               ),
-              _buildItemRow(
-                icon: Icons.shield_outlined,
-                label: 'Role',
-                value: prettyRole(role),
+              SizedBox(height: 24.h),
+
+              // ── Account Information Card ──
+              _buildSectionTitle('Account Information'),
+              SizedBox(height: 12.h),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0xFFE2E8F0),
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildInfoTile(
+                      icon: Icons.shield_rounded,
+                      title: 'Role',
+                      value: prettyRole(role),
+                    ),
+                    Divider(height: 1.h, color: Color(0xFFF1F5F9), indent: 56),
+                    _buildInfoTile(
+                      icon: Icons.business_rounded,
+                      title: 'Branch',
+                      value: branchName,
+                    ),
+                  ],
+                ),
               ),
-              _buildItemRow(
-                icon: Icons.account_tree_outlined,
-                label: 'Branch',
-                value: branchName,
+              SizedBox(height: 24.h),
+
+              // ── Settings & Preferences Card ──
+              _buildSectionTitle('Settings & Preferences'),
+              SizedBox(height: 12.h),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0xFFE2E8F0),
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    _buildActionTile(
+                      icon: Icons.lock_rounded,
+                      title: 'Change Password',
+                      onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword),
+                    ),
+                    Divider(height: 1.h, color: Color(0xFFF1F5F9), indent: 56),
+                    _buildActionTile(
+                      icon: Icons.notifications_rounded,
+                      title: 'Notifications',
+                      onTap: () {},
+                    ),
+                    Divider(height: 1.h, color: Color(0xFFF1F5F9), indent: 56),
+                    _buildActionTile(
+                      icon: Icons.help_rounded,
+                      title: 'Help & Support',
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 40.h),
+
+              // ── Log Out Button ──
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: FilledButton.icon(
+                  onPressed: () => _handleLogout(context),
+                  icon: const Icon(Icons.logout_rounded, size: 20),
+                  label: Text(
+                    'Log Out',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFF1F2),
+                    foregroundColor: const Color(0xFFE11D48),
+                    minimumSize: const Size(double.infinity, 56),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                      side: const BorderSide(color: Color(0xFFFECDD3)),
+                    ),
+                  ),
+                ),
               ),
             ],
-            const SizedBox(height: 18),
-
-            // ── Settings Section ──
-            _buildCollapsibleHeader(
-              title: 'Settings',
-              icon: Icons.settings_outlined,
-              isExpanded: _isSettingsExpanded,
-              onToggle: () {
-                setState(() {
-                  _isSettingsExpanded = !_isSettingsExpanded;
-                });
-              },
-            ),
-            if (_isSettingsExpanded) ...[
-              const SizedBox(height: 10),
-              _buildItemRow(
-                icon: Icons.lock_open_outlined,
-                label: 'Change Password',
-                onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword),
-              ),
-              _buildItemRow(
-                icon: Icons.notifications_none_outlined,
-                label: 'Notification',
-                onTap: () {},
-              ),
-              _buildItemRow(
-                icon: Icons.help_outline_rounded,
-                label: 'Help & Support',
-                onTap: () {},
-              ),
-              _buildItemRow(
-                icon: Icons.logout_rounded,
-                label: 'Log out',
-                onTap: () => _handleLogout(context),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCollapsibleHeader({
-    required String title,
-    required IconData icon,
-    required bool isExpanded,
-    required VoidCallback onToggle,
-  }) {
-    return GestureDetector(
-      onTap: onToggle,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.grey.shade200),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 4,
-              spreadRadius: 0,
-              offset: Offset.zero,
-            ),
-          ],
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF94A3B8),
+            letterSpacing: 0.5,
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoTile({required IconData icon, required String title, required String value}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.w),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFF5FF),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 20),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF64748B),
+                  ),
+                ),
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1E293B),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20.r),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Row(
           children: [
-            Icon(icon, color: const Color(0xFF2E8EFF), size: 22),
-            const SizedBox(width: 12),
+            Container(
+              padding: EdgeInsets.all(10.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEFF5FF),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(icon, color: AppColors.primary, size: 20),
+            ),
+            SizedBox(width: 16.w),
             Expanded(
               child: Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: const Color(0xFF1E293B),
                 ),
               ),
             ),
-            Icon(
-              isExpanded
-                  ? Icons.keyboard_arrow_up_rounded
-                  : Icons.keyboard_arrow_down_rounded,
-              color: const Color(0xFF2E8EFF),
-              size: 24,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildItemRow({
-    required IconData icon,
-    required String label,
-    String? value,
-    bool hasBorder = false,
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: hasBorder ? Colors.white : const Color(0xFFF5F7FA),
-          borderRadius: BorderRadius.circular(25),
-          border: hasBorder
-              ? Border.all(color: const Color(0xFF2E8EFF), width: 1.5)
-              : Border.all(color: Colors.transparent, width: 1.5),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: const Color(0xFF2E8EFF), size: 20),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: value != null
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          label,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          value,
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Text(
-                      label,
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
-                    ),
-            ),
+            const Icon(Icons.chevron_right_rounded, color: Color(0xFF94A3B8)),
           ],
         ),
       ),
@@ -380,55 +385,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         title: Text(
           'Logout',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
-            color: AppColors.primary,
+            color: const Color(0xFF1E293B),
           ),
         ),
         content: Text(
-          'Are you sure you want to logout?',
+          'Are you sure you want to logout from your account?',
           style: GoogleFonts.poppins(
-            color: Colors.grey.shade700,
+            color: const Color(0xFF64748B),
+            fontSize: 14.sp,
           ),
         ),
-        actionsPadding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: TextButton(
                   onPressed: () => Navigator.pop(dialogContext, false),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(
-                      color: Colors.grey.shade400,
-                    ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF64748B),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey.shade700,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 12.w),
               Expanded(
                 child: FilledButton(
                   onPressed: () => Navigator.pop(dialogContext, true),
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.error,
+                    backgroundColor: const Color(0xFFE11D48),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                   child: Text(
-                    'OK',
+                    'Logout',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,

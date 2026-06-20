@@ -8,50 +8,41 @@ abstract class UserEvent extends Equatable {
 }
 
 class UserFetched extends UserEvent {
-  const UserFetched({this.search, this.role});
+  UserFetched({this.search, this.role, this.status});
   final String? search;
   final String? role;
-
-  @override
-  List<Object?> get props => [search, role];
-}
-
-class UserCreated extends UserEvent {
-  const UserCreated({
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.role,
-    required this.branchId,
-  });
-
-  final String name;
-  final String email;
-  final String password;
-  final String role;
-  final String branchId;
-
-  @override
-  List<Object?> get props => [name, email, password, role, branchId];
-}
-
-class UserUpdated extends UserEvent {
-  const UserUpdated({
-    required this.userId,
-    required this.name,
-    required this.role,
-    this.branchId,
-    this.status,
-  });
-
-  final String userId;
-  final String name;
-  final String role;
-  final String? branchId;
   final String? status;
 
   @override
-  List<Object?> get props => [userId, name, role, branchId, status];
+  List<Object?> get props => [search, role, status];
+}
+
+class UserCreated extends UserEvent {
+  const UserCreated(this.userData);
+
+  final Map<String, dynamic> userData;
+
+  @override
+  List<Object?> get props => [userData];
+}
+
+class UserUpdated extends UserEvent {
+  const UserUpdated({required this.userId, required this.updateData});
+
+  final String userId;
+  final Map<String, dynamic> updateData;
+
+  @override
+  List<Object?> get props => [userId, updateData];
+}
+
+class UserDetailFetched extends UserEvent {
+  const UserDetailFetched(this.userId);
+
+  final String userId;
+
+  @override
+  List<Object?> get props => [userId];
 }
 
 class UserDeleted extends UserEvent {

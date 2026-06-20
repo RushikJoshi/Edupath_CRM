@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,10 +6,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:gtcrm/core/widgets/shimmer_loading.dart';
 
+import 'package:gtcrm/features/audit_log/presentation/bloc/audit_log_bloc.dart';
+import 'package:gtcrm/features/audit_log/presentation/bloc/audit_log_event.dart';
+import 'package:gtcrm/features/audit_log/presentation/bloc/audit_log_state.dart';
 import 'package:gtcrm/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:gtcrm/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:gtcrm/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:gtcrm/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:gtcrm/features/meeting/presentation/bloc/meeting_bloc.dart';
+import 'package:gtcrm/features/meeting/presentation/bloc/meeting_event.dart';
+import 'package:gtcrm/features/meeting/presentation/bloc/meeting_state.dart';
 import 'package:gtcrm/features/notification/presentation/bloc/notification_bloc.dart';
 import 'package:gtcrm/features/notification/presentation/bloc/notification_event.dart';
 import 'package:gtcrm/features/notification/presentation/bloc/notification_state.dart';
@@ -19,6 +26,7 @@ import 'package:gtcrm/features/dashboard/data/models/dashboard_model.dart';
 import 'package:gtcrm/routes/app_routes.dart';
 import 'package:gtcrm/features/customer/presentation/pages/customer_list_screen.dart';
 import 'package:gtcrm/features/inquiry/presentation/pages/inquiry_list_screen.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, this.onProfileTap});
@@ -36,7 +44,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     final role = context.read<AuthBloc>().state.user?.role ?? 'sales';
     context.read<DashboardBloc>().add(DashboardFetched(role));
-    context.read<NotificationBloc>().add(const NotificationUnreadFetched());
+    context.read<NotificationBloc>().add(NotificationUnreadFetched());
+
+    // Fetch today's meetings
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    context.read<MeetingBloc>().add(MeetingFetched(
+      start: todayStart.toIso8601String(),
+      end: todayEnd.toIso8601String(),
+    ));
+
+    // Fetch recent activities (last 10)
+    context.read<AuditLogBloc>().add(AuditLogsFetched(limit: 10));
   }
 
   @override
@@ -56,11 +76,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 64,
-                    height: 64,
+                    width: 64.w,
+                    height: 64.h,
                     decoration: BoxDecoration(
                       color: AppColors.errorLight,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
                     child: const Icon(
                       Icons.error_outline_rounded,
@@ -68,33 +88,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: AppColors.error,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     state.errorMessage ?? 'Failed to load',
                     style: GoogleFonts.poppins(
                       color: AppColors.textPrimary,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   ElevatedButton.icon(
                     onPressed: () {
                       final role =
                           context.read<AuthBloc>().state.user?.role ?? 'sales';
                       context.read<DashboardBloc>().add(DashboardFetched(role));
                     },
-                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    icon: Icon(Icons.refresh_rounded, size: 18),
                     label: const Text('Try Again'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 12,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 12.h,
                       ),
                     ),
                   ),
@@ -113,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 'No dashboard data available yet.',
                 style: GoogleFonts.poppins(
                   color: Colors.grey.shade600,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
             ),
@@ -183,8 +203,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 20,
-                height: 1,
+                fontSize: 20.sp,
+                height: 1.h,
               ),
             ),
             actions: [
@@ -217,9 +237,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               right: -2,
                               top: -2,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                  vertical: 1,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                  vertical: 1.h,
                                 ),
                                 decoration: const BoxDecoration(
                                   color: AppColors.error,
@@ -238,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 8,
+                                      fontSize: 8.sp,
                                     ),
                                   ),
                                 ),
@@ -270,12 +290,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildTopLeadsCard(data),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(child: _performanceCard(data)),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: Column(
                             children: [
@@ -291,7 +311,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               _smallStatCard(
                                 title: 'Total Accounts',
                                 value: _formatCompactNumber(data.totalCustomers),
@@ -304,7 +324,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: 10.h),
                               _smallStatCard(
                                 title: 'Conversion Rate',
                                 value: '${data.conversionRate.toStringAsFixed(1).replaceAll('.', ',')}%',
@@ -315,7 +335,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Row(
                       children: [
                         Expanded(
@@ -325,7 +345,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             imageAsset: 'assets/svgs/revenue_illustration.png',
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: _bottomInfoCard(
                             title: 'Connect',
@@ -335,8 +355,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    _recentActivityCard(data),
+                    SizedBox(height: 16.h),
+                    _todayMeetingsCard(),
+                    SizedBox(height: 12.h),
+                    _recentActivityCard(),
                   ],
                 ),
               ),
@@ -350,7 +372,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildTopLeadsCard(DashboardModel data) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_cardRadius),
         color: const Color(0xFF2E8EFF),
@@ -374,11 +396,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   'Total Leads',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -386,32 +408,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       _formatCompactNumber(data.totalLeads),
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 34,
+                        fontSize: 34.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
                         '+15%',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Text(
                       'This month.',
                       style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.85),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -422,8 +444,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           Image.asset(
             'assets/svgs/total_leads_graph.png',
-            width: 70,
-            height: 60,
+            width: 70.w,
+            height: 60.h,
             fit: BoxFit.contain,
           ),
         ],
@@ -440,12 +462,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         leading: ShimmerLoading(
           baseColor: Colors.white.withValues(alpha: 0.4),
           highlightColor: Colors.white.withValues(alpha: 0.7),
-          child: const Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+          child: Icon(Icons.menu_rounded, color: Colors.white, size: 28),
         ),
         title: ShimmerLoading(
           baseColor: Colors.white.withValues(alpha: 0.4),
           highlightColor: Colors.white.withValues(alpha: 0.7),
-          child: Container(width: 120, height: 20, color: Colors.white),
+          child: Container(width: 120.w, height: 20.h, color: Colors.white),
         ),
         actions: [
           Padding(
@@ -472,38 +494,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _shimmerCard(height: 120),
-            const SizedBox(height: 12),
+            _shimmerCard(height: 120.h),
+            SizedBox(height: 12.h),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: _shimmerCard(height: 200)),
-                const SizedBox(width: 12),
+                Expanded(child: _shimmerCard(height: 200.h)),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Column(
                     children: [
-                      _shimmerCard(height: 60),
-                      const SizedBox(height: 10),
-                      _shimmerCard(height: 60),
-                      const SizedBox(height: 10),
-                      _shimmerCard(height: 60),
+                      _shimmerCard(height: 60.h),
+                      SizedBox(height: 10.h),
+                      _shimmerCard(height: 60.h),
+                      SizedBox(height: 10.h),
+                      _shimmerCard(height: 60.h),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Row(
               children: [
-                Expanded(child: _shimmerCard(height: 80)),
-                const SizedBox(width: 12),
-                Expanded(child: _shimmerCard(height: 80)),
+                Expanded(child: _shimmerCard(height: 80.h)),
+                SizedBox(width: 12.w),
+                Expanded(child: _shimmerCard(height: 80.h)),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             ShimmerLoading.box(
               width: double.infinity,
-              height: 160,
+              height: 160.h,
               borderRadius: _cardRadius,
             ),
           ],
@@ -543,7 +565,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final hasData = total > 0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(_cardRadius),
@@ -564,14 +586,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               'Performance Distribution',
               style: GoogleFonts.poppins(
                 color: const Color(0xFF1E293B),
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           SizedBox(
-            height: 120,
+            height: 120.h,
             child: hasData
                 ? Stack(
                     alignment: Alignment.center,
@@ -592,7 +614,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   : '',
                               titleStyle: GoogleFonts.poppins(
                                 color: Colors.white,
-                                fontSize: 9,
+                                fontSize: 9.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                               titlePositionPercentageOffset: 0.6,
@@ -606,7 +628,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             'Total',
                             style: GoogleFonts.poppins(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               color: const Color(0xFF64748B),
                               fontWeight: FontWeight.w500,
                             ),
@@ -614,10 +636,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             total.toInt().toString(),
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               color: const Color(0xFF1E293B),
                               fontWeight: FontWeight.w700,
-                              height: 1.1,
+                              height: 1.1.h,
                             ),
                           ),
                         ],
@@ -629,13 +651,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       'No chart data',
                       style: GoogleFonts.poppins(
                         color: Colors.grey.shade600,
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Vertical aligned legend exactly like the screenshot
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -646,14 +668,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const Color(0xFF3B82F6),
                 total,
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               _chartLegend(
                 'Leads',
                 data.totalLeads,
                 const Color(0xFF8B5CF6),
                 total,
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               _chartLegend(
                 'Accounts',
                 data.totalCustomers,
@@ -681,10 +703,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: onTap,
       child: Container(
         height: height,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           boxShadow: const [
             BoxShadow(
               color: Color(0x40000000),
@@ -709,36 +731,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF64748B),
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(
                     value,
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF1E293B),
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             if (imageAsset != null)
               Image.asset(
                 imageAsset,
-                width: 38,
-                height: 38,
+                width: 38.w,
+                height: 38.h,
                 fit: BoxFit.contain,
               )
             else if (icon != null)
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: EdgeInsets.all(6.w),
                 decoration: BoxDecoration(
                   color: iconBgColor ?? Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   icon,
@@ -758,7 +780,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String imageAsset,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(_cardRadius),
@@ -778,17 +800,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Image.asset(
                 imageAsset,
-                width: 20,
-                height: 20,
+                width: 20.w,
+                height: 20.h,
                 fit: BoxFit.contain,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Expanded(
                 child: Text(
                   title,
                   style: GoogleFonts.poppins(
                     color: const Color(0xFF475569),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 1,
@@ -797,14 +819,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               value,
               style: GoogleFonts.poppins(
                 color: const Color(0xFF1E293B),
-                fontSize: 22,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -814,102 +836,403 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _recentActivityCard(DashboardModel data) {
-    final items = <_ActivityItem>[
-      _ActivityItem(
-        Icons.calendar_today_outlined,
-        data.todayMeetings > 0
-            ? 'Meeting scheduled with rahul'
-            : 'No meeting scheduled today',
-        'Today',
-      ),
-      _ActivityItem(
-        Icons.phone_outlined,
-        data.todayCalls > 0
-            ? 'Call with priya is pending'
-            : 'No pending calls for today',
-        'Today',
-      ),
-      _ActivityItem(
-        Icons.person_outline_rounded,
-        'New lead: Anil kapur',
-        'Yesterday',
-      ),
-      _ActivityItem(
-        Icons.mail_outline_rounded,
-        'inquiry received from MNC Cro',
-        '2 days ago',
-      ),
-    ];
+  /// ── Today's meetings live card ─────────────────────────────────────────
+  Widget _todayMeetingsCard() {
+    return BlocBuilder<MeetingBloc, MeetingState>(
+      builder: (context, meetingState) {
+        final meetings = meetingState.items;
+        final isLoading = meetingState.status == AppStatus.loading;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(_cardRadius),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x40000000),
-            blurRadius: 4,
-            spreadRadius: 0,
-            offset: Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-            child: Text(
-              'Recent Activity',
-              style: GoogleFonts.poppins(
-                color: const Color(0xFF1E293B),
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(_cardRadius),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: Offset(0, 0),
               ),
-            ),
+            ],
           ),
-          const Divider(height: 1, color: Color(0xFFF1F5F9)),
-          ...items.map(_activityRow),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row with count badge
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(7.w),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF2E8EFF).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: const Icon(
+                        Icons.today_rounded,
+                        size: 18,
+                        color: Color(0xFF2E8EFF),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Text(
+                      'Today\'s Schedule',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF1E293B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    // Count badge
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                      decoration: BoxDecoration(
+                        color: meetings.isEmpty
+                            ? Colors.grey.shade100
+                            : Color(0xFF2E8EFF).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: isLoading
+                          ? SizedBox(
+                              width: 14.w,
+                              height: 14.h,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFF2E8EFF),
+                              ),
+                            )
+                          : Text(
+                              '${meetings.length} meeting${meetings.length == 1 ? '' : 's'}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: meetings.isEmpty
+                                    ? Colors.grey.shade500
+                                    : const Color(0xFF2E8EFF),
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(height: 1.h, color: Color(0xFFF1F5F9)),
+
+              // Meeting rows or empty state
+              if (isLoading)
+                Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xFF2E8EFF),
+                    ),
+                  ),
+                )
+              else if (meetings.isEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 12.w),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.event_available_rounded,
+                        size: 20,
+                        color: Color(0xFF94A3B8),
+                      ),
+                      SizedBox(width: 10.w),
+                      Text(
+                        'No meetings scheduled for today',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: const Color(0xFF94A3B8),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                ...meetings.take(5).map((m) {
+                  final time = _formatTime(m.startDate);
+                  final statusColor = m.status.toLowerCase() == 'completed'
+                      ? Colors.green
+                      : m.status.toLowerCase() == 'cancelled'
+                          ? Colors.red
+                          : const Color(0xFF2E8EFF);
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 4.w,
+                          height: 36.h,
+                          decoration: BoxDecoration(
+                            color: statusColor,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                m.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF1E293B),
+                                ),
+                              ),
+                              Text(
+                                m.meetingType,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11.sp,
+                                  color: const Color(0xFF94A3B8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              time,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF475569),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 2),
+                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: statusColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Text(
+                                m.status,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: statusColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// ── Recent Activity live card ─────────────────────────────────────────────
+  Widget _recentActivityCard() {
+    return BlocBuilder<AuditLogBloc, AuditLogState>(
+      builder: (context, auditLogState) {
+        final allActivities = List.of(auditLogState.items);
+        allActivities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        final activities = allActivities.take(5).toList();
+        final isLoading = auditLogState.status == AppStatus.loading;
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(_cardRadius),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x40000000),
+                blurRadius: 4,
+                spreadRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(7.w),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF8B5CF6).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: const Icon(
+                        Icons.timeline_rounded,
+                        size: 18,
+                        color: Color(0xFF8B5CF6),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Text(
+                      'Recent Activity',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF1E293B),
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(height: 1.h, color: Color(0xFFF1F5F9)),
+
+              if (isLoading)
+                Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xFF8B5CF6),
+                    ),
+                  ),
+                )
+              else if (activities.isEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 12.w),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.inbox_rounded,
+                        size: 20,
+                        color: Color(0xFF94A3B8),
+                      ),
+                      SizedBox(width: 10.w),
+                      Text(
+                        'No recent activities found',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: const Color(0xFF94A3B8),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                ...activities.map((a) => _activityRow(
+                      _ActivityItem(
+                        _activityIcon(a.action),
+                        a.details.isNotEmpty ? a.details : a.action,
+                        _relativeTime(a.createdAt),
+                        a.userName.isNotEmpty ? a.userName : 'System',
+                      ),
+                    )),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _activityRow(_ActivityItem item) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 11.h),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
       ),
       child: Row(
         children: [
-          Icon(item.icon, size: 18, color: const Color(0xFF64748B)),
-          const SizedBox(width: 12),
+          Container(
+            padding: EdgeInsets.all(6.w),
+            decoration: BoxDecoration(
+              color: Color(0xFF8B5CF6).withOpacity(0.08),
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(item.icon, size: 16, color: const Color(0xFF8B5CF6)),
+          ),
+          SizedBox(width: 10.w),
           Expanded(
-            child: Text(
-              item.label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.poppins(
-                color: const Color(0xFF334155),
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF334155),
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (item.subLabel.isNotEmpty)
+                  Text(
+                    item.subLabel,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFF94A3B8),
+                      fontSize: 11.sp,
+                    ),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 10.w),
           Text(
             item.time,
             style: GoogleFonts.poppins(
               color: const Color(0xFF94A3B8),
-              fontSize: 12,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
         ],
       ),
     );
+  }
+
+  /// Returns an icon for a given activity type string
+  IconData _activityIcon(String type) {
+    switch (type.toLowerCase()) {
+      case 'call': return Icons.phone_outlined;
+      case 'email': return Icons.mail_outline_rounded;
+      case 'meeting': return Icons.calendar_today_outlined;
+      case 'note': return Icons.note_outlined;
+      case 'lead': return Icons.person_add_outlined;
+      case 'inquiry': return Icons.contact_page_outlined;
+      case 'task': return Icons.task_outlined;
+      case 'deal': return Icons.handshake_outlined;
+      case 'stage_change': return Icons.swap_horiz_rounded;
+      default: return Icons.circle_notifications_outlined;
+    }
+  }
+
+  /// Returns a relative time label like 'Just now', '2h ago', 'Yesterday'
+  String _relativeTime(DateTime dt) {
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays == 1) return 'Yesterday';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${dt.day}/${dt.month}';
+  }
+
+  /// Format DateTime to 12-hour time string
+  String _formatTime(DateTime dt) {
+    final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
   }
 
   Widget _chartLegend(String label, int value, Color color, double total) {
@@ -919,15 +1242,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 8,
-          height: 8,
+          width: 8.w,
+          height: 8.h,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 11,
+            fontSize: 11.sp,
             color: const Color(0xFF475569),
             fontWeight: FontWeight.w500,
           ),
@@ -936,7 +1259,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Text(
           '${percentage.toStringAsFixed(0)}%',
           style: GoogleFonts.poppins(
-            fontSize: 11,
+            fontSize: 11.sp,
             color: const Color(0xFF64748B),
             fontWeight: FontWeight.w600,
           ),
@@ -966,11 +1289,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 class _ActivityItem {
-  const _ActivityItem(this.icon, this.label, this.time);
+  const _ActivityItem(this.icon, this.label, this.time, [this.subLabel = '']);
 
   final IconData icon;
   final String label;
   final String time;
+  final String subLabel;
 }
 
 class _ChartMetric {
@@ -980,4 +1304,3 @@ class _ChartMetric {
   final double value;
   final Color color;
 }
-

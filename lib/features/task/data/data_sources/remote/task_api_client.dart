@@ -19,7 +19,7 @@ abstract class TaskApiClient {
   @POST(ApiEndpoints.tasks)
   Future<HttpResponse<dynamic>> createTask(@Body() Map<String, dynamic> body);
 
-  @PUT(ApiEndpoints.taskDetail)
+  @PATCH(ApiEndpoints.taskDetail)
   Future<HttpResponse<dynamic>> updateTask(@Path('id') String id, @Body() Map<String, dynamic> body);
 
   @DELETE(ApiEndpoints.taskDetail)

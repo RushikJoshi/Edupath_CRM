@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                 backgroundColor: const Color(0xFF2ECC71),
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 duration: const Duration(seconds: 2),
               ),
@@ -82,7 +83,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
               ),
             );
@@ -108,7 +109,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
             'Add Branch',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 20.sp,
               color: Colors.white,
             ),
           ),
@@ -119,16 +120,16 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ── Branch Details Section ────────────────────────────
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       boxShadow: const [
                         BoxShadow(
                           color: Color(0x40000000),
@@ -144,10 +145,10 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(8),
+                              padding: EdgeInsets.all(8.w),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8),
+                                color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: const Icon(
                                 Icons.business_rounded,
@@ -155,26 +156,26 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                 color: Color(0xFF2E8EFF),
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Text(
                               'Branch Details',
                               style: GoogleFonts.poppins(
-                                fontSize: 15,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
 
                         // Branch Name
                         _buildLabel('Branch Name'),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         TextFormField(
                           controller: _nameCtrl,
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: Colors.black,
                           ),
                           decoration: _inputDecoration(
@@ -185,15 +186,15 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                               ? 'Branch name is required'
                               : null,
                         ),
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14.h),
 
                         // Location
                         _buildLabel('Location'),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         TextFormField(
                           controller: _locationCtrl,
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: Colors.black,
                           ),
                           decoration: _inputDecoration(
@@ -241,12 +242,12 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: Colors.black87,
-                          side: const BorderSide(
+                          side: BorderSide(
                             color: Color(0xFF2E8EFF),
-                            width: 1.5,
+                            width: 1.5.w,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                         ),
                         child: Text(
@@ -258,25 +259,25 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       flex: 2,
                       child: SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: FilledButton(
                           onPressed: isLoading ? null : _onSubmit,
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF2E8EFF),
                             disabledBackgroundColor: Colors.grey.shade300,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(12.r),
                             ),
                             elevation: 0,
                           ),
                           child: isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
+                              ? SizedBox(
+                                  height: 20.h,
+                                  width: 20.w,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.5,
                                     color: Colors.white,
@@ -286,7 +287,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                   'Add Branch',
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 15,
+                                    fontSize: 15.sp,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -308,7 +309,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   Widget _buildLabel(String text) => Text(
         text,
         style: GoogleFonts.poppins(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
           color: Colors.black54,
         ),
@@ -321,7 +322,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
       InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.poppins(
-          fontSize: 13,
+          fontSize: 13.sp,
           color: Colors.grey.shade500,
         ),
         prefixIcon: Icon(
@@ -331,29 +332,29 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
-          horizontal: 16,
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 14.h,
+          horizontal: 16.w,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: Colors.grey.shade300),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.red),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: Colors.red),
         ),
       );
 }

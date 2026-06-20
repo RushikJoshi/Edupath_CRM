@@ -172,4 +172,90 @@ class InquiryRepositoryImpl implements InquiryRepository {
       throw AppErrorHandler.fromDioException(e);
     }
   }
+
+  @override
+  Future<InquiryModel> fetchById(String id) async {
+    try {
+      final response = await _apiClient.getInquiryById(id);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        return InquiryModel.fromJson(json);
+      }
+      throw const AppException(
+        type: AppErrorType.invalidResponse,
+        userMessage: 'Unexpected response fetching inquiry details',
+      );
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<InquiryModel> updateInquiry(
+    String id, {
+    String? name,
+    String? phone,
+    String? status,
+  }) async {
+    try {
+      final body = <String, dynamic>{};
+      if (name != null) body['name'] = name;
+      if (phone != null) body['phone'] = phone;
+      if (status != null) body['status'] = status;
+
+      final response = await _apiClient.updateInquiry(id, body);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        return InquiryModel.fromJson(json);
+      }
+      throw const AppException(
+        type: AppErrorType.invalidResponse,
+        userMessage: 'Unexpected response updating inquiry',
+      );
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<List<InquiryModel>> getDuplicates(String id) async {
+    try {
+      final response = await _apiClient.getDuplicates(id);
+      final data = response.data;
+      List<dynamic> list = [];
+      if (data is List) {
+        list = data;
+      } else if (data is Map && data['duplicates'] is List) {
+        list = data['duplicates'] as List<dynamic>;
+      } else if (data is Map && data['data'] is List) {
+        list = data['data'] as List<dynamic>;
+      }
+      return list.map((e) => InquiryModel.fromJson(e as Map<String, dynamic>)).toList();
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<InquiryModel> mergeInquiry({
+    required String sourceId,
+    required String targetId,
+  }) async {
+    try {
+      final response = await _apiClient.mergeInquiry(sourceId, {'targetId': targetId});
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        return InquiryModel.fromJson(json);
+      }
+      throw const AppException(
+        type: AppErrorType.invalidResponse,
+        userMessage: 'Unexpected response merging inquiry',
+      );
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
 }

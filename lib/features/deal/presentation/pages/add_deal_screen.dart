@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
@@ -132,7 +133,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
               backgroundColor: AppColors.stageWon,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
             ),
           );
@@ -147,7 +148,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
             ),
           );
@@ -174,14 +175,14 @@ class _AddDealScreenState extends State<AddDealScreen> {
                 'Add Accounts',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: Colors.white,
                 ),
               ),
               Text(
                 'Add accounts like lead flow',
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   color: Colors.white.withOpacity(0.7),
                 ),
               ),
@@ -192,8 +193,8 @@ class _AddDealScreenState extends State<AddDealScreen> {
               padding: const EdgeInsets.only(right: 14),
               child: SvgPicture.asset(
                 'assets/svgs/deal.svg',
-                width: 24,
-                height: 24,
+                width: 24.w,
+                height: 24.h,
               ),
             ),
           ],
@@ -212,7 +213,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSectionHeader('CORE INFORMATION'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   InnerShadow(
                     shadows: [
                       BoxShadow(
@@ -222,21 +223,21 @@ class _AddDealScreenState extends State<AddDealScreen> {
                       ),
                     ],
                     child: Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: EdgeInsets.all(14.w),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.primary, width: 1),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(color: AppColors.primary, width: 1.w),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _label('Account Title *'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           TextFormField(
                             controller: _titleCtrl,
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: _decoration(
@@ -247,14 +248,14 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                 ? 'Title is required'
                                 : null,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           _label('Account Value (₹) *'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           TextFormField(
                             controller: _valueCtrl,
                             keyboardType: TextInputType.number,
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
                             decoration: _decoration(
@@ -269,9 +270,9 @@ class _AddDealScreenState extends State<AddDealScreen> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           _label('Account Stage'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Builder(
                             builder: (ctx) {
                               final stageNames = ctx
@@ -292,7 +293,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                               return DropdownButtonFormField<String>(
                                 value: effectiveValue,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   fontWeight: FontWeight.w600,
                                   color: AppColors.textPrimary,
                                 ),
@@ -314,7 +315,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                               );
                             },
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           LayoutBuilder(
                             builder: (context, constraints) {
                               final isNarrow = constraints.maxWidth < 380;
@@ -322,7 +323,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _label('Currency'),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8.h),
                                   DropdownButtonFormField<String>(
                                     value: _currency,
                                     decoration: _decoration(
@@ -346,7 +347,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _label('Priority'),
-                                  const SizedBox(height: 8),
+                                  SizedBox(height: 8.h),
                                   DropdownButtonFormField<String>(
                                     value: _priority,
                                     decoration: _decoration(
@@ -372,7 +373,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                 return Column(
                                   children: [
                                     currencyField,
-                                    const SizedBox(height: 12),
+                                    SizedBox(height: 12.h),
                                     priorityField,
                                   ],
                                 );
@@ -381,15 +382,15 @@ class _AddDealScreenState extends State<AddDealScreen> {
                               return Row(
                                 children: [
                                   Expanded(child: currencyField),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Expanded(child: priorityField),
                                 ],
                               );
                             },
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           _label('Expected Close Date'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           InkWell(
                             onTap: () async {
                               final d = await showDatePicker(
@@ -407,10 +408,10 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                 setState(() => _expectedCloseDate = d);
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(14),
+                              padding: EdgeInsets.all(14.w),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
                                   color: AppColors.primary.withOpacity(0.3),
                                 ),
@@ -422,13 +423,13 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                     size: 18,
                                     color: AppColors.primary.withOpacity(0.6),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Text(
                                     _expectedCloseDate == null
                                         ? 'Select Date'
                                         : '${_expectedCloseDate!.day}/${_expectedCloseDate!.month}/${_expectedCloseDate!.year}',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       fontWeight: FontWeight.w600,
                                       color: _expectedCloseDate == null
                                           ? Colors.grey.shade400
@@ -439,13 +440,13 @@ class _AddDealScreenState extends State<AddDealScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           _label('Description'),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           TextFormField(
                             controller: _descriptionCtrl,
                             maxLines: 3,
-                            style: GoogleFonts.poppins(fontSize: 14),
+                            style: GoogleFonts.poppins(fontSize: 14.sp),
                             decoration: _decoration(
                               'Enter account description...',
                               Icons.description_rounded,
@@ -455,8 +456,8 @@ class _AddDealScreenState extends State<AddDealScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 32.h),
+                  SizedBox(height: 8.h),
                   InnerShadow(
                     shadows: [
                       BoxShadow(
@@ -467,7 +468,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                     ],
                     child: SizedBox(
                       width: double.infinity,
-                      height: 50,
+                      height: 50.h,
                       child: BlocBuilder<DealBloc, DealState>(
                         builder: (context, state) {
                           final isLoading =
@@ -477,14 +478,14 @@ class _AddDealScreenState extends State<AddDealScreen> {
                             style: FilledButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(14.r),
                               ),
                               elevation: 0,
                             ),
                             child: isLoading
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                ? SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       color: Colors.white,
@@ -494,7 +495,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
                                     'SAVE ACCOUNT',
                                     style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 15,
+                                      fontSize: 15.sp,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -516,18 +517,18 @@ class _AddDealScreenState extends State<AddDealScreen> {
     return Row(
       children: [
         Container(
-          width: 4,
-          height: 16,
+          width: 4.w,
+          height: 16.h,
           decoration: BoxDecoration(
             color: AppColors.primary,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(2.r),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: FontWeight.w800,
             color: AppColors.primary,
             letterSpacing: 1,
@@ -540,7 +541,7 @@ class _AddDealScreenState extends State<AddDealScreen> {
   Widget _label(String text) => Text(
     text,
     style: GoogleFonts.poppins(
-      fontSize: 12,
+      fontSize: 12.sp,
       fontWeight: FontWeight.w700,
       color: Colors.grey.shade700,
     ),
@@ -549,29 +550,29 @@ class _AddDealScreenState extends State<AddDealScreen> {
   InputDecoration _decoration(String hint, IconData icon) => InputDecoration(
     hintText: hint,
     hintStyle: GoogleFonts.poppins(
-      fontSize: 13,
+      fontSize: 13.sp,
       color: Colors.grey.shade400,
       fontWeight: FontWeight.w400,
     ),
     filled: true,
     fillColor: Colors.white,
     prefixIcon: Icon(icon, size: 18, color: AppColors.primary.withOpacity(0.6)),
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+    contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12.r),
       borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12.r),
       borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      borderRadius: BorderRadius.circular(12.r),
+      borderSide: BorderSide(color: AppColors.primary, width: 1.5.w),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: AppColors.error, width: 1),
+      borderRadius: BorderRadius.circular(12.r),
+      borderSide: BorderSide(color: AppColors.error, width: 1.w),
     ),
   );
 }

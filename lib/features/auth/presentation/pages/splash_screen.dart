@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -118,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen>
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   FadeTransition(
                     opacity: _nameOpacityAnim,
                     child: SlideTransition(
@@ -126,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Text(
                         'EduPath Pro CRM',
                         style: GoogleFonts.poppins(
-                          fontSize: 22,
+                          fontSize: 22.sp,
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF1A1A1A),
                         ),

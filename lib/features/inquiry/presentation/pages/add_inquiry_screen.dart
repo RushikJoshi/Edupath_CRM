@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -124,7 +125,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
             'New Enquiry',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
-              fontSize: 20,
+              fontSize: 20.sp,
               color: Colors.white,
             ),
           ),
@@ -150,7 +151,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       _nameCtrl,
                       validator: (v) => Validators.requiredField(v, 'Name'),
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Email *',
                       'e.g. rahul@example.com',
@@ -159,7 +160,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       keyboardType: TextInputType.emailAddress,
                       validator: Validators.email,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Phone *',
                       '9876555321',
@@ -168,21 +169,21 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       keyboardType: TextInputType.phone,
                       validator: Validators.phone10,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Company Name',
                       'e.g. ABC Pvt Ltd',
                       Icons.business_outlined,
                       _companyCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'City',
                       'e.g. Ahmedabad',
                       Icons.location_city_outlined,
                       _cityCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Address',
                       'e.g. Satellite',
@@ -190,10 +191,10 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       _addressCtrl,
                     ),
                   ]),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _section('Enquiry Details', Icons.info_outline_rounded, [
                     _label('Source'),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     _dropdownField<String>(
                       value: _source,
                       icon: Icons.alt_route_outlined,
@@ -207,14 +208,14 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       onChanged: (v) =>
                           setState(() => _source = v ?? 'Website'),
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Source ID',
                       'Optional source reference ID',
                       Icons.tag_outlined,
                       _sourceIdCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Website',
                       'https://example.com',
@@ -222,23 +223,23 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       _websiteCtrl,
                       keyboardType: TextInputType.url,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Course',
                       'e.g. SAP FICO',
                       Icons.school_outlined,
                       _courseCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Location',
                       'e.g. Ahmedabad',
                       Icons.place_outlined,
                       _locationCtrl,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _label('Inquiry Status'),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     _dropdownField<String>(
                       value: effectiveStatus,
                       icon: Icons.flag_outlined,
@@ -249,7 +250,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _field(
                       'Value (₹)',
                       'e.g. 15000',
@@ -257,9 +258,9 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                       _valueCtrl,
                       keyboardType: TextInputType.number,
                     ),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     _label('Branch'),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     if (isMgr || branches.isEmpty)
                       _lockedBranch(
                         auth.user != null && auth.user!.branchName.isNotEmpty
@@ -275,10 +276,10 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                         onChanged: (v) => setState(() => _branchId = v),
                       ),
                   ]),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _section('Message', Icons.message_outlined, [
                     _label('Message'),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     _textArea(_msgCtrl, 'e.g. Interested in SAP Training', 3),
                   ]),
                 ],
@@ -291,7 +292,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           builder: (context, state) {
             final loading = state.actionStatus == AppStatus.loading;
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -311,42 +312,42 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: const Color(0xFF2E8EFF),
-                          side: const BorderSide(
+                          side: BorderSide(
                             color: Color(0xFF2E8EFF),
-                            width: 1.5,
+                            width: 1.5.w,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(25.r),
                           ),
                         ),
                         child: Text(
                           'Cancel',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       flex: 2,
                       child: SizedBox(
-                        height: 50,
+                        height: 50.h,
                         child: FilledButton(
                           onPressed: loading ? null : _save,
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF2E8EFF),
                             disabledBackgroundColor: Colors.grey.shade300,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
+                              borderRadius: BorderRadius.circular(25.r),
                             ),
                             elevation: 0,
                           ),
                           child: loading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
+                              ? SizedBox(
+                                  height: 20.h,
+                                  width: 20.w,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.5,
                                     color: Colors.white,
@@ -356,7 +357,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                                   'Save Enquiry',
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 15,
+                                    fontSize: 15.sp,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -418,21 +419,21 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
   SnackBar _snack(String msg, Color color) => SnackBar(
     content: Text(
       msg,
-      style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
     ),
     backgroundColor: color,
     behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    margin: const EdgeInsets.all(16),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+    margin: EdgeInsets.all(16.w),
   );
 
   Widget _section(String title, IconData icon, List<Widget> children) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Color(0xFFE8ECF3), width: 1.5.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,25 +441,25 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                  color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           ...children,
         ],
       ),
@@ -468,7 +469,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
   Widget _label(String text) => Text(
     text,
     style: GoogleFonts.poppins(
-      fontSize: 12,
+      fontSize: 12.sp,
       fontWeight: FontWeight.w500,
       color: Colors.black87,
     ),
@@ -486,12 +487,12 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _label(label),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: ctrl,
           keyboardType: keyboardType,
           validator: validator,
-          style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+          style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
           decoration: _inputDeco(hint, icon),
         ),
       ],
@@ -502,22 +503,22 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     return TextFormField(
       controller: ctrl,
       maxLines: lines,
-      style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+      style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.poppins(
-          fontSize: 13,
+          fontSize: 13.sp,
           color: Colors.grey.shade400,
         ),
         prefixIcon: Padding(
           padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
           child: Container(
-            width: 32,
-            height: 32,
+            width: 32.w,
+            height: 32.h,
             alignment: Alignment.topCenter,
             decoration: BoxDecoration(
-              color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: const Padding(
               padding: EdgeInsets.only(top: 8),
@@ -527,21 +528,21 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
-          horizontal: 14,
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 14.h,
+          horizontal: 14.w,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
         ),
       ),
     );
@@ -556,7 +557,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
   }) {
     return DropdownButtonFormField<T>(
       value: value,
-      style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+      style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
       decoration: _inputDeco('', icon),
       items: items.asMap().entries.map((e) {
         final label = labels != null ? labels[e.key] : e.value.toString();
@@ -570,21 +571,21 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
 
   Widget _lockedBranch(String? name) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF2E8EFF).withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5),
+        color: Color(0xFF2E8EFF).withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: Color(0xFFE8ECF3), width: 1.5.w),
       ),
       child: Row(
         children: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
-                color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: const Icon(
                 Icons.accessibility_new_outlined,
@@ -596,7 +597,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           Text(
             name?.isNotEmpty == true ? name! : 'My Branch',
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: Colors.black,
             ),
@@ -605,7 +606,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           Icon(
             Icons.lock_outline_rounded,
             size: 14,
-            color: const Color(0xFF2E8EFF).withValues(alpha: 0.4),
+            color: Color(0xFF2E8EFF).withValues(alpha: 0.4),
           ),
         ],
       ),
@@ -614,39 +615,39 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
 
   InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
     hintText: hint,
-    hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade400),
+    hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
     prefixIcon: Padding(
-      padding: const EdgeInsets.all(6),
+      padding: EdgeInsets.all(6.w),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
+          color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8.r),
         ),
         child: Icon(icon, size: 18, color: const Color(0xFF2E8EFF)),
       ),
     ),
     filled: true,
     fillColor: Colors.white,
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+    contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 14.w),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Color(0xFFE8ECF3), width: 1.5),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Colors.red, width: 1.5),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.red, width: 1.5.w),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10),
-      borderSide: const BorderSide(color: Colors.red, width: 1.5),
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.red, width: 1.5.w),
     ),
   );
 }

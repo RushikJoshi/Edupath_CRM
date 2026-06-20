@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<LeadBloc>().add(const LeadFetched());
+    context.read<LeadBloc>().add(LeadFetched());
     _searchCtrl.addListener(_onSearchChanged);
   }
 
@@ -115,7 +116,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         toolbarHeight: 64,
         leading: Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Colors.white),
+            icon: Icon(Icons.menu_rounded, color: Colors.white),
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
@@ -126,14 +127,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
               'Leads',
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
-                fontSize: 18,
+                fontSize: 18.sp,
                 color: Colors.white,
               ),
             ),
             Text(
               'Manage your pipeline',
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.white.withOpacity(0.7),
               ),
             ),
@@ -144,8 +145,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
             padding: const EdgeInsets.only(right: 14),
             child: SvgPicture.asset(
               'assets/svgs/leads.svg',
-              width: 26,
-              height: 26,
+              width: 26.w,
+              height: 26.h,
             ),
           ),
         ],
@@ -159,7 +160,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   boxShadow: const [
                     BoxShadow(
                       color: Color(0x40000000),
@@ -172,15 +173,15 @@ class _LeadListScreenState extends State<LeadListScreen> {
                 child: TextField(
                   controller: _searchCtrl,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     color: const Color(0xFF000000),
                   ),
                   onChanged: (_) => setState(() {}),
                   decoration: InputDecoration(
                     hintText: 'Search enquiries...',
                     hintStyle: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: const Color(0xFF000000).withOpacity(0.5),
+                      fontSize: 14.sp,
+                      color: Color(0xFF000000).withOpacity(0.5),
                     ),
                     prefixIcon: const Icon(
                       Icons.search_rounded,
@@ -189,36 +190,36 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     ),
                     fillColor: Colors.white,
                     filled: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 12,
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: 10.h,
+                      horizontal: 12.w,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide(
                         color: Colors.grey.shade200,
-                        width: 1,
+                        width: 1.w,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide(
                         color: Colors.grey.shade200,
-                        width: 1,
+                        width: 1.w,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
                         color: Colors.black,
-                        width: 1.5,
+                        width: 1.5.w,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            Container(height: 1, color: AppColors.primary.withOpacity(0.1)),
+            Container(height: 1.h, color: AppColors.primary.withOpacity(0.1)),
 
             // ── List ──
             Expanded(
@@ -256,11 +257,11 @@ class _LeadListScreenState extends State<LeadListScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Container(
-                                  width: 80,
-                                  height: 80,
+                                  width: 80.w,
+                                  height: 80.h,
                                   decoration: BoxDecoration(
                                     color: AppColors.primary.withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(24.r),
                                     border: Border.all(
                                       color: AppColors.primary.withOpacity(0.2),
                                     ),
@@ -268,8 +269,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/svgs/leads.svg',
-                                      width: 36,
-                                      height: 36,
+                                      width: 36.w,
+                                      height: 36.h,
                                       colorFilter: ColorFilter.mode(
                                         AppColors.primary.withOpacity(0.6),
                                         BlendMode.srcIn,
@@ -277,20 +278,20 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16.h),
                                 Text(
                                   'No leads found',
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     color: AppColors.primary,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Text(
                                   'Pull down to refresh',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                     color: Colors.grey.shade500,
                                   ),
                                 ),
@@ -307,9 +308,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     onRefresh: _refreshLeads,
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, __) => SizedBox(height: 12.h),
                       itemBuilder: (context, i) {
                         final lead = filtered[i];
                         final sc = _stageColor(lead.stage);
@@ -339,12 +340,12 @@ class _LeadListScreenState extends State<LeadListScreen> {
                               AppRoutes.leadDetail,
                               arguments: lead,
                             ),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(16.r),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: EdgeInsets.symmetric(vertical: 12.h),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(16.r),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Color(0x40000000),
@@ -363,24 +364,24 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                       children: [
                                         // --- TOP ROW ---
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                                           child: Row(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
                                               // Avatar
                                               CircleAvatar(
                                                 radius: 24,
-                                                backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                                                backgroundColor: Color(0xFF2E8EFF).withOpacity(0.1),
                                                 child: Text(
                                                   initials,
                                                   style: GoogleFonts.poppins(
                                                     color: const Color(0xFF2E8EFF),
                                                     fontWeight: FontWeight.w700,
-                                                    fontSize: 14,
+                                                    fontSize: 14.sp,
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(width: 12),
+                                              SizedBox(width: 12.w),
                                               // Name & Company/Branch
                                               Expanded(
                                                 child: Column(
@@ -391,20 +392,20 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                       style: GoogleFonts.poppins(
                                                         color: const Color(0xFF000000),
                                                         fontWeight: FontWeight.w600,
-                                                        fontSize: 15,
+                                                        fontSize: 15.sp,
                                                       ),
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
-                                                    const SizedBox(height: 2),
+                                                    SizedBox(height: 2.h),
                                                     Text(
                                                       lead.companyName?.trim().isNotEmpty == true
                                                           ? lead.companyName!
                                                           : (lead.branchName.trim().isNotEmpty ? lead.branchName : 'No Company'),
                                                       style: GoogleFonts.poppins(
-                                                        color: const Color(0xFF000000).withOpacity(0.8),
+                                                        color: Color(0xFF000000).withOpacity(0.8),
                                                         fontWeight: FontWeight.w500,
-                                                        fontSize: 12,
+                                                        fontSize: 12.sp,
                                                       ),
                                                       maxLines: 1,
                                                       overflow: TextOverflow.ellipsis,
@@ -417,38 +418,38 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                 _getTimeAgo(lead.id),
                                                 style: GoogleFonts.poppins(
                                                   color: const Color(0xE5000000),
-                                                  fontSize: 11,
+                                                  fontSize: 11.sp,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(height: 10),
-                                        const Divider(height: 1, color: Color(0x332E8EFF)),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 10.h),
+                                        Divider(height: 1.h, color: Color(0x332E8EFF)),
+                                        SizedBox(height: 10.h),
 
                                         // --- MIDDLE ROW (Was Bottom Row) ---
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                                           child: Row(
                                             children: [
                                               // Status Pill
                                               _pill(lead.stage.toUpperCase(), sc),
-                                              const SizedBox(width: 10),
+                                              SizedBox(width: 10.w),
                                               // Assigned User Name
                                               const Icon(
                                                 Icons.person_outline_rounded,
                                                 size: 16,
                                                 color: Color(0xFF2E8EFF),
                                               ),
-                                              const SizedBox(width: 4),
+                                              SizedBox(width: 4.w),
                                               Flexible(
                                                 child: Text(
                                                   lead.assignedTo.isNotEmpty ? lead.assignedTo : 'Unassigned',
                                                   style: GoogleFonts.poppins(
                                                     color: const Color(0xFF000000),
-                                                    fontSize: 12,
+                                                    fontSize: 12.sp,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                   maxLines: 1,
@@ -458,13 +459,13 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(height: 10),
-                                        const Divider(height: 1, color: Color(0x332E8EFF)),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 10.h),
+                                        Divider(height: 1.h, color: Color(0x332E8EFF)),
+                                        SizedBox(height: 10.h),
 
                                         // --- BOTTOM ROW (Was Middle Row) ---
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -475,13 +476,13 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                     size: 16,
                                                     color: Color(0xFF2E8EFF),
                                                   ),
-                                                  const SizedBox(width: 6),
+                                                  SizedBox(width: 6.w),
                                                   Flexible(
                                                     child: Text(
                                                       lead.phone.isNotEmpty ? lead.phone : 'No phone',
                                                       style: GoogleFonts.poppins(
                                                         color: const Color(0xE5000000),
-                                                        fontSize: 12,
+                                                        fontSize: 12.sp,
                                                         fontWeight: FontWeight.w500,
                                                       ),
                                                       maxLines: 1,
@@ -490,7 +491,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 6),
+                                              SizedBox(height: 6.h),
                                               Row(
                                                 children: [
                                                   const Icon(
@@ -498,13 +499,13 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                     size: 16,
                                                     color: Color(0xFF2E8EFF),
                                                   ),
-                                                  const SizedBox(width: 6),
+                                                  SizedBox(width: 6.w),
                                                   Expanded(
                                                     child: Text(
                                                       lead.email.isNotEmpty ? lead.email : 'No email',
                                                       style: GoogleFonts.poppins(
                                                         color: const Color(0xE5000000),
-                                                        fontSize: 12,
+                                                        fontSize: 12.sp,
                                                         fontWeight: FontWeight.w500,
                                                       ),
                                                     ),
@@ -525,41 +526,41 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                       arguments: lead,
                                     ),
                                     child: Container(
-                                      width: 26,
-                                      height: 46,
-                                      decoration: const BoxDecoration(
+                                      width: 26.w,
+                                      height: 46.h,
+                                      decoration: BoxDecoration(
                                         color: Color(0xFF2E8EFF),
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          bottomLeft: Radius.circular(10),
+                                          topLeft: Radius.circular(10.r),
+                                          bottomLeft: Radius.circular(10.r),
                                         ),
                                       ),
-                                      child: const Column(
+                                      child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 3),
+                                          SizedBox(height: 3.h),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
-                                          SizedBox(height: 3),
+                                          SizedBox(height: 3.h),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
-                                              SizedBox(width: 3),
+                                              SizedBox(width: 3.w),
                                               _Dot(),
                                             ],
                                           ),
@@ -583,32 +584,33 @@ class _LeadListScreenState extends State<LeadListScreen> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_lead_fab',
         onPressed: () async {
           await Navigator.pushNamed(context, AppRoutes.addLead);
           if (context.mounted) {
-            context.read<LeadBloc>().add(const LeadFetched());
+            context.read<LeadBloc>().add(LeadFetched());
           }
         },
         backgroundColor: const Color(0xFF2E8EFF),
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
+        child: Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
 
   Widget _pill(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 3.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         label,
         style: GoogleFonts.poppins(
           color: color,
-          fontSize: 10,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -623,8 +625,8 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 4,
-      height: 4,
+      width: 4.w,
+      height: 4.h,
       decoration: const BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,

@@ -10,6 +10,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserFetched>(_onFetched);
     on<UserCreated>(_onCreated);
     on<UserUpdated>(_onUpdated);
+    on<UserDetailFetched>(_onDetailFetched);
     on<UserDeleted>(_onDeleted);
   }
 
@@ -21,6 +22,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final items = await _repository.fetchAll(
         search: event.search,
         role: event.role,
+        status: event.status,
       );
       emit(state.copyWith(status: AppStatus.success, items: items));
     } catch (e) {
@@ -34,13 +36,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onCreated(UserCreated event, Emitter<UserState> emit) async {
     emit(state.copyWith(actionStatus: AppStatus.loading, clearActionError: true));
     try {
-      final newUser = await _repository.createUser(
-        name: event.name,
-        email: event.email,
-        password: event.password,
-        role: event.role,
-        branchId: event.branchId,
-      );
+      final newUser = await _repository.createUser(event.userData);
       final updated = [newUser, ...state.items];
       emit(state.copyWith(
         actionStatus: AppStatus.success,
@@ -58,13 +54,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onUpdated(UserUpdated event, Emitter<UserState> emit) async {
     emit(state.copyWith(actionStatus: AppStatus.loading, clearActionError: true));
     try {
-      final updated = await _repository.updateUser(
-        userId: event.userId,
-        name: event.name,
-        role: event.role,
-        branchId: event.branchId,
-        status: event.status,
-      );
+      final updated = await _repository.updateUser(event.userId, event.updateData);
       final items = state.items
           .map((u) => u.id == event.userId ? updated : u)
           .toList();
@@ -77,6 +67,29 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(
         actionStatus: AppStatus.failure,
         actionError: e.toString().replaceFirst('Exception: ', ''),
+      ));
+    }
+  }
+
+  Future<void> _onDetailFetched(UserDetailFetched event, Emitter<UserState> emit) async {
+    emit(state.copyWith(status: AppStatus.loading));
+    try {
+      final user = await _repository.getUserById(event.userId);
+      final items = state.items
+          .map((u) => u.id == user.id ? user : u)
+          .toList();
+      if (!items.contains(user) && !state.items.any((u) => u.id == user.id)) {
+        items.add(user);
+      }
+      emit(state.copyWith(
+        status: AppStatus.success,
+        selectedUser: user,
+        items: items,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: AppStatus.failure,
+        errorMessage: e.toString().replaceFirst('Exception: ', ''),
       ));
     }
   }

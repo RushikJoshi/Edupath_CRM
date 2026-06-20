@@ -116,7 +116,10 @@ class MeetingRepositoryImpl implements MeetingRepository {
       if (contactEmail != null && contactEmail.isNotEmpty) body['contactEmail'] = contactEmail;
       if (contactPhone != null && contactPhone.isNotEmpty) body['contactPhone'] = contactPhone;
       if (attendanceMode != null && attendanceMode.isNotEmpty) body['attendanceMode'] = attendanceMode;
-      if (meetingType != null && meetingType.isNotEmpty) body['meetingType'] = meetingType;
+      if (meetingType != null && meetingType.isNotEmpty) {
+        body['meetingType'] = meetingType;
+        body['type'] = meetingType;
+      }
       if (meetingLink != null && meetingLink.isNotEmpty) body['meetingLink'] = meetingLink;
       if (onlineUrl != null && onlineUrl.isNotEmpty) body['onlineUrl'] = onlineUrl;
       if (location != null && location.isNotEmpty) body['location'] = location;
@@ -125,6 +128,7 @@ class MeetingRepositoryImpl implements MeetingRepository {
       if (reminderMinutes != null && reminderMinutes.isNotEmpty) body['reminderMinutes'] = reminderMinutes;
       if (sendSystemReminder != null) body['sendSystemReminder'] = sendSystemReminder;
       if (sendEmailReminder != null) body['sendEmailReminder'] = sendEmailReminder;
+
 
       final response = await _apiClient.createMeeting(body);
       final data = response.data;
@@ -137,6 +141,7 @@ class MeetingRepositoryImpl implements MeetingRepository {
         userMessage: 'Unexpected response creating meeting',
       );
     } on DioException catch (e) {
+      print('DIAGNOSTIC CREATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}');
       throw AppErrorHandler.fromDioException(e);
     }
   }
@@ -183,7 +188,10 @@ class MeetingRepositoryImpl implements MeetingRepository {
       if (contactEmail != null && contactEmail.isNotEmpty) body['contactEmail'] = contactEmail;
       if (contactPhone != null && contactPhone.isNotEmpty) body['contactPhone'] = contactPhone;
       if (attendanceMode != null && attendanceMode.isNotEmpty) body['attendanceMode'] = attendanceMode;
-      if (meetingType != null && meetingType.isNotEmpty) body['meetingType'] = meetingType;
+      if (meetingType != null && meetingType.isNotEmpty) {
+        body['meetingType'] = meetingType;
+        body['type'] = meetingType;
+      }
       if (meetingLink != null && meetingLink.isNotEmpty) body['meetingLink'] = meetingLink;
       if (onlineUrl != null && onlineUrl.isNotEmpty) body['onlineUrl'] = onlineUrl;
       if (location != null && location.isNotEmpty) body['location'] = location;
@@ -204,6 +212,7 @@ class MeetingRepositoryImpl implements MeetingRepository {
         userMessage: 'Unexpected response updating meeting',
       );
     } on DioException catch (e) {
+      print('DIAGNOSTIC UPDATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}');
       throw AppErrorHandler.fromDioException(e);
     }
   }

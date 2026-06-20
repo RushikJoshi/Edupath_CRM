@@ -105,18 +105,17 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
       await _repository.toggleBranchStatus(event.id);
       final updatedItems = state.items.map((b) {
         if (b.id == event.id) {
-          // Status toggled, inverting logical active status. But backend could just return updated branch.
-          // Since toggle-status doesn't return the branch, we manually toggle `isActive` or refetch. 
-          // Let's refetch all or manually toggle `isActive`? 
-          // Manually toggling requires our model to have a copyWith or to create a new object.
-          // Since our model has no `copyWith`, let's just trigger a refetch event from UI after success, or just do it here.
-          // Actually, we can fetch all immediately. But it's lighter to just let the caller trigger it if needed, or we just leave the state items alone until a refetch.
+          final newActiveStatus = !b.isActive;
+          return b.copyWith(
+            isActive: newActiveStatus,
+            status: newActiveStatus ? 'active' : 'inactive',
+          );
         }
         return b;
       }).toList();
       emit(state.copyWith(
         actionStatus: AppStatus.success,
-        items: updatedItems, // We don't toggle locally since we don't have copyWith easily.
+        items: updatedItems,
         clearActionError: true,
       ));
     } catch (e) {

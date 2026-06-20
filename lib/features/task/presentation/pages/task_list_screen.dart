@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
@@ -31,6 +32,7 @@ class _TaskListScreenState extends State<TaskListScreen>
     'Pending',
     'In Progress',
     'Completed',
+    'Cancelled',
     'Overdue',
   ];
 
@@ -38,8 +40,8 @@ class _TaskListScreenState extends State<TaskListScreen>
   void initState() {
     super.initState();
     _tc = TabController(length: _statuses.length, vsync: this);
-    context.read<TaskBloc>().add(const TaskFetched(page: 1, limit: 100));
-    context.read<UserBloc>().add(const UserFetched());
+    context.read<TaskBloc>().add(TaskFetched(page: 1, limit: 100));
+    context.read<UserBloc>().add(UserFetched());
   }
 
   @override
@@ -83,9 +85,9 @@ class _TaskListScreenState extends State<TaskListScreen>
                 top: 10,
                 bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
               ),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(22.r)),
               ),
               child: Form(
                 key: formKey,
@@ -95,24 +97,24 @@ class _TaskListScreenState extends State<TaskListScreen>
                     children: [
                       Center(
                         child: Container(
-                          width: 40,
-                          height: 4,
+                          width: 40.w,
+                          height: 4.h,
                           margin: const EdgeInsets.only(bottom: 12),
                           decoration: BoxDecoration(
                             color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(2.r),
                           ),
                         ),
                       ),
                       Text(
                         'Create Task',
                         style: GoogleFonts.poppins(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w700,
                           color: const Color(0xFF2E8EFF),
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       TextFormField(
                         controller: titleCtrl,
                         decoration: _fieldDec('Title', Icons.text_fields_rounded),
@@ -120,7 +122,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                             ? 'Title is required'
                             : null,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       TextFormField(
                         controller: descCtrl,
                         maxLines: 2,
@@ -132,7 +134,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                             ? 'Description is required'
                             : null,
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildSelectorField(
                         context: context,
                         label: 'Priority',
@@ -150,7 +152,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           );
                         },
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildSelectorField(
                         context: context,
                         label: 'Status',
@@ -168,7 +170,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           );
                         },
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildSelectorField(
                         context: context,
                         label: 'Assigned To',
@@ -187,7 +189,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           );
                         },
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _buildSelectorField(
                         context: context,
                         label: 'Due Date',
@@ -218,7 +220,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           }
                         },
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       FilledButton(
                         onPressed: () {
                           if (!(formKey.currentState?.validate() ?? false)) {
@@ -245,7 +247,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           backgroundColor: const Color(0xFF2E8EFF),
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(25.r),
                           ),
                         ),
                         child: Text(
@@ -253,7 +255,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                           style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                           ),
                         ),
                       ),
@@ -282,24 +284,24 @@ class _TaskListScreenState extends State<TaskListScreen>
         Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
             color: Colors.grey.shade700,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           child: InputDecorator(
             decoration: InputDecoration(
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
                 child: Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2F6FE),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(
                     prefixIcon,
@@ -308,17 +310,17 @@ class _TaskListScreenState extends State<TaskListScreen>
                   ),
                 ),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
               ),
             ),
@@ -328,7 +330,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                   child: Text(
                     value,
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.black87,
                     ),
                   ),
@@ -357,32 +359,32 @@ class _TaskListScreenState extends State<TaskListScreen>
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40,
-                height: 4,
+                width: 40.w,
+                height: 4.h,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Select Priority',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: const Color(0xFF2E8EFF),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               const Divider(),
               ...['High', 'Medium', 'Low'].map((p) {
                 final isSelected = p.toLowerCase() == currentValue.toLowerCase();
@@ -421,32 +423,32 @@ class _TaskListScreenState extends State<TaskListScreen>
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40,
-                height: 4,
+                width: 40.w,
+                height: 4.h,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Select Status',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: const Color(0xFF2E8EFF),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               const Divider(),
               ..._statuses.map((s) {
                 final isSelected = s.toLowerCase() == currentValue.toLowerCase();
@@ -486,32 +488,32 @@ class _TaskListScreenState extends State<TaskListScreen>
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40,
-                height: 4,
+                width: 40.w,
+                height: 4.h,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Select Assignee',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: const Color(0xFF2E8EFF),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               const Divider(),
               ListTile(
                 title: Text(
@@ -595,7 +597,7 @@ class _TaskListScreenState extends State<TaskListScreen>
           toolbarHeight: 64,
           leading: Builder(
             builder: (ctx) => IconButton(
-              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              icon: Icon(Icons.menu_rounded, color: Colors.white),
               onPressed: () => Scaffold.of(ctx).openDrawer(),
             ),
           ),
@@ -606,14 +608,14 @@ class _TaskListScreenState extends State<TaskListScreen>
                 'Tasks',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: Colors.white,
                 ),
               ),
               Text(
                 'Track pending work',
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   color: Colors.white.withValues(alpha: 0.7),
                 ),
               ),
@@ -633,7 +635,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.grey.shade200,
-                    width: 1,
+                    width: 1.w,
                   ),
                 ),
               ),
@@ -648,11 +650,11 @@ class _TaskListScreenState extends State<TaskListScreen>
                 indicatorWeight: 3,
                 labelStyle: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
-                  fontSize: 13,
+                  fontSize: 13.sp,
                 ),
                 unselectedLabelStyle: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
-                  fontSize: 13,
+                  fontSize: 13.sp,
                 ),
               ),
             ),
@@ -692,7 +694,7 @@ class _TaskListScreenState extends State<TaskListScreen>
           child: FloatingActionButton.extended(
             heroTag: 'add_task_fab',
             onPressed: () => _showCreateTaskSheet(context),
-            icon: const Icon(Icons.add_task_rounded, color: Colors.white),
+            icon: Icon(Icons.add_task_rounded, color: Colors.white),
             label: Text(
               'Add Task',
               style: GoogleFonts.poppins(
@@ -729,12 +731,12 @@ class _TaskListScreenState extends State<TaskListScreen>
 
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<TaskBloc>().add(const TaskFetched(page: 1, limit: 100));
+        context.read<TaskBloc>().add(TaskFetched(page: 1, limit: 100));
       },
       child: ListView.separated(
         padding: responsiveListPadding(context),
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, __) => SizedBox(height: 10.h),
         itemBuilder: (context, i) {
           final task = items[i];
           String assignedName = task.assignedToName;
@@ -762,16 +764,16 @@ class _TaskListScreenState extends State<TaskListScreen>
     return InputDecoration(
       hintText: hint,
       hintStyle: GoogleFonts.poppins(
-        fontSize: 13,
+        fontSize: 13.sp,
         color: Colors.grey.shade500,
       ),
       prefixIcon: Padding(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
         child: Container(
-          padding: const EdgeInsets.all(6),
+          padding: EdgeInsets.all(6.w),
           decoration: BoxDecoration(
             color: const Color(0xFFF2F6FE),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(8.r),
           ),
           child: Icon(
             prefixIcon,
@@ -780,18 +782,18 @@ class _TaskListScreenState extends State<TaskListScreen>
           ),
         ),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+        borderRadius: BorderRadius.circular(10.r),
+        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
       ),
     );
   }
@@ -828,15 +830,15 @@ class _PriorityBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: _getBgColor(),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.r),
       ),
       child: Text(
         priority,
         style: GoogleFonts.poppins(
-          fontSize: 10,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w600,
           color: _getTextColor(),
         ),
@@ -860,6 +862,7 @@ class _TaskCard extends StatelessWidget {
     'Pending',
     'In Progress',
     'Completed',
+    'Cancelled',
     'Overdue',
   ];
 
@@ -871,6 +874,8 @@ class _TaskCard extends StatelessWidget {
         return const Color(0xFF2ECC71); // Green
       case 'overdue':
         return const Color(0xFFE53935); // Red
+      case 'cancelled':
+        return const Color(0xFF757575); // Grey
       case 'pending':
       default:
         return const Color(0xFF2E8EFF); // Blue
@@ -885,6 +890,8 @@ class _TaskCard extends StatelessWidget {
         return const Color(0xFFE8F8F5); // Light Green
       case 'overdue':
         return const Color(0xFFFFEBEE); // Light Red
+      case 'cancelled':
+        return const Color(0xFFF5F5F5); // Light Grey
       case 'pending':
       default:
         return const Color(0xFFF2F6FE); // Light Blue
@@ -898,10 +905,10 @@ class _TaskCard extends StatelessWidget {
         '${due.day}/${due.month}/${due.year} ${due.hour.toString().padLeft(2, '0')}:${due.minute.toString().padLeft(2, '0')}';
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         boxShadow: const [
           BoxShadow(
             color: Color(0x40000000), // #00000040 (25% opacity)
@@ -918,10 +925,10 @@ class _TaskCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF2F6FE),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: const Icon(
                   Icons.calendar_today_rounded,
@@ -929,7 +936,7 @@ class _TaskCard extends StatelessWidget {
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -938,20 +945,20 @@ class _TaskCard extends StatelessWidget {
                       task.title,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     if (task.description.trim().isNotEmpty) ...[
                       Text(
                         task.description,
                         style: GoogleFonts.poppins(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           color: Colors.grey.shade700,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6.h),
                     ],
                     Row(
                       children: [
@@ -960,17 +967,17 @@ class _TaskCard extends StatelessWidget {
                           size: 14,
                           color: Color(0xFF2E8EFF),
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Text(
-                          task.assignedToName.isNotEmpty ? task.assignedToName : 'Unassigned',
+                          assignedName.isNotEmpty ? assignedName : 'Unassigned',
                           style: GoogleFonts.poppins(
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             color: Colors.grey.shade700,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     Row(
                       children: [
                         const Icon(
@@ -978,51 +985,25 @@ class _TaskCard extends StatelessWidget {
                           size: 14,
                           color: Color(0xFF2E8EFF),
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Text(
                           dueText,
                           style: GoogleFonts.poppins(
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             color: Colors.grey.shade700,
                           ),
                         ),
-                        if (assignedName.trim().isNotEmpty) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            height: 12,
-                            width: 1,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(
-                            Icons.person_rounded,
-                            size: 14,
-                            color: Color(0xFF2E8EFF),
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              'Assigned: $assignedName',
-                              style: GoogleFonts.poppins(
-                                fontSize: 11,
-                                color: Colors.grey.shade700,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   _PriorityBadge(priority: task.priority),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   const Icon(
                     Icons.more_vert_rounded,
                     color: Colors.grey,
@@ -1032,8 +1013,8 @@ class _TaskCard extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(height: 20, thickness: 1, color: Color(0xFFF2F6FE)),
-          const SizedBox(height: 4),
+          Divider(height: 20.h, thickness: 1, color: Color(0xFFF2F6FE)),
+          SizedBox(height: 4.h),
           InkWell(
             onTap: () {
               showModalBottomSheet<void>(
@@ -1042,32 +1023,32 @@ class _TaskCard extends StatelessWidget {
                 isScrollControlled: true,
                 builder: (ctx) {
                   return Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 40,
-                          height: 4,
+                          width: 40.w,
+                          height: 4.h,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(2.r),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         Text(
                           'Update Status',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             color: const Color(0xFF2E8EFF),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         const Divider(),
                         Flexible(
                           child: ListView.builder(
@@ -1079,8 +1060,8 @@ class _TaskCard extends StatelessWidget {
                               final statusColor = _getStatusColor(statusOption);
                               return ListTile(
                                 leading: Container(
-                                  width: 12,
-                                  height: 12,
+                                  width: 12.w,
+                                  height: 12.h,
                                   decoration: BoxDecoration(
                                     color: statusColor,
                                     shape: BoxShape.circle,
@@ -1112,12 +1093,12 @@ class _TaskCard extends StatelessWidget {
                 },
               );
             },
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               decoration: BoxDecoration(
                 color: _getStatusBg(task.status),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 border: task.status.toLowerCase() == 'pending'
                     ? null
                     : Border.all(
@@ -1127,19 +1108,19 @@ class _TaskCard extends StatelessWidget {
               child: Row(
                 children: [
                   Container(
-                    width: 8,
-                    height: 8,
+                    width: 8.w,
+                    height: 8.h,
                     decoration: BoxDecoration(
                       color: _getStatusColor(task.status),
                       shape: BoxShape.circle,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
                       task.status,
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                         color: _getStatusColor(task.status),
                       ),

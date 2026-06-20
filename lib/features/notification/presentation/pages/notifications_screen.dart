@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -70,14 +71,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           SnackBar(
             content: Text(
               state.actionMessage ?? (success ? 'Done' : 'Action failed'),
-              style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
             ),
             backgroundColor: success ? AppColors.stageWon : AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            margin: const EdgeInsets.all(10),
+            margin: EdgeInsets.all(10.w),
           ),
         );
       },
@@ -99,7 +100,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.w600,
-              fontSize: 20,
+              fontSize: 20.sp,
             ),
           ),
           actions: [
@@ -113,7 +114,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     const NotificationFetched(),
                   ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
           ],
         ),
         body: ResponsiveConstraint(
@@ -127,10 +128,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     // Search Bar
                     Expanded(
                       child: Container(
-                        height: 46,
+                        height: 46.h,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           boxShadow: const [
                             BoxShadow(
                               color: Color(0x40000000),
@@ -143,13 +144,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         child: TextField(
                           controller: _searchController,
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: Colors.black,
                           ),
                           decoration: InputDecoration(
                             hintText: 'Search Notifications...',
                             hintStyle: GoogleFonts.poppins(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: Colors.black.withOpacity(0.5),
                             ),
                             prefixIcon: const Icon(
@@ -159,27 +160,27 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             ),
                             fillColor: Colors.white,
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 12,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.h,
+                              horizontal: 12.w,
                             ),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none,
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none,
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               borderSide: BorderSide.none,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     // Read All Button
                     BlocBuilder<NotificationBloc, NotificationState>(
                       buildWhen: (p, c) =>
@@ -196,11 +197,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   )
                               : null,
                           child: Container(
-                            height: 46,
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            height: 46.h,
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                               boxShadow: const [
                                 BoxShadow(
                                   color: Color(0x40000000),
@@ -218,11 +219,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   color: Colors.black,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 6),
+                                SizedBox(width: 6.w),
                                 Text(
                                   'Read All',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 13,
+                                    fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black,
                                   ),
@@ -255,7 +256,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               size: 42,
                               color: Colors.grey.shade500,
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: 10.h),
                             Text(
                               state.errorMessage ?? 'Unable to load notifications',
                               style: GoogleFonts.poppins(
@@ -263,7 +264,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 14),
+                            SizedBox(height: 14.h),
                             FilledButton(
                               onPressed: () => context.read<NotificationBloc>().add(
                                     const NotificationFetched(),
@@ -304,7 +305,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   size: 46,
                                   color: Colors.grey.shade500,
                                 ),
-                                const SizedBox(height: 10),
+                                SizedBox(height: 10.h),
                                 Text(
                                   'No notifications available',
                                   textAlign: TextAlign.center,
@@ -322,7 +323,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 final item = filteredItems[index];
                                 return _notificationCard(context, item);
                               },
-                              separatorBuilder: (_, __) => const SizedBox(height: 12),
+                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
                               itemCount: filteredItems.length,
                             ),
                     );
@@ -338,7 +339,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           },
           backgroundColor: const Color(0xFF2E8EFF),
           shape: const CircleBorder(),
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
+          child: Icon(Icons.add, color: Colors.white, size: 28),
         ),
       ),
     );
@@ -351,7 +352,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: const [
           BoxShadow(
             color: Color(0x40000000),
@@ -361,16 +362,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Left Bell Icon Circle
           Container(
-            width: 44,
-            height: 44,
+            width: 44.w,
+            height: 44.h,
             decoration: BoxDecoration(
-              color: const Color(0xFF2E8EFF).withOpacity(0.1),
+              color: Color(0xFF2E8EFF).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -379,7 +380,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               size: 22,
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           // Content
           Expanded(
             child: Column(
@@ -397,17 +398,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.poppins(
-                                fontSize: 14.5,
+                                fontSize: 14.5.sp,
                                 fontWeight: FontWeight.w600,
                                 color: const Color(0xFF2E8EFF),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Text(
                             created != null ? _timeAgo(created) : '-',
                             style: GoogleFonts.poppins(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               color: Colors.grey.shade500,
                               fontWeight: FontWeight.w500,
                             ),
@@ -417,8 +418,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     ),
                     if (isUnread)
                       Container(
-                        width: 8,
-                        height: 8,
+                        width: 8.w,
+                        height: 8.h,
                         decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
@@ -426,19 +427,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 // Message
                 Text(
                   item.message.isEmpty ? 'No message' : item.message,
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade700,
-                    height: 1.4,
+                    height: 1.4.h,
                   ),
                 ),
                 // Mark Read Button (Only for unread notifications)
                 if (isUnread) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -451,7 +452,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           style: GoogleFonts.poppins(
                             color: const Color(0xFF2E8EFF),
                             fontWeight: FontWeight.w600,
-                            fontSize: 11.5,
+                            fontSize: 11.5.sp,
                           ),
                         ),
                       ),

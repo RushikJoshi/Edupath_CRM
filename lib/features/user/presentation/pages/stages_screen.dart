@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,7 +93,7 @@ class _StagesScreenState extends State<StagesScreen> {
               style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 20,
+                fontSize: 20.sp,
               ),
             ),
             actions: [
@@ -104,7 +105,7 @@ class _StagesScreenState extends State<StagesScreen> {
                 ),
                 onPressed: () => context.read<PipelineBloc>().add(PipelinesFetched()),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
             ],
           ),
           body: ResponsiveConstraint(
@@ -114,7 +115,7 @@ class _StagesScreenState extends State<StagesScreen> {
                   : hasError && pipelines.isEmpty
                   ? Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(24),
+                        padding: EdgeInsets.all(24.w),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -125,7 +126,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                 color: AppColors.error,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             ElevatedButton(
                               onPressed: () => context.read<PipelineBloc>().add(
                                 PipelinesFetched(),
@@ -156,19 +157,19 @@ class _StagesScreenState extends State<StagesScreen> {
                               'Pipeline',
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8.h),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 4,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 14.w,
+                                vertical: 4.h,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Color(0x40000000),
@@ -215,17 +216,17 @@ class _StagesScreenState extends State<StagesScreen> {
                               ),
                             ),
                             if (pipelines.isEmpty) ...[
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16.h),
                               Text(
                                 'No pipelines yet. Add one using the button below.',
                                 style: GoogleFonts.poppins(
                                   color: Colors.black54,
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                 ),
                               ),
                             ],
                             if (_selectedPipelineId != null) ...[
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24.h),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -234,16 +235,16 @@ class _StagesScreenState extends State<StagesScreen> {
                                     'Stages',
                                     style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                       color: Colors.black,
                                     ),
                                   ),
                                   if (state.selectedPipelineId ==
                                           _selectedPipelineId &&
                                       isLoading)
-                                    const SizedBox(
-                                      width: 20,
-                                      height: 20,
+                                    SizedBox(
+                                      width: 20.w,
+                                      height: 20.h,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         color: Color(0xFF2E8EFF),
@@ -251,7 +252,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                     ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8.h),
                               if (state.selectedPipelineId ==
                                       _selectedPipelineId &&
                                   hasError &&
@@ -262,7 +263,7 @@ class _StagesScreenState extends State<StagesScreen> {
                                     errorMsg ?? 'Failed to load stages',
                                     style: GoogleFonts.poppins(
                                       color: AppColors.error,
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                     ),
                                   ),
                                 ),
@@ -271,14 +272,14 @@ class _StagesScreenState extends State<StagesScreen> {
                               ),
                               if (stages.isEmpty && !isLoading)
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 24,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 24.h,
                                   ),
                                   child: Text(
                                     'No stages in this pipeline. Add one below.',
                                     style: GoogleFonts.poppins(
                                       color: Colors.black54,
-                                      fontSize: 13,
+                                      fontSize: 13.sp,
                                     ),
                                   ),
                                 ),
@@ -298,8 +299,8 @@ class _StagesScreenState extends State<StagesScreen> {
                 showModalBottomSheet<void>(
                   context: context,
                   backgroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                   ),
                   builder: (ctx) => SafeArea(
                     child: Column(
@@ -341,7 +342,7 @@ class _StagesScreenState extends State<StagesScreen> {
             },
             backgroundColor: const Color(0xFF2E8EFF),
             shape: const CircleBorder(),
-            child: const Icon(Icons.add, color: Colors.white, size: 28),
+            child: Icon(Icons.add, color: Colors.white, size: 28),
           ),
         );
       },
@@ -357,16 +358,16 @@ class _StagesScreenState extends State<StagesScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         backgroundColor: Colors.white,
         contentPadding: EdgeInsets.zero,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
         content: SizedBox(
           width: double.maxFinite,
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               child: Form(
                 key: formKey,
                 child: Column(
@@ -376,11 +377,11 @@ class _StagesScreenState extends State<StagesScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: EdgeInsets.all(8.w),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(color: const Color(0xFF2E8EFF), width: 1),
-                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Color(0xFF2E8EFF), width: 1.w),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: const Icon(
                             Icons.show_chart_rounded,
@@ -388,12 +389,12 @@ class _StagesScreenState extends State<StagesScreen> {
                             size: 20,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Text(
                           'Add Pipeline',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             color: const Color(0xFF2E8EFF),
                           ),
                         ),
@@ -408,69 +409,69 @@ class _StagesScreenState extends State<StagesScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     TextFormField(
                       controller: nameCtrl,
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Name',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
                         prefixIcon: const Icon(
                           Icons.badge_outlined,
                           size: 20,
                           color: Colors.grey,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
                         ),
                       ),
                       validator: (v) => (v == null || v.trim().isEmpty) ? 'Pipeline name is required' : null,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     TextFormField(
                       controller: descCtrl,
                       maxLines: 2,
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Description (Optional)',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
                         prefixIcon: const Icon(
                           Icons.description_outlined,
                           size: 20,
                           color: Colors.grey,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF2E8EFF),
                         minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                       ),
                       onPressed: () {
@@ -491,7 +492,7 @@ class _StagesScreenState extends State<StagesScreen> {
                         'Create',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           color: Colors.white,
                         ),
                       ),
@@ -516,7 +517,7 @@ class _StagesScreenState extends State<StagesScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDialogState) => AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
           ),
           title: Text(
             'Add Stage',
@@ -535,11 +536,11 @@ class _StagesScreenState extends State<StagesScreen> {
                     labelText: 'Name',
                     hintText: 'e.g. Negotiation',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 TextField(
                   controller: orderCtrl,
                   keyboardType: TextInputType.number,
@@ -547,11 +548,11 @@ class _StagesScreenState extends State<StagesScreen> {
                     labelText: 'Order',
                     hintText: '0',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 TextField(
                   controller: probCtrl,
                   keyboardType: TextInputType.number,
@@ -559,17 +560,17 @@ class _StagesScreenState extends State<StagesScreen> {
                     labelText: 'Probability (%)',
                     hintText: '0',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 DropdownButtonFormField<String>(
                   value: winLikelihood,
                   decoration: InputDecoration(
                     labelText: 'Win likelihood',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                   items: ['open', 'won', 'lost']
@@ -612,7 +613,7 @@ class _StagesScreenState extends State<StagesScreen> {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
               ),
               child: Text(
@@ -655,10 +656,10 @@ class _StageTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: const [
             BoxShadow(
               color: Color(0x40000000),
@@ -671,35 +672,35 @@ class _StageTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 26,
-              height: 26,
+              width: 26.w,
+              height: 26.h,
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Center(
                 child: Text(
                   '${index + 1}',
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w800,
                     color: Colors.black,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Container(
-              width: 38,
-              height: 38,
+              width: 38.w,
+              height: 38.h,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(11.r),
                 border: Border.all(color: color.withOpacity(0.25)),
               ),
               child: Icon(Icons.label_rounded, size: 18, color: color),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -708,7 +709,7 @@ class _StageTile extends StatelessWidget {
                     stage.name,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: Colors.black,
                     ),
                   ),
@@ -718,7 +719,7 @@ class _StageTile extends StatelessWidget {
                     Text(
                       'Order: ${stage.order} · ${stage.probability}% · ${stage.winLikelihood}',
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         color: Colors.black54,
                       ),
                     ),
@@ -726,8 +727,8 @@ class _StageTile extends StatelessWidget {
               ),
             ),
             Container(
-              width: 10,
-              height: 10,
+              width: 10.w,
+              height: 10.h,
               decoration: BoxDecoration(color: color, shape: BoxShape.circle),
             ),
           ],

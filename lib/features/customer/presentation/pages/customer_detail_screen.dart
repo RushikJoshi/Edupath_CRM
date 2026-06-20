@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,11 +94,11 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     return TextFormField(
       controller: ctrl,
       enabled: _isEditing,
-      style: GoogleFonts.poppins(fontSize: 14),
+      style: GoogleFonts.poppins(fontSize: 14.sp),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: GoogleFonts.poppins(
-          fontSize: 13,
+          fontSize: 13.sp,
           color: Colors.grey.shade600,
         ),
         prefixIcon: Icon(
@@ -105,22 +106,22 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           size: 18,
           color: AppColors.primary.withOpacity(0.6),
         ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: AppColors.primary.withOpacity(0.2)),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: AppColors.primary.withOpacity(0.1)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.5.w),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 12,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14.w,
+          vertical: 12.h,
         ),
       ),
     );
@@ -129,24 +130,24 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
   Widget _buildInfoRow(String label, String value, IconData icon) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.primary.withOpacity(0.12)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(icon, size: 14, color: AppColors.primary),
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,16 +155,16 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   value.isNotEmpty ? value : '-',
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
@@ -178,11 +179,11 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
 
   Widget _section(String title, IconData icon, List<Widget> children) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary, width: 1),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: AppColors.primary, width: 1.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,25 +191,25 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: EdgeInsets.all(6.w),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(icon, size: 14, color: AppColors.primary),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Text(
                 title,
                 style: GoogleFonts.poppins(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           ...children,
         ],
       ),
@@ -252,7 +253,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
               'Account Details',
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
-                fontSize: 18,
+                fontSize: 18.sp,
                 color: Colors.white,
               ),
               maxLines: 1,
@@ -261,7 +262,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
             Text(
               customer.name,
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 color: Colors.white.withOpacity(0.7),
               ),
             ),
@@ -292,7 +293,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     backgroundColor: AppColors.stageWon,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                     duration: const Duration(seconds: 2),
                   ),
@@ -309,7 +310,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     backgroundColor: AppColors.stageLost,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                 );
@@ -348,12 +349,12 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(0, 50),
                         foregroundColor: AppColors.primary,
-                        side: const BorderSide(
+                        side: BorderSide(
                           color: AppColors.primary,
-                          width: 1.5,
+                          width: 1.5.w,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                       child: Text(
@@ -362,17 +363,17 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10.w),
                   Expanded(
                     flex: 2,
                     child: SizedBox(
-                      height: 50,
+                      height: 50.h,
                       child: FilledButton(
                         onPressed: _onSave,
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                           elevation: 0,
                         ),
@@ -380,7 +381,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                           'Save Changes',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w700,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             color: Colors.white,
                           ),
                         ),
@@ -400,20 +401,20 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.primary, width: 1),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppColors.primary, width: 1.w),
           ),
           child: Row(
             children: [
               Container(
-                width: 54,
-                height: 54,
+                width: 54.w,
+                height: 54.h,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                   border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                 ),
                 child: Center(
@@ -428,14 +429,14 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                               .toUpperCase()
                         : 'AC',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
                       color: AppColors.primary,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,26 +444,26 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     Text(
                       customer.name,
                       style: GoogleFonts.poppins(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       customer.companyName.isNotEmpty
                           ? customer.companyName
                           : customer.email,
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade600,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10.h),
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
@@ -482,28 +483,28 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         _section('Account Information', Icons.person_rounded, [
           _buildInfoRow('Full Name', customer.name, Icons.person_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildInfoRow('Email', customer.email, Icons.email_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildInfoRow('Phone', customer.phone, Icons.phone_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildInfoRow(
             'Company Name',
             customer.companyName,
             Icons.business_rounded,
           ),
         ]),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         _section('Address', Icons.location_on_rounded, [
           _buildInfoRow(
             'Street Address',
             customer.address,
             Icons.location_on_rounded,
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             children: [
               Expanded(
@@ -513,7 +514,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Icons.location_city_rounded,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: _buildInfoRow(
                   'State',
@@ -523,7 +524,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             children: [
               Expanded(
@@ -533,7 +534,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Icons.public_rounded,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: _buildInfoRow(
                   'Pincode',
@@ -544,14 +545,14 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
             ],
           ),
         ]),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         FilledButton(
           onPressed: () => setState(() => _isEditing = true),
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10.h),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
           child: SizedBox(
@@ -567,7 +568,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         FilledButton(
           onPressed: () {
             showDialog(
@@ -601,9 +602,9 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           },
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.stageLost,
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: EdgeInsets.symmetric(vertical: 10.h),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
           child: SizedBox(
@@ -629,21 +630,21 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
       children: [
         _section('Contact Info', Icons.person_outline_rounded, [
           _buildField(_nameCtrl, 'Full Name', Icons.person_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildField(_emailCtrl, 'Email', Icons.email_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildField(_phoneCtrl, 'Phone', Icons.phone_rounded),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildField(_companyCtrl, 'Company Name', Icons.business_rounded),
         ]),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         _section('Address', Icons.location_on_rounded, [
           _buildField(
             _addressCtrl,
             'Street Address',
             Icons.location_on_rounded,
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             children: [
               Expanded(
@@ -653,13 +654,13 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Icons.location_city_rounded,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: _buildField(_stateCtrl, 'State', Icons.map_rounded),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             children: [
               Expanded(
@@ -669,7 +670,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Icons.public_rounded,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Expanded(
                 child: _buildField(_pinCtrl, 'Pincode', Icons.pin_drop_rounded),
               ),
@@ -682,21 +683,21 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
 
   Widget _infoChip(IconData icon, String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(999.r),
         border: Border.all(color: AppColors.primary.withOpacity(0.15)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: AppColors.primary),
-          const SizedBox(width: 6),
+          SizedBox(width: 6.w),
           Text(
             text,
             style: GoogleFonts.poppins(
-              fontSize: 11,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
             ),

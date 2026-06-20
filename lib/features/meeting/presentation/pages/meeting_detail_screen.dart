@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,7 +100,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     meeting?.title ?? 'Meeting Details',
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 17,
+                      fontSize: 17.sp,
                       color: Colors.white,
                     ),
                     maxLines: 1,
@@ -108,7 +109,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   Text(
                     'Meeting Details',
                     style: GoogleFonts.poppins(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: Colors.white.withOpacity(0.7),
                     ),
                   ),
@@ -124,14 +125,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   context.read<MeetingBloc>().add(MeetingFetchedById(id));
                 }
               },
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+              icon: Icon(Icons.refresh_rounded, color: Colors.white),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: SvgPicture.asset(
                 'assets/svgs/meetings.svg',
-                width: 24,
-                height: 24,
+                width: 24.w,
+                height: 24.h,
               ),
             ),
           ],
@@ -226,31 +227,31 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                 ),
                 children: <Widget>[
                   _headerCard(m, typeColor, typeIcon, statusColor, statusIcon),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _infoSection('Date & Time', Icons.schedule_rounded, [
                     _infoRow(
                       Icons.calendar_today_rounded,
                       'Date',
                       '$weekday, $dateStr',
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _infoRow(Icons.access_time_rounded, 'Time', timeStr),
                   ]),
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   _infoSection('Meeting Details', Icons.info_outline_rounded, [
                     _infoRow(Icons.title_rounded, 'Title', m.title),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _infoRow(Icons.category_rounded, 'Type', m.meetingType),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _infoRow(Icons.circle_outlined, 'Status', m.status),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     _infoRow(
                       Icons.wifi_rounded,
                       'Attendance',
                       m.attendanceMode,
                     ),
                     if (m.contactName != null && m.contactName!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.person_rounded,
                         'Contact Name',
@@ -259,7 +260,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     ],
                     if (m.contactEmail != null &&
                         m.contactEmail!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.email_rounded,
                         'Contact Email',
@@ -268,7 +269,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                     ],
                     if (m.contactPhone != null &&
                         m.contactPhone!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.phone_rounded,
                         'Contact Phone',
@@ -276,7 +277,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                       ),
                     ],
                     if (m.location != null && m.location!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.location_on_rounded,
                         'Location',
@@ -284,7 +285,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                       ),
                     ],
                     if (m.meetingLink != null && m.meetingLink!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.link_rounded,
                         'Meeting Link',
@@ -292,11 +293,11 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                       ),
                     ],
                     if (m.notes != null && m.notes!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(Icons.notes_rounded, 'Notes', m.notes!),
                     ],
                     if (m.reminderMinutes.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _infoRow(
                         Icons.alarm_rounded,
                         'Reminders',
@@ -304,8 +305,12 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                       ),
                     ],
                   ]),
-                  const SizedBox(height: 24),
-                  if (m.status.toLowerCase() == 'scheduled') ...[
+                  SizedBox(height: 24.h),
+                  if (m.status.toLowerCase() == 'scheduled' ||
+                      m.status.toLowerCase() == 'upcoming' ||
+                      m.status.toLowerCase() == 'confirmed' ||
+                      m.status.toLowerCase() == 'in progress' ||
+                      m.status.toLowerCase() == 'in_progress') ...[
                     InnerShadow(
                       shadows: [
                         BoxShadow(
@@ -315,7 +320,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                         ),
                       ],
                       child: SizedBox(
-                        height: 50,
+                        height: 50.h,
                         width: double.infinity,
                         child: FilledButton.icon(
                           onPressed: () {
@@ -336,21 +341,21 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                             'Mark as Completed',
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w700,
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               color: Colors.white,
                             ),
                           ),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.stageWon,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(14.r),
                             ),
                             elevation: 0,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Row(
                       children: <Widget>[
                         Expanded(
@@ -384,14 +389,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                                 backgroundColor: AppColors.primary,
                                 minimumSize: const Size(0, 48),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 elevation: 0,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: InnerShadow(
                             shadows: [
@@ -427,7 +432,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                                 backgroundColor: AppColors.error,
                                 minimumSize: const Size(0, 48),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 elevation: 0,
                               ),
@@ -437,22 +442,26 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                       ],
                     ),
                   ],
-                  if (m.status.toLowerCase() != 'scheduled')
+                  if (m.status.toLowerCase() != 'scheduled' &&
+                      m.status.toLowerCase() != 'upcoming' &&
+                      m.status.toLowerCase() != 'confirmed' &&
+                      m.status.toLowerCase() != 'in progress' &&
+                      m.status.toLowerCase() != 'in_progress')
                     Container(
-                      padding: const EdgeInsets.all(14),
+                      padding: EdgeInsets.all(14.w),
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.06),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(color: statusColor.withOpacity(0.2)),
                       ),
                       child: Row(
                         children: <Widget>[
                           Icon(statusIcon, size: 18, color: statusColor),
-                          const SizedBox(width: 10),
+                          SizedBox(width: 10.w),
                           Text(
                             'This meeting is ${m.status}',
                             style: GoogleFonts.poppins(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
                               color: statusColor,
                             ),
@@ -460,7 +469,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                         ],
                       ),
                     ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
               );
             },
@@ -486,27 +495,27 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: EdgeInsets.all(18.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary, width: 1),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: AppColors.primary, width: 1.w),
         ),
         child: Row(
           children: <Widget>[
             Container(
-              width: 56,
-              height: 56,
+              width: 56.w,
+              height: 56.h,
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: AppColors.primary.withOpacity(0.2)),
               ),
               child: Center(
                 child: Icon(typeIcon, color: AppColors.primary, size: 24),
               ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,49 +523,49 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                   Text(
                     m.title,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w800,
                       color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Row(
                     children: <Widget>[
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 3,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 9.w,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
                           color: typeColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(color: typeColor.withOpacity(0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Icon(typeIcon, size: 11, color: typeColor),
-                            const SizedBox(width: 4),
+                            SizedBox(width: 4.w),
                             Text(
                               m.meetingType,
                               style: GoogleFonts.poppins(
                                 color: typeColor,
-                                fontSize: 10,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical: 3,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 9.w,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
                           color: statusColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: statusColor.withOpacity(0.3),
                           ),
@@ -565,7 +574,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
                           m.status,
                           style: GoogleFonts.poppins(
                             color: statusColor,
-                            fontSize: 10,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -577,8 +586,8 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             ),
             SvgPicture.asset(
               'assets/svgs/meetings.svg',
-              width: 28,
-              height: 28,
+              width: 28.w,
+              height: 28.h,
               colorFilter: ColorFilter.mode(
                 AppColors.primary.withOpacity(0.25),
                 BlendMode.srcIn,
@@ -600,11 +609,11 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary, width: 1),
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: AppColors.primary, width: 1.w),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -612,25 +621,25 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(icon, size: 14, color: AppColors.primary),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Text(
                   title,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14.h),
             ...children,
           ],
         ),
@@ -643,14 +652,14 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Icon(icon, size: 16, color: AppColors.primary.withOpacity(0.5)),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               label,
               style: GoogleFonts.poppins(
-                fontSize: 10,
+                fontSize: 10.sp,
                 color: Colors.grey.shade500,
                 fontWeight: FontWeight.w500,
               ),
@@ -658,7 +667,7 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
             Text(
               value,
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,
               ),

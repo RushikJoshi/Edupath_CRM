@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,7 +119,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                     'Account Details',
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       color: Colors.white,
                     ),
                     maxLines: 1,
@@ -128,7 +129,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                 Text(
                   item.title,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: Colors.white.withOpacity(0.7),
                   ),
                 ),
@@ -139,8 +140,8 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                 padding: const EdgeInsets.only(right: 16),
                 child: SvgPicture.asset(
                   'assets/svgs/deal.svg',
-                  width: 24,
-                  height: 24,
+                  width: 24.w,
+                  height: 24.h,
                 ),
               ),
             ],
@@ -157,7 +158,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                     ),
                     children: [
                       _headerCard(context, item, sc),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       _infoSection(
                         'Contact & Details',
                         Icons.contact_phone_rounded,
@@ -189,7 +190,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                           if (item.tags.isNotEmpty) _tagsRow(item.tags),
                         ],
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       _infoSection('Assigned to', Icons.person_pin_rounded, [
                         _row(
                           Icons.person_pin_rounded,
@@ -198,7 +199,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                         ),
                       ]),
                       if (history.isNotEmpty) ...[
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14.h),
                         _infoSection(
                           'Lead tracking history',
                           Icons.history_rounded,
@@ -214,7 +215,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                           customerName.trim().isNotEmpty ||
                           contactName.trim().isNotEmpty ||
                           assignedToName.trim().isNotEmpty) ...[
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14.h),
                         _infoSection('References', Icons.link_rounded, [
                           if (leadName.trim().isNotEmpty)
                             _row(
@@ -242,7 +243,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                             ),
                         ]),
                       ],
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       _infoSection('Activity log', Icons.history_rounded, [
                         BlocBuilder<AuditLogBloc, AuditLogState>(
                           buildWhen: (p, c) =>
@@ -250,12 +251,12 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                           builder: (context, logState) {
                             if (logState.status == AppStatus.loading &&
                                 logState.items.isEmpty) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 12),
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
                                 child: Center(
                                   child: SizedBox(
-                                    height: 20,
-                                    width: 20,
+                                    height: 20.h,
+                                    width: 20.w,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       color: AppColors.primary,
@@ -275,13 +276,13 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                                   );
                             if (logs.isEmpty) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 8.h,
                                 ),
                                 child: Text(
                                   'No activity for this account yet.',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     color: Colors.grey.shade600,
                                   ),
                                 ),
@@ -328,8 +329,8 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 8,
-            height: 8,
+            width: 8.w,
+            height: 8.h,
             margin: const EdgeInsets.only(top: 4, right: 8),
             decoration: const BoxDecoration(
               color: AppColors.primary,
@@ -343,7 +344,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                 Text(
                   title,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
@@ -354,7 +355,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                     child: Text(
                       mid,
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: Colors.grey.shade700,
                       ),
                     ),
@@ -364,7 +365,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                   child: Text(
                     fmt(log.createdAt),
                     style: GoogleFonts.poppins(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       color: Colors.grey.shade500,
                     ),
                   ),
@@ -387,11 +388,11 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary, width: 1),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: AppColors.primary, width: 1.w),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,33 +400,33 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
             Text(
               item.title,
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w800,
                 color: AppColors.primary,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               '₹ ${item.value}',
               style: GoogleFonts.poppins(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: sc.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(color: sc.withOpacity(0.3)),
               ),
               child: Text(
                 item.stage,
                 style: GoogleFonts.poppins(
                   color: sc,
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -446,11 +447,11 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         ),
       ],
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary, width: 1),
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: AppColors.primary, width: 1.w),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,25 +459,25 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(icon, size: 14, color: AppColors.primary),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Text(
                   title,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             ...rows,
           ],
         ),
@@ -491,7 +492,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: AppColors.primary.withOpacity(0.5)),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,16 +500,16 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                 Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: Colors.grey.shade500,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   value,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
                   ),
@@ -536,7 +537,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         pc = AppColors.success;
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         children: [
           Icon(
@@ -544,25 +545,25 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
             size: 16,
             color: Colors.grey.shade400,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Text(
             'Priority',
             style: GoogleFonts.poppins(
-              fontSize: 13,
+              fontSize: 13.sp,
               color: Colors.grey.shade500,
             ),
           ),
           const Spacer(),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
             decoration: BoxDecoration(
               color: pc.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(6.r),
             ),
             child: Text(
               priority.toUpperCase(),
               style: GoogleFonts.poppins(
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w700,
                 color: pc,
               ),
@@ -575,26 +576,26 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
 
   Widget _tagsRow(List<String> tags) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Wrap(
         spacing: 8,
         runSpacing: 4,
         children: tags
             .map(
               (t) => Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 4.h,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(color: AppColors.primary.withOpacity(0.1)),
                 ),
                 child: Text(
                   '#$t',
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     color: AppColors.primary,
                     fontWeight: FontWeight.w500,
                   ),

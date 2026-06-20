@@ -20,9 +20,17 @@ class _UserApiClient implements UserApiClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> getUsers({String? search, String? role}) async {
+  Future<HttpResponse<dynamic>> getUsers({
+    String? search,
+    String? role,
+    String? status,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'search': search, r'role': role};
+    final queryParameters = <String, dynamic>{
+      r'search': search,
+      r'role': role,
+      r'status': status,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
@@ -43,13 +51,13 @@ class _UserApiClient implements UserApiClient {
   }
 
   @override
-  Future<UserModel> createUser(Map<String, dynamic> body) async {
+  Future<HttpResponse<dynamic>> createUser(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<UserModel>(
+    final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -59,25 +67,45 @@ class _UserApiClient implements UserApiClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
-    try {
-      _value = UserModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
   }
 
   @override
-  Future<UserModel> updateUser(String id, Map<String, dynamic> body) async {
+  Future<HttpResponse<dynamic>> getUserById(String id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/users/${id}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> updateUser(
+    String id,
+    Map<String, dynamic> body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<UserModel>(
+    final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -87,15 +115,10 @@ class _UserApiClient implements UserApiClient {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
-    try {
-      _value = UserModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
   }
 
   @override

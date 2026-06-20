@@ -97,10 +97,10 @@ class _AuthApiClient implements AuthApiClient {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options = _setStreamType<HttpResponse<dynamic>>(
-      Options(method: 'PATCH', headers: _headers, extra: _extra)
+      Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/auth/change-password',
+            '/api/auth/me/password',
             queryParameters: queryParameters,
             data: _data,
           )

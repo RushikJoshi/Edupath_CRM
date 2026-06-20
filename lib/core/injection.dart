@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'di/injection_container.dart';
 
@@ -163,8 +164,13 @@ class Injection {
         ],
         child: Builder(
           builder: (context) {
-            return BlocListener<AuthBloc, AuthState>(
-              listenWhen: (previous, current) =>
+            return ScreenUtilInit(
+              designSize: const Size(390, 844),
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                return BlocListener<AuthBloc, AuthState>(
+                  listenWhen: (previous, current) =>
                   previous.hasToken && !current.hasToken,
               listener: (context, state) {
                 navigatorKey.currentState?.pushNamedAndRemoveUntil(
@@ -195,7 +201,9 @@ class Injection {
               ),
             );
           },
-        ),
+        );
+      },
+    ),
       ),
     );
   }

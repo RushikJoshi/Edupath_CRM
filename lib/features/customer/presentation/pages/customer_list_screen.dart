@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -105,14 +106,14 @@ class _AccountListScreenState extends State<AccountListScreen> {
           'Accounts',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
         actions: [
           IconButton(
             tooltip: 'Refresh',
-            icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 28),
+            icon: Icon(Icons.refresh_rounded, color: Colors.white, size: 28),
             onPressed: _refreshCustomers,
           ),
         ],
@@ -124,7 +125,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
           children: [
             // Search & Count Row
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               child: BlocBuilder<CustomerBloc, CustomerState>(
                 builder: (context, state) {
                   final filtered = state.items
@@ -141,10 +142,10 @@ class _AccountListScreenState extends State<AccountListScreen> {
                       // Search Bar
                       Expanded(
                         child: Container(
-                          height: 46,
+                          height: 46.h,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                             boxShadow: const [
                               BoxShadow(
                                 color: Color(0x40000000),
@@ -157,13 +158,13 @@ class _AccountListScreenState extends State<AccountListScreen> {
                           child: TextField(
                             controller: _searchCtrl,
                             style: GoogleFonts.poppins(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               color: Colors.black,
                             ),
                             decoration: InputDecoration(
                               hintText: 'Search...',
                               hintStyle: GoogleFonts.poppins(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: Colors.grey.shade500,
                               ),
                               prefixIcon: const Icon(
@@ -173,34 +174,34 @@ class _AccountListScreenState extends State<AccountListScreen> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 12,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 10.h,
+                                horizontal: 12.w,
                               ),
                               border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 borderSide: BorderSide.none,
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 borderSide: BorderSide.none,
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 borderSide: BorderSide.none,
                               ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       // Accounts Badge
                       Container(
-                        height: 46,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        height: 46.h,
+                        padding: EdgeInsets.symmetric(horizontal: 12.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           boxShadow: const [
                             BoxShadow(
                               color: Color(0x40000000),
@@ -218,11 +219,11 @@ class _AccountListScreenState extends State<AccountListScreen> {
                               color: Colors.black,
                               size: 20,
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Text(
                               '${filtered.length} Accounts',
                               style: GoogleFonts.poppins(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
                               ),
@@ -253,7 +254,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
                             size: 48,
                             color: AppColors.error,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           Text(
                             state.errorMessage ?? 'Failed to load accounts',
                             style: GoogleFonts.poppins(
@@ -261,10 +262,10 @@ class _AccountListScreenState extends State<AccountListScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           FilledButton.icon(
                             onPressed: _refreshCustomers,
-                            icon: const Icon(Icons.refresh_rounded),
+                            icon: Icon(Icons.refresh_rounded),
                             label: Text(
                               'Retry',
                               style: GoogleFonts.poppins(
@@ -295,11 +296,11 @@ class _AccountListScreenState extends State<AccountListScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
+                            width: 80.w,
+                            height: 80.h,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2E8EFF).withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(24),
+                              color: Color(0xFF2E8EFF).withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(24.r),
                             ),
                             child: const Icon(
                               Icons.people_alt_rounded,
@@ -307,22 +308,22 @@ class _AccountListScreenState extends State<AccountListScreen> {
                               color: Color(0xFF2E8EFF),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Text(
                             'No Accounts Found',
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w700,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             _searchQuery.isEmpty
                                 ? 'Pull down to refresh'
                                 : 'Try another search term',
                             style: GoogleFonts.poppins(
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               color: Colors.grey.shade500,
                             ),
                           ),
@@ -337,7 +338,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
                     child: ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, __) => SizedBox(height: 12.h),
                       itemBuilder: (context, i) {
                         final customer = filtered[i];
                         return TweenAnimationBuilder<double>(
@@ -369,7 +370,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
         backgroundColor: const Color(0xFF2E8EFF),
         elevation: 4,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 30),
+        child: Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }
@@ -395,7 +396,7 @@ class _AccountCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: const [
           BoxShadow(
             color: Color(0x40000000),
@@ -406,11 +407,11 @@ class _AccountCard extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(
-              left: BorderSide(color: Color(0xFF2E8EFF), width: 4),
+              left: BorderSide(color: Color(0xFF2E8EFF), width: 4.w),
             ),
           ),
           child: Material(
@@ -419,32 +420,32 @@ class _AccountCard extends StatelessWidget {
               onTap: () => Navigator.of(
                 context,
               ).pushNamed(AppRoutes.accountDetail, arguments: customer),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Avatar
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: 48.w,
+                      height: 48.h,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2E8EFF).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: Color(0xFF2E8EFF).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Center(
                         child: Text(
                           initials,
                           style: GoogleFonts.poppins(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFF2E8EFF),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
 
                     // Info Column
                     Expanded(
@@ -454,14 +455,14 @@ class _AccountCard extends StatelessWidget {
                           Text(
                             customer.name,
                             style: GoogleFonts.poppins(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Row(
                             children: [
                               const Icon(
@@ -469,12 +470,12 @@ class _AccountCard extends StatelessWidget {
                                 size: 14,
                                 color: Color(0xFF2E8EFF),
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Expanded(
                                 child: Text(
                                   customer.email,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                     color: Colors.black54,
                                   ),
                                   maxLines: 1,
@@ -483,7 +484,7 @@ class _AccountCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Row(
                             children: [
                               const Icon(
@@ -491,12 +492,12 @@ class _AccountCard extends StatelessWidget {
                                 size: 14,
                                 color: Colors.black54,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Expanded(
                                 child: Text(
                                   '${customer.city}, ${customer.state}',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 11,
+                                    fontSize: 11.sp,
                                     color: Colors.black54,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -509,7 +510,7 @@ class _AccountCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
 
                     // Action Column
                     Column(
@@ -530,7 +531,7 @@ class _AccountCard extends StatelessWidget {
                             color: Colors.black87,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         const Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 16,

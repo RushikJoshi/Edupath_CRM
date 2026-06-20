@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,12 +46,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         SnackBar(
           content: Text(
             'Password changed successfully',
-            style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          margin: EdgeInsets.all(16.w),
         ),
       );
       Navigator.of(context).pop();
@@ -63,12 +64,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         SnackBar(
           content: Text(
             message,
-            style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
           ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          margin: EdgeInsets.all(16.w),
         ),
       );
     } finally {
@@ -97,7 +98,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           'Change Password',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
@@ -118,13 +119,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 Text(
                   'Enter your password and\nchoose a new one.',
                   style: GoogleFonts.poppins(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
-                    height: 1.4,
+                    height: 1.4.h,
                   ),
                 ),
-                const SizedBox(height: 35),
+                SizedBox(height: 35.h),
                 _PasswordTextField(
                   label: 'Current Password',
                   controller: _currentController,
@@ -135,7 +136,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   validator: (v) =>
                       Validators.requiredField(v, 'Current password'),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _PasswordTextField(
                   label: 'New password',
                   controller: _newController,
@@ -145,7 +146,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       setState(() => _obscureNew = !_obscureNew),
                   validator: (v) => Validators.requiredField(v, 'New password'),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _PasswordTextField(
                   label: 'Confirm new password',
                   controller: _confirmController,
@@ -162,22 +163,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 52,
+                  height: 52.h,
                   child: FilledButton(
                     onPressed: _loading ? null : _submit,
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF2E8EFF),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26),
+                        borderRadius: BorderRadius.circular(26.r),
                       ),
                     ),
                     child: _loading
-                        ? const SizedBox(
-                            height: 24,
-                            width: 24,
+                        ? SizedBox(
+                            height: 24.h,
+                            width: 24.w,
                             child: CircularProgressIndicator(
                               strokeWidth: 3,
                               color: Colors.white,
@@ -186,7 +187,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         : Text(
                             'Change Password',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -279,16 +280,16 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
             Text(
               widget.label,
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
                 color: const Color(0xFF334155),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
                   color: hasError
                       ? Colors.red
@@ -309,14 +310,14 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
                 obscureText: widget.obscureText,
                 focusNode: _focusNode,
                 style: GoogleFonts.poppins(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: Colors.black,
                 ),
                 decoration: InputDecoration(
                   hintText: widget.hintText,
                   hintStyle: GoogleFonts.poppins(
                     color: Colors.grey.shade500,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                   prefixIcon: const Icon(
                     Icons.lock_outline_rounded,
@@ -335,28 +336,28 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 16,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 16.h,
+                    horizontal: 16.w,
                   ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   errorBorder: InputBorder.none,
                   focusedErrorBorder: InputBorder.none,
-                  errorStyle: const TextStyle(height: 0, fontSize: 0),
+                  errorStyle: TextStyle(height: 0.h, fontSize: 0.sp),
                 ),
               ),
             ),
             if (hasError && errorText != null) ...[
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   errorText,
                   style: GoogleFonts.poppins(
                     color: Colors.red,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
               ),

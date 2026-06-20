@@ -34,10 +34,40 @@ class BranchRepositoryImpl implements BranchRepository {
     }
   }
 
+  BranchModel _parseBranchFromResponse(dynamic responseData) {
+    Map<String, dynamic> branchMap;
+    if (responseData is Map) {
+      final dataObj = responseData['data'];
+      if (dataObj is Map && dataObj['branch'] != null) {
+        branchMap = dataObj['branch'] as Map<String, dynamic>;
+      } else if (responseData['branch'] != null) {
+        branchMap = responseData['branch'] as Map<String, dynamic>;
+      } else if (dataObj is Map) {
+        branchMap = dataObj as Map<String, dynamic>;
+      } else {
+        branchMap = responseData as Map<String, dynamic>;
+      }
+    } else {
+      throw Exception('Invalid branch response format');
+    }
+    return BranchModel.fromJson(branchMap);
+  }
+
   @override
   Future<BranchModel> createBranch(Map<String, dynamic> branchData) async {
     try {
-      return await _apiClient.createBranch(branchData);
+      final response = await _apiClient.createBranch(branchData);
+      return _parseBranchFromResponse(response.data);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<BranchModel> getBranchById(String branchId) async {
+    try {
+      final response = await _apiClient.getBranchById(branchId);
+      return _parseBranchFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -46,7 +76,8 @@ class BranchRepositoryImpl implements BranchRepository {
   @override
   Future<BranchModel> updateBranch(String branchId, Map<String, dynamic> branchData) async {
     try {
-      return await _apiClient.updateBranch(branchId, branchData);
+      final response = await _apiClient.updateBranch(branchId, branchData);
+      return _parseBranchFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

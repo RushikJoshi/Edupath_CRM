@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,7 +40,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
     _tc = TabController(length: _tabsList.length, vsync: this);
 
     // Fetch leads first to populate dropdown/find lead details
-    context.read<LeadBloc>().add(const LeadFetched());
+    context.read<LeadBloc>().add(LeadFetched());
 
     if (widget.lead != null) {
       _isLeadLocked = true;
@@ -82,9 +83,9 @@ class _FollowUpScreenState extends State<FollowUpScreen>
               top: 12,
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
             child: Form(
               key: formKey,
@@ -95,33 +96,33 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                   children: [
                     Center(
                       child: Container(
-                        width: 40,
-                        height: 4,
+                        width: 40.w,
+                        height: 4.h,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       'Schedule Follow-Up',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF2E8EFF),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     Text(
                       'Type',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     _bottomSheetDropdown<String>(
                       context: ctx,
                       value: type,
@@ -130,16 +131,16 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                       prefixIcon: Icons.call_merge_rounded,
                       onChanged: (v) => setModalState(() => type = v),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       'Priority',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     _bottomSheetDropdown<String>(
                       context: ctx,
                       value: priority,
@@ -148,7 +149,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                       prefixIcon: Icons.priority_high_rounded,
                       onChanged: (v) => setModalState(() => priority = v),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Row(
                       children: [
                         Expanded(
@@ -163,18 +164,18 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                               if (d != null) setModalState(() => selectedDate = d);
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(6),
+                                    padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF2F6FE),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: const Icon(
                                       Icons.calendar_today_rounded,
@@ -182,17 +183,17 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                                       size: 18,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Text(
                                     '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: InkWell(
                             onTap: () async {
@@ -203,18 +204,18 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                               if (t != null) setModalState(() => selectedTime = t);
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(6),
+                                    padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF2F6FE),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: const Icon(
                                       Icons.access_time_filled_rounded, // or access_time
@@ -222,10 +223,10 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                                       size: 18,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Text(
                                     selectedTime.format(ctx),
-                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
                                   ),
                                 ],
                               ),
@@ -234,21 +235,21 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     TextFormField(
                       controller: noteController,
                       maxLines: 2,
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Notes',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
                           child: Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF2F6FE),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: const Icon(
                               Icons.assignment_outlined,
@@ -257,23 +258,23 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                             ),
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty ? 'Note is required' : null,
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     FilledButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
@@ -300,14 +301,14 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         backgroundColor: const Color(0xFF2E8EFF),
                         minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                       child: Text(
                         'Schedule',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           color: Colors.white,
                         ),
                       ),
@@ -334,7 +335,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
           title: Text(
             'Add Note',
             style: GoogleFonts.poppins(
@@ -349,7 +350,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'Enter completion/cancellation note...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
               ),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Note is required' : null,
@@ -381,7 +382,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                 backgroundColor: newStatus == 'completed'
                     ? AppColors.stageWon
                     : AppColors.error,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
               ),
               child: Text(
                 'Update',
@@ -463,12 +464,12 @@ class _FollowUpScreenState extends State<FollowUpScreen>
           toolbarHeight: 64,
           leading: _isLeadLocked
               ? IconButton(
-                  icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                  icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 )
               : Builder(
                   builder: (ctx) => IconButton(
-                    icon: const Icon(Icons.menu_rounded, color: Colors.white),
+                    icon: Icon(Icons.menu_rounded, color: Colors.white),
                     onPressed: () => Scaffold.of(ctx).openDrawer(),
                   ),
                 ),
@@ -479,7 +480,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                 _isLeadLocked ? 'Lead Follow-ups' : 'Follow-up Manager',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: Colors.white,
                 ),
               ),
@@ -488,7 +489,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                     ? 'Lead: ${_currentLead!.name}'
                     : 'Manage follow-up reminders',
                 style: GoogleFonts.poppins(
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   color: Colors.white.withValues(alpha: 0.7),
                 ),
               ),
@@ -527,7 +528,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                             border: Border(
                               bottom: BorderSide(
                                 color: Colors.grey.shade200,
-                                width: 1,
+                                width: 1.w,
                               ),
                             ),
                           ),
@@ -540,11 +541,11 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                             indicatorWeight: 3,
                             labelStyle: GoogleFonts.poppins(
                               fontWeight: FontWeight.w700,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                             unselectedLabelStyle: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                           ),
                         ),
@@ -578,7 +579,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
         floatingActionButton: _selectedLeadId != null
             ? FloatingActionButton.extended(
                 onPressed: () => _showFollowUpBottomSheet(context, _selectedLeadId!),
-                icon: const Icon(Icons.add_ic_call_rounded, color: Colors.white),
+                icon: Icon(Icons.add_ic_call_rounded, color: Colors.white),
                 label: Text(
                   'Add Follow-up',
                   style: GoogleFonts.poppins(
@@ -601,39 +602,172 @@ class _FollowUpScreenState extends State<FollowUpScreen>
           return const LinearProgressIndicator(color: AppColors.primary);
         }
         return Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: DropdownButtonFormField<String>(
-            initialValue: _selectedLeadId,
-            isExpanded: true,
-            iconEnabledColor: AppColors.primary,
-            decoration: InputDecoration(
-              labelText: 'Select Lead',
-              prefixIcon: const Icon(Icons.person_rounded, color: AppColors.primary),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
+          margin: EdgeInsets.all(10.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(color: const Color(0xFFE2E8F0)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xFFF1F5F9),
+                blurRadius: 10,
+                offset: Offset(0, 4),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            ),
-            items: leadState.items.map((lead) {
-              return DropdownMenuItem(
-                value: lead.id,
-                child: Text(
-                  '${lead.name} (${lead.phone})',
-                  style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w500),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFF5FF),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: const Icon(Icons.person_outline_rounded, size: 18, color: AppColors.primary),
+                  ),
+                  SizedBox(width: 12.w),
+                  Text(
+                    'Client Information',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.h),
+              InkWell(
+                onTap: () {
+                  _showLeadSelectionBottomSheet(context, leadState.items);
+                },
+                borderRadius: BorderRadius.circular(12.r),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.person_rounded, size: 20, color: Color(0xFF94A3B8)),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Text(
+                          _currentLead == null
+                              ? 'Select Lead / Client'
+                              : '${_currentLead!.name} (${_currentLead!.phone})',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.sp,
+                            color: _currentLead == null ? const Color(0xFF64748B) : const Color(0xFF1E293B),
+                            fontWeight: _currentLead == null ? FontWeight.normal : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const Icon(Icons.expand_more_rounded, color: Color(0xFF94A3B8)),
+                    ],
+                  ),
                 ),
-              );
-            }).toList(),
-            onChanged: (id) {
-              if (id != null) {
-                setState(() {
-                  _selectedLeadId = id;
-                  _currentLead = leadState.items.firstWhere((l) => l.id == id);
-                });
-                context.read<FollowUpBloc>().add(FollowUpsFetched(id));
-              }
-            },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showLeadSelectionBottomSheet(BuildContext context, List<LeadModel> leads) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.7,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 12.h),
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(2.r),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                'Select Lead / Client',
+                style: GoogleFonts.poppins(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1E293B),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Divider(height: 1.h, color: Color(0xFFE2E8F0)),
+              Expanded(
+                child: ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  itemCount: leads.length,
+                  separatorBuilder: (context, index) => const Divider(color: Color(0xFFF1F5F9)),
+                  itemBuilder: (context, index) {
+                    final lead = leads[index];
+                    final isSelected = lead.id == _selectedLeadId;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: isSelected ? AppColors.primary : const Color(0xFFF1F5F9),
+                        child: Text(
+                          lead.name.isNotEmpty ? lead.name[0].toUpperCase() : 'L',
+                          style: GoogleFonts.poppins(
+                            color: isSelected ? Colors.white : Color(0xFF64748B),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        lead.name,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                      subtitle: Text(
+                        lead.phone,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12.sp,
+                          color: const Color(0xFF64748B),
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          _selectedLeadId = lead.id;
+                          _currentLead = lead;
+                        });
+                        this.context.read<FollowUpBloc>().add(FollowUpsFetched(lead.id));
+                        Navigator.pop(ctx);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -658,9 +792,9 @@ class _FollowUpScreenState extends State<FollowUpScreen>
         }
       },
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         itemCount: filtered.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: 12.h),
         itemBuilder: (ctx, idx) {
           final fu = filtered[idx];
           final dt = fu.scheduledAt.toLocal();
@@ -668,10 +802,10 @@ class _FollowUpScreenState extends State<FollowUpScreen>
               '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
 
           return Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
               boxShadow: [
                 BoxShadow(
@@ -687,15 +821,15 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
                         fu.type.toUpperCase(),
                         style: GoogleFonts.poppins(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primary,
                         ),
@@ -703,28 +837,28 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                     ),
                     const Spacer(),
                     Icon(Icons.schedule_rounded, size: 14, color: Colors.grey.shade500),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Text(
                       dateStr,
                       style: GoogleFonts.poppins(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey.shade600,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Text(
                   fu.note,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     color: AppColors.textPrimary,
-                    height: 1.4,
+                    height: 1.4.h,
                   ),
                 ),
                 if (status == FollowUpStatus.scheduled) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -735,20 +869,20 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         label: Text(
                           'Cancel',
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: AppColors.error,
                           side: const BorderSide(color: AppColors.error),
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      SizedBox(width: 10.w),
                       FilledButton.icon(
                         onPressed: () =>
                             _showStatusUpdateDialog(context, fu, 'completed'),
@@ -756,15 +890,15 @@ class _FollowUpScreenState extends State<FollowUpScreen>
                         label: Text(
                           'Complete',
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.stageWon,
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          padding: EdgeInsets.symmetric(horizontal: 14.w),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
                       ),
@@ -795,32 +929,32 @@ class _FollowUpScreenState extends State<FollowUpScreen>
           isScrollControlled: true,
           builder: (ctx) {
             return Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 40,
-                    height: 4,
+                    width: 40.w,
+                    height: 4.h,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(
                     title,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: const Color(0xFF2E8EFF),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   const Divider(),
                   Flexible(
                     child: ListView.builder(
@@ -852,16 +986,16 @@ class _FollowUpScreenState extends State<FollowUpScreen>
           },
         );
       },
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(10.r),
       child: InputDecorator(
         decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
                 color: const Color(0xFFF2F6FE),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 prefixIcon,
@@ -870,17 +1004,17 @@ class _FollowUpScreenState extends State<FollowUpScreen>
               ),
             ),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
         ),
@@ -889,7 +1023,7 @@ class _FollowUpScreenState extends State<FollowUpScreen>
             Expanded(
               child: Text(
                 value.toString(),
-                style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
               ),
             ),
             const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),

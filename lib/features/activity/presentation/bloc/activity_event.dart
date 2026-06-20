@@ -6,6 +6,11 @@ abstract class ActivityEvent extends Equatable {
   List<Object?> get props => <Object?>[];
 }
 
+/// Fetch all activity logs
+class ActivitiesFetched extends ActivityEvent {
+  const ActivitiesFetched();
+}
+
 class ActivitiesFetchedByLead extends ActivityEvent {
   const ActivitiesFetchedByLead(this.leadId);
   final String leadId;

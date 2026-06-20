@@ -11,12 +11,15 @@ import 'lead_state.dart';
 class LeadBloc extends Bloc<LeadEvent, LeadState> {
   LeadBloc(this._repository) : super(const LeadState()) {
     on<LeadFetched>(_onFetched);
+    on<LeadByIdFetched>(_onByIdFetched);
+    on<LostLeadsFetched>(_onLostLeadsFetched);
     on<LeadCreated>(_onCreated);
     on<LeadMarkedLost>(_onMarkedLost);
     on<LeadDuplicatesFetched>(_onDuplicatesFetched);
     on<LeadDuplicateMerged>(_onDuplicateMerged);
     on<LeadAssigned>(_onAssigned);
     on<LeadStatusUpdated>(_onStatusUpdated);
+    on<LeadStageMoved>(_onStageMoved);
     on<LeadStatusUpdatedWithRemark>(_onStatusUpdatedWithRemark);
     on<LeadUpdated>(_onUpdated);
     on<LeadConverted>(_onConverted);
@@ -63,6 +66,33 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         fallbackMessage: 'Unable to fetch leads. Please try again.',
       );
       emit(state.copyWith(status: AppStatus.failure, errorMessage: msg));
+    }
+  }
+
+  Future<void> _onByIdFetched(LeadByIdFetched event, Emitter<LeadState> emit) async {
+    emit(state.copyWith(actionStatus: AppStatus.loading));
+    try {
+      final lead = await _repository.getLeadById(event.leadId);
+      emit(state.copyWith(actionStatus: AppStatus.success, selectedLead: lead));
+    } catch (e) {
+      emit(state.copyWith(
+        actionStatus: AppStatus.failure,
+        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Unable to fetch lead'),
+      ));
+    }
+  }
+
+  Future<void> _onLostLeadsFetched(LostLeadsFetched event, Emitter<LeadState> emit) async {
+    if (state.lostStatus == AppStatus.loading) return;
+    emit(state.copyWith(lostStatus: AppStatus.loading));
+    try {
+      final lostLeads = await _repository.getLostLeads();
+      emit(state.copyWith(lostStatus: AppStatus.success, lostLeads: lostLeads));
+    } catch (e) {
+      emit(state.copyWith(
+        lostStatus: AppStatus.failure,
+        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Unable to fetch lost leads'),
+      ));
     }
   }
 
@@ -292,6 +322,32 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
               : 'Status update failed',
         ),
       );
+    }
+  }
+
+  Future<void> _onStageMoved(LeadStageMoved event, Emitter<LeadState> emit) async {
+    if (state.actionStatus == AppStatus.loading) return;
+    emit(state.copyWith(actionStatus: AppStatus.loading));
+    try {
+      final updatedLead = await _repository.updateLeadStage(
+        leadId: event.leadId,
+        status: event.status,
+        remark: event.remark,
+      );
+      final items = state.items.map((i) {
+        if (i.id == event.leadId) return _mergeLeadForUi(i, updatedLead);
+        return i;
+      }).toList();
+      emit(state.copyWith(
+        actionStatus: AppStatus.success,
+        actionMessage: 'Stage moved to ${event.status}',
+        items: items,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        actionStatus: AppStatus.failure,
+        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Stage update failed'),
+      ));
     }
   }
 

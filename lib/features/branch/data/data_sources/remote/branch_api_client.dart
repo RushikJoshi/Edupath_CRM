@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:gtcrm/core/network/api_endpoints.dart';
-import 'package:gtcrm/features/branch/data/models/branch_model.dart';
 
 part 'branch_api_client.g.dart';
 
@@ -18,10 +17,13 @@ abstract class BranchApiClient {
   });
 
   @POST(ApiEndpoints.branches)
-  Future<BranchModel> createBranch(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> createBranch(@Body() Map<String, dynamic> body);
+
+  @GET(ApiEndpoints.branchDetail)
+  Future<HttpResponse<dynamic>> getBranchById(@Path('id') String id);
 
   @PUT(ApiEndpoints.branchDetail)
-  Future<BranchModel> updateBranch(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateBranch(@Path('id') String id, @Body() Map<String, dynamic> body);
 
   @DELETE(ApiEndpoints.branchDetail)
   Future<void> deleteBranch(@Path('id') String id);

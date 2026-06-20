@@ -14,6 +14,8 @@ class InquiryBloc extends Bloc<InquiryEvent, InquiryState> {
     on<InquiryAssigned>(_onAssigned);
     on<InquiryDeleted>(_onDeleted);
     on<InquiryAdded>(_onAdded);
+    on<InquiryUpdated>(_onUpdated);
+    on<InquiryMerged>(_onMerged);
   }
 
   final InquiryRepository _repository;
@@ -234,5 +236,77 @@ class InquiryBloc extends Bloc<InquiryEvent, InquiryState> {
   void _onAdded(InquiryAdded event, Emitter<InquiryState> emit) {
     final updated = [event.inquiry, ...state.items];
     emit(state.copyWith(items: updated, status: AppStatus.success));
+  }
+
+  Future<void> _onUpdated(
+    InquiryUpdated event,
+    Emitter<InquiryState> emit,
+  ) async {
+    if (state.actionStatus == AppStatus.loading) {
+      return;
+    }
+
+    emit(state.copyWith(actionStatus: AppStatus.loading));
+    try {
+      final updated = await _repository.updateInquiry(
+        event.inquiryId,
+        name: event.name,
+        phone: event.phone,
+        status: event.status,
+      );
+      final newList = state.items
+          .map((i) => i.id == updated.id ? updated : i)
+          .toList();
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: newList,
+          actionMessage: 'Enquiry updated successfully',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onMerged(
+    InquiryMerged event,
+    Emitter<InquiryState> emit,
+  ) async {
+    if (state.actionStatus == AppStatus.loading) {
+      return;
+    }
+
+    emit(state.copyWith(actionStatus: AppStatus.loading));
+    try {
+      final updated = await _repository.mergeInquiry(
+        sourceId: event.sourceId,
+        targetId: event.targetId,
+      );
+      // Remove source inquiry and update the target inquiry (which was updated by merge)
+      final newList = state.items
+          .where((i) => i.id != event.sourceId)
+          .map((i) => i.id == updated.id ? updated : i)
+          .toList();
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: newList,
+          actionMessage: 'Enquiries merged successfully',
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
+    }
   }
 }

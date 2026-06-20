@@ -3,6 +3,7 @@ import 'package:gtcrm/features/deal/data/models/deal_model.dart';
 
 abstract class LeadRepository {
   Future<List<LeadModel>> fetchAll({String? search});
+  Future<LeadModel> getLeadById(String leadId);
   Future<LeadModel> createLead({
     required String name,
     required String email,
@@ -28,12 +29,14 @@ abstract class LeadRepository {
     String? notes,
     String? remark,
   });
+  Future<LeadModel> updateLeadStage({required String leadId, required String status, String? remark});
   Future<void> assignLead(String leadId, String assignedTo);
   Future<LeadModel> markLeadAsLost({
     required String leadId,
     required String reason,
     String? notes,
   });
+  Future<List<LeadModel>> getLostLeads();
   Future<List<LeadModel>> getDuplicateLeads(String leadId);
   Future<LeadModel?> mergeDuplicateLead({required String leadId, required String targetId});
   Future<DealModel?> convertLead(String leadId);

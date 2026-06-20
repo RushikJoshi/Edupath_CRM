@@ -10,6 +10,7 @@ class UserState extends Equatable {
     this.errorMessage,
     this.actionStatus = AppStatus.initial,
     this.actionError,
+    this.selectedUser,
   });
 
   final AppStatus status;
@@ -19,6 +20,7 @@ class UserState extends Equatable {
   /// Status for create / update / delete operations.
   final AppStatus actionStatus;
   final String? actionError;
+  final UserModel? selectedUser;
 
   UserState copyWith({
     AppStatus? status,
@@ -27,6 +29,8 @@ class UserState extends Equatable {
     AppStatus? actionStatus,
     String? actionError,
     bool clearActionError = false,
+    UserModel? selectedUser,
+    bool clearSelectedUser = false,
   }) {
     return UserState(
       status: status ?? this.status,
@@ -34,10 +38,11 @@ class UserState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       actionStatus: actionStatus ?? this.actionStatus,
       actionError: clearActionError ? null : (actionError ?? this.actionError),
+      selectedUser: clearSelectedUser ? null : (selectedUser ?? this.selectedUser),
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, items, errorMessage, actionStatus, actionError];
+      [status, items, errorMessage, actionStatus, actionError, selectedUser];
 }

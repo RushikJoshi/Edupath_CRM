@@ -4,12 +4,11 @@ class ApiEndpoints {
     defaultValue: 'https://app.gitakshmilabs.com',
   );
 
-
   // Auth Endpoints
   static const String login = '/api/auth/login';
   static const String fetchMe = '/api/auth/me';
   static const String updateProfile = '/api/auth/profile';
-  static const String changePassword = '/api/auth/change-password';
+  static const String changePassword = '/api/auth/me/password';
 
   // Users Endpoints
   static const String users = '/api/users';
@@ -28,6 +27,7 @@ class ApiEndpoints {
 
   // Notifications Endpoints
   static const String notifications = '/api/notifications';
+  static const String notificationsUnread = '/api/notifications/unread';
   static const String notificationRead = '/api/notifications/{id}/read';
   static const String notificationReadAll = '/api/notifications/all-read';
 
@@ -39,6 +39,9 @@ class ApiEndpoints {
   // Leads Endpoints
   static const String leads = '/api/leads';
   static const String leadDetail = '/api/leads/{id}';
+  static const String leadPipeline = '/api/leads/pipeline';
+  static const String leadLostList = '/api/leads/lost';
+  static const String leadStage = '/api/leads/{id}/stage';
   static const String leadLost = '/api/leads/{id}/lost';
   static const String leadDuplicates = '/api/leads/{id}/duplicates';
   static const String leadMerge = '/api/leads/{id}/merge';
@@ -51,6 +54,8 @@ class ApiEndpoints {
   static const String inquiryStatus = '/api/inquiries/{id}/status';
   static const String inquiryAssign = '/api/inquiries/{id}/assign';
   static const String inquiryConvert = '/api/inquiries/{id}/convert';
+  static const String inquiryDuplicates = '/api/inquiries/{id}/duplicates';
+  static const String inquiryMerge = '/api/inquiries/{id}/merge';
 
   // Follow-ups Endpoints
   static const String followUps = '/api/followups/{leadId}';

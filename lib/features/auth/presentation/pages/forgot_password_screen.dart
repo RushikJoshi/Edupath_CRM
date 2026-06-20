@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,16 +41,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             content: Text(
               'OTP generated successfully!',
               style: GoogleFonts.poppins(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.white,
               ),
             ),
             backgroundColor: AppColors.stageWon,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            margin: const EdgeInsets.all(10),
+            margin: EdgeInsets.all(10.w),
           ),
         );
 
@@ -85,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ClipPath(
                     clipper: WaveClipper1(),
                     child: Container(
-                      height: 250,
+                      height: 250.h,
                       width: double.infinity,
                       color: const Color(0xFFE5EDFC),
                     ),
@@ -94,7 +95,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ClipPath(
                     clipper: WaveClipper2(),
                     child: Container(
-                      height: 250,
+                      height: 250.h,
                       width: double.infinity,
                       color: const Color(0xFFF1F5FD),
                     ),
@@ -118,8 +119,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   Positioned(
                     top: 90,
                     child: SizedBox(
-                      width: 140,
-                      height: 160,
+                      width: 140.w,
+                      height: 160.h,
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: [
@@ -127,17 +128,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Positioned(
                             top: 0,
                             child: Container(
-                              width: 80,
-                              height: 90,
+                              width: 80.w,
+                              height: 90.h,
                               decoration: BoxDecoration(
                                 color: Colors.transparent,
                                 border: Border.all(
                                   color: const Color(0xFF2E8EFF),
-                                  width: 9,
+                                  width: 9.w,
                                 ),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(40),
-                                  topRight: Radius.circular(40),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40.r),
+                                  topRight: Radius.circular(40.r),
                                 ),
                               ),
                             ),
@@ -146,11 +147,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Positioned(
                             top: 50,
                             child: Container(
-                              width: 110,
-                              height: 100,
+                              width: 110.w,
+                              height: 100.h,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFDDE7FF), // Soft Blue
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(24.r),
                                 border: Border.all(color:Color(0xffAFC4FF) )
                               ),
                               child: Center(
@@ -159,8 +160,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   children: [
                                     // Keyhole Top Circle
                                     Container(
-                                      width: 20,
-                                      height: 20,
+                                      width: 20.w,
+                                      height: 20.h,
                                       decoration: const BoxDecoration(
                                         color: Color(0xFF2E8EFF),
                                         shape: BoxShape.circle,
@@ -168,13 +169,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     ),
                                     // Keyhole Bottom Stem
                                     Container(
-                                      width: 10,
-                                      height: 20,
-                                      decoration: const BoxDecoration(
+                                      width: 10.w,
+                                      height: 20.h,
+                                      decoration: BoxDecoration(
                                         color: Color(0xFF2E8EFF),
                                         borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(2),
-                                          bottomRight: Radius.circular(2),
+                                          bottomLeft: Radius.circular(2.r),
+                                          bottomRight: Radius.circular(2.r),
                                         ),
                                       ),
                                     ),
@@ -190,23 +191,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ],
               ),
 
-              const SizedBox(height: 49),
+              SizedBox(height: 49.h),
 
               // Title: "Forgot Password?"
               Text(
                 'Forgot Password?',
                 style: GoogleFonts.poppins(
-                  fontSize: 27,
+                  fontSize: 27.sp,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF091B44), // Navy
                 ),
               ),
 
-              const SizedBox(height: 91),
+              SizedBox(height: 91.h),
 
               // Form inputs & button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -216,7 +217,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         style: GoogleFonts.poppins(
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
                         ),
                         decoration: InputDecoration(
@@ -230,53 +231,53 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 16,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 16.h,
+                            horizontal: 16.w,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
+                            borderRadius: BorderRadius.circular(25.r),
+                            borderSide: BorderSide(
                               color: Color(0xFFE8EEF9),
-                              width: 1.5,
+                              width: 1.5.w,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
+                            borderRadius: BorderRadius.circular(25.r),
+                            borderSide: BorderSide(
                               color: Color(0xFFE8EEF9),
-                              width: 1.5,
+                              width: 1.5.w,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
+                            borderRadius: BorderRadius.circular(25.r),
+                            borderSide: BorderSide(
                               color: Color(0xFF2E8EFF),
-                              width: 2,
+                              width: 2.w,
                             ),
                           ),
                         ),
                         validator: Validators.emailOrPhone,
                       ),
 
-                      const SizedBox(height: 25),
+                      SizedBox(height: 25.h),
 
                       // Generate OTP Button
                       SizedBox(
                         width: double.infinity,
-                        height: 52,
+                        height: 52.h,
                         child: FilledButton(
                           onPressed: _isLoading ? null : _handleGenerateOtp,
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF2E8EFF),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(26),
+                              borderRadius: BorderRadius.circular(26.r),
                             ),
                           ),
                           child: _isLoading
-                              ? const SizedBox(
-                                  height: 24,
-                                  width: 24,
+                              ? SizedBox(
+                                  height: 24.h,
+                                  width: 24.w,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 3,
                                     color: Colors.white,
@@ -285,7 +286,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               : Text(
                                   'Generate OTP',
                                   style: GoogleFonts.poppins(
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -293,7 +294,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
 
                       // Remember your password? Sign in
                       Row(
@@ -302,7 +303,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           Text(
                             'Remember your password? ',
                             style: GoogleFonts.poppins(
-                              fontSize: 12.5,
+                              fontSize: 12.5.sp,
                               color: Colors.grey.shade600,
                               fontWeight: FontWeight.w500,
                             ),
@@ -317,7 +318,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             child: Text(
                               'Sign in',
                               style: GoogleFonts.poppins(
-                                fontSize: 12.5,
+                                fontSize: 12.5.sp,
                                 fontWeight: FontWeight.bold,
                                 color: const Color(0xFF2E8EFF),
                               ),
@@ -403,4 +404,3 @@ class WaveClipper2 extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
-

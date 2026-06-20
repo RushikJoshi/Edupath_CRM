@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,7 +61,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
         SnackBar(
           content: Text(
             'Please enter a valid 6-digit OTP',
-            style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
           ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
@@ -84,7 +85,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
         SnackBar(
           content: Text(
             'OTP Verified Successfully!',
-            style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
           ),
           backgroundColor: AppColors.stageWon,
           behavior: SnackBarBehavior.floating,
@@ -107,7 +108,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
       SnackBar(
         content: Text(
           'Verification code has been resent!',
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.white),
+          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
         ),
         backgroundColor: AppColors.stageWon,
         behavior: SnackBarBehavior.floating,
@@ -127,7 +128,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
         Opacity(
           opacity: 0,
           child: SizedBox(
-            height: 52,
+            height: 52.h,
             child: TextField(
               controller: _otpController,
               focusNode: _otpFocusNode,
@@ -165,12 +166,12 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
               }
 
               return Container(
-                width: 48,
-                height: 52,
+                width: 48.w,
+                height: 52.h,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
                     color: isCurrent ? const Color(0xFF2E8EFF) : const Color(0xFFE8EEF9),
                     width: isCurrent ? 2 : 1.5,
@@ -179,7 +180,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                 child: Text(
                   char,
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: char == '-'
                         ? Colors.grey.shade400
@@ -213,13 +214,13 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
               Stack(
                 children: [
                   Container(
-                    height: 270,
+                    height: 270.h,
                     width: double.infinity,
                     alignment: Alignment.bottomCenter,
                     padding: const EdgeInsets.only(bottom: 15),
                     child: Image.asset(
                       'assets/svgs/verification_illustration.png',
-                      height: 200,
+                      height: 200.h,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -238,57 +239,57 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                 ],
               ),
 
-              const SizedBox(height: 25),
+              SizedBox(height: 25.h),
 
               // Title
               Text(
                 'Forgot Password?',
                 style: GoogleFonts.poppins(
-                  fontSize: 27,
+                  fontSize: 27.sp,
                   fontWeight: FontWeight.w500,
                   color: const Color(0xFF091B44),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               // Countdown Timer (00:XX)
               Text(
                 _formatTimer(),
                 style: GoogleFonts.poppins(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF2E8EFF),
                 ),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               // 6-digit OTP layout
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Column(
                   children: [
                     _buildOtpField(),
                     
-                    const SizedBox(height: 35),
+                    SizedBox(height: 35.h),
 
                     // Confirm OTP Button
                     SizedBox(
                       width: double.infinity,
-                      height: 52,
+                      height: 52.h,
                       child: FilledButton(
                         onPressed: _isLoading ? null : _handleConfirmOtp,
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF2E8EFF),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(26),
+                            borderRadius: BorderRadius.circular(26.r),
                           ),
                         ),
                         child: _isLoading
-                            ? const SizedBox(
-                                height: 24,
-                                width: 24,
+                            ? SizedBox(
+                                height: 24.h,
+                                width: 24.w,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 3,
                                   color: Colors.white,
@@ -297,7 +298,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                             : Text(
                                 'Confirm OTP',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
@@ -305,7 +306,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // Remember your password? Sign in
                     Row(
@@ -314,7 +315,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                         Text(
                           'Remember your password? ',
                           style: GoogleFonts.poppins(
-                            fontSize: 12.5,
+                            fontSize: 12.5.sp,
                             color: Colors.grey.shade600,
                             fontWeight: FontWeight.w500,
                           ),
@@ -332,7 +333,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                           child: Text(
                             'Sign in',
                             style: GoogleFonts.poppins(
-                              fontSize: 12.5,
+                              fontSize: 12.5.sp,
                               fontWeight: FontWeight.bold,
                               color: const Color(0xFF2E8EFF),
                             ),
@@ -341,18 +342,18 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                       ],
                     ),
 
-                    const SizedBox(height: 35),
+                    SizedBox(height: 35.h),
 
                     // Did not receive the code? Send Again
                     Text(
                       'Did not receive the code?',
                       style: GoogleFonts.poppins(
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         color: Colors.grey.shade500,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     TextButton(
                       onPressed: _secondsRemaining == 0 ? _handleResendCode : null,
                       style: TextButton.styleFrom(
@@ -363,7 +364,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                       child: Text(
                         'Send Again',
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
                           color: _secondsRemaining == 0
                               ? const Color(0xFF2E8EFF)

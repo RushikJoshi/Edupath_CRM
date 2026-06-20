@@ -16,7 +16,7 @@ class MeetingModel extends Equatable {
     this.contactEmail,
     this.contactPhone,
     this.attendanceMode = 'online',
-    this.meetingType = 'Meeting',
+    this.meetingType = 'Consultation',
     this.meetingLink,
     this.onlineUrl,
     this.location,
@@ -95,7 +95,7 @@ class MeetingModel extends Equatable {
     if (title.isEmpty) {
       title = inferredName.isNotEmpty
           ? inferredName
-          : (json['meetingType'] ?? 'Meeting').toString();
+          : (json['meetingType'] ?? 'Consultation').toString();
     }
 
     DateTime parseDate(dynamic d) {
@@ -133,7 +133,7 @@ class MeetingModel extends Equatable {
       contactEmail: json['contactEmail']?.toString(),
       contactPhone: json['contactPhone']?.toString(),
       attendanceMode: (json['attendanceMode'] ?? 'online').toString(),
-      meetingType: (json['meetingType'] ?? 'Meeting').toString(),
+      meetingType: (json['meetingType'] ?? 'Consultation').toString(),
       meetingLink: json['meetingLink']?.toString(),
       onlineUrl: json['onlineUrl']?.toString(),
       location: json['location']?.toString(),
@@ -146,7 +146,7 @@ class MeetingModel extends Equatable {
       // Legacy fields
       leadName: (json['leadName'] ?? json['customerName'] ?? inferredName)
           .toString(),
-      type: json['type']?.toString() ?? 'Meeting',
+      type: json['type']?.toString() ?? 'Consultation',
     );
   }
 
@@ -171,6 +171,7 @@ class MeetingModel extends Equatable {
       'contactPhone': contactPhone,
     'attendanceMode': attendanceMode,
     'meetingType': meetingType,
+    'type': meetingType,
     if (meetingLink != null && meetingLink!.isNotEmpty)
       'meetingLink': meetingLink,
     if (onlineUrl != null && onlineUrl!.isNotEmpty) 'onlineUrl': onlineUrl,

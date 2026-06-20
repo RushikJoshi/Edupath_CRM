@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,8 +30,8 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       <String, List<FollowUpModel>>{};
   final Set<String> _fetchedLeadIds = <String>{};
 
-  DateTime _selectedDate = DateTime(2025, 5, 20);
-  DateTime? _filterDate;
+  DateTime _selectedDate = DateTime.now();
+  DateTime? _filterDate = DateTime.now();
 
   @override
   void initState() {
@@ -109,11 +110,12 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   }
 
   String _formatDate(DateTime dt) {
+    final localDt = dt.toLocal();
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-    return '${dt.day} ${months[dt.month - 1].toLowerCase()} ${dt.year}';
+    return '${localDt.day} ${months[localDt.month - 1].toLowerCase()} ${localDt.year}';
   }
 
   String _formatTimeRange(DateTime start, DateTime? end) {
@@ -142,7 +144,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
         toolbarHeight: 64,
         leading: Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Colors.white),
+            icon: Icon(Icons.menu_rounded, color: Colors.white),
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
@@ -150,13 +152,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
           'Meetings',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: 20.sp,
             color: Colors.white,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
+            icon: Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
             onPressed: () {},
           ),
         ],
@@ -188,7 +190,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 ),
                 _buildDateHeader(),
                 _buildDateScroller(),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Expanded(
                   child: TabBarView(
                     controller: _tc,
@@ -209,7 +211,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
         onPressed: () => Navigator.pushNamed(context, AppRoutes.addMeeting),
         backgroundColor: const Color(0xFF2E8EFF),
         shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 28),
+        child: Icon(Icons.add, color: Colors.white, size: 28),
       ),
     );
   }
@@ -217,7 +219,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   Widget _buildCustomTabs(MeetingState state) {
     final scheduledCount = state.items.where((e) {
       final s = e.status.toLowerCase();
-      return s == 'scheduled' || s == 'upcoming';
+      return s == 'scheduled' ||
+          s == 'upcoming' ||
+          s == 'confirmed' ||
+          s == 'in progress' ||
+          s == 'in_progress';
     }).length;
 
     final completedCount = state.items.where((e) {
@@ -243,7 +249,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
           count: formatCount(scheduledCount),
           isSelected: _tc.index == 0,
         ),
-        const SizedBox(width: 6),
+        SizedBox(width: 6.w),
         _buildTabItem(
           index: 1,
           icon: Icons.check_circle_outline_rounded,
@@ -251,7 +257,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
           count: formatCount(completedCount),
           isSelected: _tc.index == 1,
         ),
-        const SizedBox(width: 6),
+        SizedBox(width: 6.w),
         _buildTabItem(
           index: 2,
           icon: Icons.cancel_outlined,
@@ -280,13 +286,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
           _tc.animateTo(index);
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
           decoration: BoxDecoration(
             color: isSelected ? activeBgColor : Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
               color: isSelected ? activeBorderColor : inactiveBorderColor,
-              width: 1,
+              width: 1.w,
             ),
           ),
           child: Row(
@@ -297,29 +303,29 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 size: 16,
                 color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: 4.w),
               Flexible(
                 child: Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(width: 4),
+              SizedBox(width: 4.w),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
                 decoration: BoxDecoration(
                   color: const Color(0xFF2E8EFF),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text(
                   count,
                   style: GoogleFonts.poppins(
-                    fontSize: 9,
+                    fontSize: 9.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -334,25 +340,25 @@ class _MeetingListScreenState extends State<MeetingListScreen>
 
   Widget _buildDateHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
             _formatSelectedDateHeader(_selectedDate),
             style: GoogleFonts.poppins(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: Colors.grey.shade700,
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: 6.w),
           const Icon(
             Icons.calendar_today_rounded,
             size: 14,
             color: Colors.black54,
           ),
-          const SizedBox(width: 4),
+          SizedBox(width: 4.w),
           const Icon(
             Icons.keyboard_arrow_down_rounded,
             size: 16,
@@ -365,12 +371,12 @@ class _MeetingListScreenState extends State<MeetingListScreen>
 
   Widget _buildDateScroller() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
           color: Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: Colors.grey.shade200),
         ),
         child: Row(
@@ -379,10 +385,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
               onTap: () {
                 setState(() {
                   _selectedDate = _selectedDate.subtract(const Duration(days: 1));
+                  _filterDate = _selectedDate;
                 });
               },
               child: Container(
-                padding: const EdgeInsets.all(6),
+                padding: EdgeInsets.all(6.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
@@ -395,7 +402,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -411,23 +418,16 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          if (_filterDate != null &&
-                              dayDate.year == _filterDate!.year &&
-                              dayDate.month == _filterDate!.month &&
-                              dayDate.day == _filterDate!.day) {
-                            _filterDate = null;
-                          } else {
-                            _filterDate = dayDate;
-                            _selectedDate = dayDate;
-                          }
+                          _filterDate = dayDate;
+                          _selectedDate = dayDate;
                         });
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 3),
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                        margin: EdgeInsets.symmetric(horizontal: 3.w),
+                        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
                         decoration: BoxDecoration(
-                          color: isHighlighted ? const Color(0xFF2E8EFF) : Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          color: isHighlighted ? Color(0xFF2E8EFF) : Colors.white,
+                          borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
                             color: isHighlighted ? const Color(0xFF2E8EFF) : Colors.grey.shade200,
                           ),
@@ -438,27 +438,27 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                             Text(
                               '${dayDate.day}',
                               style: GoogleFonts.poppins(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
                                 color: isHighlighted ? Colors.white : Colors.black87,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2.h),
                             Text(
                               '${_formatMonthNameShort(dayDate)} ${dayDate.year}',
                               style: GoogleFonts.poppins(
-                                fontSize: 8,
+                                fontSize: 8.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 2),
+                            SizedBox(height: 2.h),
                             Text(
                               _formatWeekday(dayDate.weekday),
                               style: GoogleFonts.poppins(
-                                fontSize: 8,
+                                fontSize: 8.sp,
                                 fontWeight: FontWeight.w500,
                                 color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
                               ),
@@ -471,15 +471,16 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 }),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             GestureDetector(
               onTap: () {
                 setState(() {
                   _selectedDate = _selectedDate.add(const Duration(days: 1));
+                  _filterDate = _selectedDate;
                 });
               },
               child: Container(
-                padding: const EdgeInsets.all(6),
+                padding: EdgeInsets.all(6.w),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
@@ -503,7 +504,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       final s = e.status.toLowerCase();
       bool statusMatches = false;
       if (status.toLowerCase() == 'scheduled') {
-        statusMatches = (s == 'scheduled' || s == 'upcoming');
+        statusMatches = (s == 'scheduled' ||
+            s == 'upcoming' ||
+            s == 'confirmed' ||
+            s == 'in progress' ||
+            s == 'in_progress');
       } else if (status.toLowerCase() == 'cancelled') {
         statusMatches = (s == 'cancelled' || s == 'canceled');
       } else {
@@ -513,12 +518,20 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       if (!statusMatches) return false;
 
       if (_filterDate != null) {
-        return e.startDate.year == _filterDate!.year &&
-            e.startDate.month == _filterDate!.month &&
-            e.startDate.day == _filterDate!.day;
+        final localStart = e.startDate.toLocal();
+        return localStart.year == _filterDate!.year &&
+            localStart.month == _filterDate!.month &&
+            localStart.day == _filterDate!.day;
       }
       return true;
     }).toList();
+
+    // Sort chronologically date-wise
+    if (status.toLowerCase() == 'scheduled') {
+      items.sort((a, b) => a.startDate.toLocal().compareTo(b.startDate.toLocal()));
+    } else {
+      items.sort((a, b) => b.startDate.toLocal().compareTo(a.startDate.toLocal()));
+    }
 
     if (items.isEmpty) {
       return RefreshIndicator(
@@ -534,13 +547,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    width: 70,
-                    height: 70,
+                    width: 70.w,
+                    height: 70.h,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2E8EFF).withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xFF2E8EFF).withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
-                        color: const Color(0xFF2E8EFF).withOpacity(0.2),
+                        color: Color(0xFF2E8EFF).withOpacity(0.2),
                       ),
                     ),
                     child: const Center(
@@ -551,20 +564,20 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     'No $status meetings',
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: const Color(0xFF2E8EFF),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     'Pull down to refresh',
                     style: GoogleFonts.poppins(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: Colors.grey.shade500,
                     ),
                   ),
@@ -580,9 +593,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       onRefresh: () async => context.read<MeetingBloc>().add(MeetingFetched()),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10.h),
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 4),
+        separatorBuilder: (_, __) => SizedBox(height: 4.h),
         itemBuilder: (context, i) => TweenAnimationBuilder<double>(
           tween: Tween<double>(begin: 0.0, end: 1.0),
           duration: Duration(milliseconds: 150 + i * 40),
@@ -603,32 +616,35 @@ class _MeetingListScreenState extends State<MeetingListScreen>
     final timeStr = _formatTimeRange(m.startDate, m.endDate);
     final dateStr = _formatDate(m.startDate);
 
-    final isOnline = m.attendanceMode.toLowerCase().contains('online') ||
-        m.onlineUrl != null ||
-        m.meetingLink != null;
+    final isOnline = m.attendanceMode.toLowerCase() == 'online';
 
     Color statusBgColor;
     Color statusTextColor;
-    String statusLabel = m.status.toLowerCase();
+    String statusLabel = m.status;
+    final s = m.status.toLowerCase();
 
-    if (m.status.toLowerCase() == 'scheduled' || m.status.toLowerCase() == 'upcoming') {
+    if (s == 'scheduled' ||
+        s == 'upcoming' ||
+        s == 'confirmed' ||
+        s == 'in progress' ||
+        s == 'in_progress') {
       statusBgColor = const Color(0xFFE5F2FF);
       statusTextColor = const Color(0xFF2E8EFF);
-      statusLabel = 'upcoming';
-    } else if (m.status.toLowerCase() == 'completed') {
+      statusLabel = m.status;
+    } else if (s == 'completed') {
       statusBgColor = const Color(0xFFE8F5E9);
       statusTextColor = const Color(0xFF2EC4AC);
       statusLabel = 'Completed';
     } else {
       statusBgColor = const Color(0xFFFFEBEE);
       statusTextColor = const Color(0xFFE53935);
-      statusLabel = 'Canceled';
+      statusLabel = 'Cancelled';
     }
 
     final isScheduledTab = _tc.index == 0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
       child: GestureDetector(
         onTap: () async {
           final result = await Navigator.pushNamed(
@@ -653,7 +669,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x40000000),
@@ -663,7 +679,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
               ),
             ],
           ),
-          padding: const EdgeInsets.all(14),
+          padding: EdgeInsets.all(14.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -671,11 +687,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 64,
-                    height: 64,
+                    width: 64.w,
+                    height: 64.h,
                     decoration: BoxDecoration(
                       color: const Color(0xFFE5F2FF),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Center(
                       child: Icon(
@@ -685,7 +701,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  SizedBox(width: 14.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -694,51 +710,51 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                           _meetingTitle(m),
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w700,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: const Color(0xFF2E8EFF),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         Row(
                           children: [
                             CircleAvatar(
                               radius: 10,
-                              backgroundColor: const Color(0xFF2E8EFF).withOpacity(0.1),
+                              backgroundColor: Color(0xFF2E8EFF).withOpacity(0.1),
                               child: const Icon(
                                 Icons.person_rounded,
                                 size: 12,
                                 color: Color(0xFF2E8EFF),
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Text(
                               m.contactName ?? 'Admin',
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey.shade600,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         Row(
                           children: [
                             Container(
-                              width: 8,
-                              height: 8,
+                              width: 8.w,
+                              height: 8.h,
                               decoration: const BoxDecoration(
                                 color: Color(0xFF2E8EFF),
                                 shape: BoxShape.circle,
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Text(
-                              isOnline ? 'Online' : 'Offline',
+                              m.meetingType,
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey.shade600,
                               ),
@@ -758,18 +774,18 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                             size: 11,
                             color: Colors.black54,
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Text(
                             dateStr,
                             style: GoogleFonts.poppins(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6.h),
                       Row(
                         children: [
                           const Icon(
@@ -777,31 +793,31 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                             size: 11,
                             color: Colors.black54,
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Text(
                             timeStr,
                             style: GoogleFonts.poppins(
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 3,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 3.h,
                         ),
                         decoration: BoxDecoration(
                           color: statusBgColor,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
                           statusLabel,
                           style: GoogleFonts.poppins(
-                            fontSize: 10,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.w700,
                             color: statusTextColor,
                           ),
@@ -812,10 +828,10 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 ],
               ),
               if (isScheduledTab && isOnline) ...[
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 40,
+                  height: 40.h,
                   child: FilledButton(
                     onPressed: () {
                       final url = m.onlineUrl ?? m.meetingLink;
@@ -826,7 +842,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                           SnackBar(
                             content: Text(
                               'No meeting link available',
-                              style: GoogleFonts.poppins(fontSize: 13),
+                              style: GoogleFonts.poppins(fontSize: 13.sp),
                             ),
                             behavior: SnackBarBehavior.floating,
                           ),
@@ -836,7 +852,7 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF2E8EFF),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),
                     child: Row(
@@ -847,11 +863,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                           color: Colors.white,
                           size: 16,
                         ),
-                        const SizedBox(width: 6),
+                        SizedBox(width: 6.w),
                         Text(
                           'Join Now',
                           style: GoogleFonts.poppins(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),

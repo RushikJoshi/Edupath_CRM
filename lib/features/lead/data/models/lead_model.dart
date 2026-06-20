@@ -19,6 +19,9 @@ class LeadModel extends Equatable {
     this.location,
     this.value,
     this.sourceId,
+    this.lostReason,
+    this.lostAt,
+    this.createdAt,
   });
 
   final String id;
@@ -38,6 +41,11 @@ class LeadModel extends Equatable {
   final String? location;
   final num? value;
   final String? sourceId;
+  final String? lostReason;
+  final String? lostAt;
+  final String? createdAt;
+
+  bool get isLost => stage.trim().toLowerCase() == 'lost';
 
   factory LeadModel.fromJson(Map<String, dynamic> json) {
     String extractString(dynamic value, [String defaultKey = '_id']) {
@@ -53,6 +61,11 @@ class LeadModel extends Equatable {
     if (branchRaw is Map) {
       branchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '').toString();
     }
+
+    // Parse lost info from nested lostInfo map or top-level fields
+    final lostInfo = json['lostInfo'] as Map<String, dynamic>?;
+    final lostReason = lostInfo?['reason']?.toString() ?? json['lostReason']?.toString();
+    final lostAt = lostInfo?['lostAt']?.toString() ?? json['lostAt']?.toString();
 
     return LeadModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
@@ -74,6 +87,9 @@ class LeadModel extends Equatable {
       location: json['location']?.toString(),
       value: json['value'] != null ? num.tryParse(json['value'].toString()) : null,
       sourceId: json['sourceId']?.toString(),
+      lostReason: lostReason,
+      lostAt: lostAt,
+      createdAt: json['createdAt']?.toString(),
     );
   }
 
@@ -95,6 +111,9 @@ class LeadModel extends Equatable {
     String? location,
     num? value,
     String? sourceId,
+    String? lostReason,
+    String? lostAt,
+    String? createdAt,
   }) {
     return LeadModel(
       id: id ?? this.id,
@@ -114,9 +133,12 @@ class LeadModel extends Equatable {
       location: location ?? this.location,
       value: value ?? this.value,
       sourceId: sourceId ?? this.sourceId,
+      lostReason: lostReason ?? this.lostReason,
+      lostAt: lostAt ?? this.lostAt,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
-  List<Object?> get props => [id, inquiryId, name, stage, assignedTo, branchId, branchName, email, phone, companyName, notes, city, address, course, location, value, sourceId];
+  List<Object?> get props => [id, inquiryId, name, stage, assignedTo, branchId, branchName, email, phone, companyName, notes, city, address, course, location, value, sourceId, lostReason, lostAt, createdAt];
 }

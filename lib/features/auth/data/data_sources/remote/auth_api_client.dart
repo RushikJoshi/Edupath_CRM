@@ -18,6 +18,6 @@ abstract class AuthApiClient {
   @PUT(ApiEndpoints.updateProfile)
   Future<HttpResponse<dynamic>> updateProfile(@Body() Map<String, dynamic> body);
 
-  @PATCH(ApiEndpoints.changePassword)
+  @PUT(ApiEndpoints.changePassword)
   Future<HttpResponse<dynamic>> changePassword(@Body() Map<String, dynamic> body);
 }

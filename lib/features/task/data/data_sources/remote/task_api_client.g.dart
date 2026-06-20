@@ -86,7 +86,7 @@ class _TaskApiClient implements TaskApiClient {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options = _setStreamType<HttpResponse<dynamic>>(
-      Options(method: 'PUT', headers: _headers, extra: _extra)
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/api/tasks/${id}',

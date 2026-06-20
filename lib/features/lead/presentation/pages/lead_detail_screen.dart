@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,7 @@ import 'package:gtcrm/features/user/presentation/bloc/user_bloc.dart';
 import 'package:gtcrm/features/user/presentation/bloc/user_event.dart';
 import 'package:gtcrm/features/user/presentation/bloc/user_state.dart';
 import 'package:gtcrm/features/pipeline/presentation/bloc/pipeline_bloc.dart';
+import 'package:gtcrm/features/pipeline/data/models/pipeline_model.dart';
 import 'package:gtcrm/core/constants/app_colors.dart';
 import 'package:gtcrm/core/constants/app_enums.dart';
 import 'package:gtcrm/core/widgets/responsive_wrapper.dart';
@@ -75,12 +77,14 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
     });
   }
 
-  /// Opens bottom sheet that requires a remark before status update.
-  void _showRemarkBottomSheet(
+
+
+  /// Opens bottom sheet that asks for an optional remark before stage update.
+  void _showOptionalRemarkBottomSheet(
     BuildContext context, {
     required LeadModel lead,
     required String newStatus,
-    required void Function(String remark) onSubmitted,
+    required void Function(String? remark) onSubmitted,
   }) {
     final noteController = TextEditingController();
     final formKey = GlobalKey<FormState>();
@@ -90,8 +94,6 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setModalState) {
-          final note = noteController.text.trim();
-          final canSubmit = note.isNotEmpty;
           return Container(
             padding: EdgeInsets.only(
               left: 20,
@@ -99,9 +101,9 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               top: 12,
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
             child: Form(
               key: formKey,
@@ -111,58 +113,53 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 children: [
                   Center(
                     child: Container(
-                      width: 40,
-                      height: 4,
+                      width: 40.w,
+                      height: 4.h,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(2.r),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
-                    'Change status to $newStatus',
+                    'Change stage to $newStatus',
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   TextFormField(
                     controller: noteController,
                     maxLines: 3,
                     onChanged: (_) => setModalState(() {}),
-                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                     decoration: InputDecoration(
-                      hintText: 'Remark (required)',
-                      hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                      hintText: 'Remark (optional)',
+                      hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
                       filled: true,
                       fillColor: const Color(0xFFF2F6FE),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1),
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.w),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1),
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.w),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFF2E8EFF), width: 1.5),
+                        borderRadius: BorderRadius.circular(10.r),
+                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
                       ),
                     ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty)
-                        return 'Remark is required';
-                      return null;
-                    },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Row(
                     children: [
                       Expanded(
@@ -172,7 +169,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             side: const BorderSide(color: Color(0xFF2E8EFF)),
                             minimumSize: const Size(0, 48),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),
                           child: Text(
@@ -184,29 +181,23 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: FilledButton(
                           style: FilledButton.styleFrom(
-                            backgroundColor: canSubmit
-                                ? const Color(0xFF2E8EFF)
-                                : Colors.grey.shade400,
+                            backgroundColor: const Color(0xFF2E8EFF),
                             minimumSize: const Size(0, 48),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.r),
                             ),
                           ),
-                          onPressed: canSubmit
-                              ? () {
-                                  if (formKey.currentState?.validate() ??
-                                      true) {
-                                    onSubmitted(noteController.text.trim());
-                                    Navigator.pop(ctx);
-                                  }
-                                }
-                              : null,
+                          onPressed: () {
+                            final remark = noteController.text.trim();
+                            onSubmitted(remark.isEmpty ? null : remark);
+                            Navigator.pop(ctx);
+                          },
                           child: Text(
-                            'Save status',
+                            'Save stage',
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -246,9 +237,9 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               top: 12,
               bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
             child: Form(
               key: formKey,
@@ -259,33 +250,33 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                   children: [
                     Center(
                       child: Container(
-                        width: 40,
-                        height: 4,
+                        width: 40.w,
+                        height: 4.h,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade400,
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       'Schedule Follow-Up',
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFF2E8EFF),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     Text(
                       'Type',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     _bottomSheetDropdown<String>(
                       context: ctx,
                       value: type,
@@ -294,16 +285,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       prefixIcon: Icons.call_merge_rounded,
                       onChanged: (v) => setModalState(() => type = v),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Text(
                       'Priority',
                       style: GoogleFonts.poppins(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     _bottomSheetDropdown<String>(
                       context: ctx,
                       value: priority,
@@ -312,7 +303,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       prefixIcon: Icons.priority_high_rounded,
                       onChanged: (v) => setModalState(() => priority = v),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     Row(
                       children: [
                         Expanded(
@@ -327,18 +318,18 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                               if (d != null) setModalState(() => selectedDate = d);
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(6),
+                                    padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF2F6FE),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: const Icon(
                                       Icons.calendar_today_rounded,
@@ -346,17 +337,17 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                       size: 18,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Text(
                                     '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12.w),
                         Expanded(
                           child: InkWell(
                             onTap: () async {
@@ -367,18 +358,18 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                               if (t != null) setModalState(() => selectedTime = t);
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(color: const Color(0xFFE8ECF3)),
                               ),
                               child: Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.all(6),
+                                    padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF2F6FE),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: const Icon(
                                       Icons.access_time_filled_rounded, // or access_time
@@ -386,10 +377,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                       size: 18,
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   Text(
                                     selectedTime.format(ctx),
-                                    style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
                                   ),
                                 ],
                               ),
@@ -398,21 +389,21 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     TextFormField(
                       controller: noteController,
                       maxLines: 2,
-                      style: GoogleFonts.poppins(fontSize: 13, color: Colors.black),
+                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
                       decoration: InputDecoration(
                         hintText: 'Notes',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
                           child: Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
                               color: const Color(0xFFF2F6FE),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: const Icon(
                               Icons.assignment_outlined,
@@ -421,23 +412,23 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             ),
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                           borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
                         ),
                       ),
                       validator: (v) => v == null || v.trim().isEmpty ? 'Note is required' : null,
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     FilledButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
@@ -464,14 +455,14 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                         backgroundColor: const Color(0xFF2E8EFF),
                         minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                       child: Text(
                         'Schedule',
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           color: Colors.white,
                         ),
                       ),
@@ -488,26 +479,30 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
 
   void _onStatusChanged(LeadModel lead, String? newStatus) {
     if (newStatus == null || newStatus.equalsIgnoreCase(lead.stage)) return;
-    _showRemarkBottomSheet(
+
+    _showOptionalRemarkBottomSheet(
       context,
       lead: lead,
       newStatus: newStatus,
-      onSubmitted: (remark) {
+      onSubmitted: (String? remark) {
+        // Add local history entry immediately for responsive UI
         final entry = LeadStatusHistoryEntry(
           id: 'local-${DateTime.now().millisecondsSinceEpoch}',
           leadId: lead.id,
           statusName: newStatus,
-          remark: remark,
+          remark: remark ?? 'Stage changed',
           createdAt: DateTime.now(),
           createdByName: _currentUserName(),
         );
         setState(() {
           _statusHistory.insert(0, entry);
         });
+
+        // Use the dedicated stage endpoint (PATCH /api/leads/{id}/stage)
         context.read<LeadBloc>().add(
-          LeadStatusUpdatedWithRemark(
+          LeadStageMoved(
             leadId: lead.id,
-            newStatus: newStatus,
+            status: newStatus,
             remark: remark,
           ),
         );
@@ -637,7 +632,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 'Lead Details',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
-                  fontSize: 17,
+                  fontSize: 17.sp,
                   color: Colors.white,
                 ),
               ),
@@ -664,7 +659,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       ),
                       children: [
                         _headerCard(item),
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14.h),
                         if (item.email.isNotEmpty ||
                             item.phone.isNotEmpty ||
                             item.value != null ||
@@ -725,7 +720,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                         ],
                         _buildCollapsibleSection(
                           title: 'Status',
@@ -737,29 +732,96 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             });
                           },
                           children: [
+                          // Pipeline info row
+                          Builder(
+                            builder: (ctx) {
+                              final pipelines = ctx.watch<PipelineBloc>().state.pipelines;
+                              // Find which pipeline contains this lead's stage
+                              final matchedPipeline = pipelines.firstWhere(
+                                (p) => p.stages.any(
+                                  (s) => s.name.toLowerCase() == item.stage.toLowerCase(),
+                                ),
+                                orElse: () => pipelines.isNotEmpty ? pipelines.first : const PipelineModel(id: '', name: ''),
+                              );
+                              final pipelineName = matchedPipeline.name;
+                              if (pipelineName.isEmpty) return const SizedBox.shrink();
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF2F6FE),
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    border: Border.all(color: Color(0xFF2E8EFF).withValues(alpha: 0.15)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.account_tree_outlined, size: 16, color: Color(0xFF2E8EFF)),
+                                      SizedBox(width: 10.w),
+                                      Text(
+                                        'Pipeline',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12.sp,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        pipelineName,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13.sp,
+                                          color: const Color(0xFF2E8EFF),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                           Padding(
-                            padding: const EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10.w),
                             child: Builder(
                               builder: (ctx) {
-                                // Lead statuses come from lead pipeline stages via API.
-                                final stageNames = ctx
-                                    .watch<PipelineBloc>()
-                                    .state
-                                    .leadStageNames;
-                                // Fallback: keep current stage if API did not return anything yet.
-                                final options = stageNames.isEmpty
-                                    ? <String>[item.stage]
-                                    : stageNames;
-                                final value =
-                                    options
-                                        .where(
-                                          (s) => s.equalsIgnoreCase(item.stage),
-                                        )
-                                        .firstOrNull ??
-                                    item.stage;
+                                // Lead stages come exclusively from the pipeline API.
+                                final pipelineState = ctx.watch<PipelineBloc>().state;
+                                final stageNames = pipelineState.leadStageNames;
+                                final isLoading = pipelineState.status == AppStatus.loading && stageNames.isEmpty;
+
+                                if (isLoading) {
+                                  return Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      border: Border.all(color: Color(0xFF2E8EFF), width: 1.5.w),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 16.w,
+                                          height: 16.h,
+                                          child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        Text(
+                                          'Loading stages...',
+                                          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+
+                                // Use API stages; if empty after loading, show current stage as read-only
+                                final options = stageNames.isNotEmpty ? stageNames : <String>[item.stage];
+                                final value = options.where((s) => s.equalsIgnoreCase(item.stage)).firstOrNull ?? item.stage;
                                 final finalValue = options.contains(value)
                                     ? value
                                     : (options.isNotEmpty ? options.first : value);
+
                                 return GestureDetector(
                                   onTap: stageNames.isEmpty
                                       ? null
@@ -767,24 +829,24 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                           showModalBottomSheet(
                                             context: context,
                                             backgroundColor: Colors.white,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                                             ),
                                             builder: (BuildContext ctx) {
                                               return Container(
-                                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                                padding: EdgeInsets.symmetric(vertical: 20.h),
                                                 child: Column(
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                      padding: EdgeInsets.symmetric(horizontal: 20.w),
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           Text(
                                                             'Select Current Stage',
                                                             style: GoogleFonts.poppins(
-                                                              fontSize: 16,
+                                                              fontSize: 16.sp,
                                                               fontWeight: FontWeight.w600,
                                                               color: Colors.black,
                                                             ),
@@ -811,7 +873,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                                             title: Text(
                                                               s,
                                                               style: GoogleFonts.poppins(
-                                                                fontSize: 14,
+                                                                fontSize: 14.sp,
                                                                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                                                 color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
                                                               ),
@@ -843,35 +905,35 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                       suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF2E8EFF)),
                                       labelText: 'Current Stage',
                                       labelStyle: GoogleFonts.poppins(
-                                        fontSize: 13,
+                                        fontSize: 13.sp,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
                                       filled: true,
                                       fillColor: Colors.white,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 10,
-                                        horizontal: 10,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10.h,
+                                        horizontal: 10.w,
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
+                                        borderRadius: BorderRadius.circular(12.r),
+                                        borderSide: BorderSide(
                                           color: Color(0xFF2E8EFF),
-                                          width: 1.5,
+                                          width: 1.5.w,
                                         ),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: const BorderSide(
+                                        borderRadius: BorderRadius.circular(12.r),
+                                        borderSide: BorderSide(
                                           color: Color(0xFF2E8EFF),
-                                          width: 1.5,
+                                          width: 1.5.w,
                                         ),
                                       ),
                                     ),
                                     child: Text(
                                       finalValue,
                                       style: GoogleFonts.poppins(
-                                        fontSize: 14,
+                                        fontSize: 14.sp,
                                         color: const Color(0xFF2E8EFF),
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -885,7 +947,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                         ],
                       ),
                         _followUpSection(item.id),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         _buildCollapsibleSection(
                           title: 'Assigned to',
                           icon: Icons.person_pin_rounded,
@@ -915,7 +977,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           ),
                         ],
                       ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                         _buildCollapsibleSection(
                           title: 'Status history',
                           icon: Icons.history_rounded,
@@ -927,7 +989,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           },
                           children: [
                           Padding(
-                            padding: const EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10.w),
                             child: LeadStatusTimeline(
                               entries: _statusHistory,
                               currentStage: item.stage,
@@ -935,7 +997,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           ),
                         ],
                       ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
                         if (!isLeadStageFinal(item.stage))
                           InnerShadow(
                             shadows: [
@@ -946,7 +1008,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                               ),
                             ],
                             child: SizedBox(
-                              height: 50,
+                              height: 50.h,
                               width: double.infinity,
                               child: FilledButton.icon(
                                 onPressed: () {
@@ -961,14 +1023,14 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                   'Schedule Follow-up',
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 15,
+                                    fontSize: 15.sp,
                                     color: Colors.white,
                                   ),
                                 ),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppColors.primary,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(14.r),
                                   ),
                                   elevation: 0,
                                 ),
@@ -982,13 +1044,13 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                               child: Text(
                                 'Lead marked as Lost.',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   color: AppColors.textSecondary,
                                 ),
                               ),
                             ),
                         ],
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10.h),
                       ],
                     ),
             ),
@@ -1025,10 +1087,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                     '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(12),
+                  padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.03),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(color: AppColors.primary.withOpacity(0.1)),
                   ),
                   child: Column(
@@ -1037,18 +1099,18 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 4.h,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
                               fu.type.toUpperCase(),
                               style: GoogleFonts.poppins(
-                                fontSize: 10,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.primary,
                               ),
@@ -1058,22 +1120,22 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           Text(
                             dateStr,
                             style: GoogleFonts.poppins(
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.w600,
                               color: Colors.grey.shade600,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         fu.note,
                         style: GoogleFonts.poppins(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       Row(
                         children: [
                           const Spacer(),
@@ -1090,15 +1152,15 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             label: Text(
                               'Mark Done',
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             style: TextButton.styleFrom(
                               foregroundColor: AppColors.stageWon,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 0,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 0.h,
                               ),
                             ),
                           ),
@@ -1126,30 +1188,30 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               .toUpperCase()
         : '?';
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF2E8EFF), width: 1.5),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: Color(0xFF2E8EFF), width: 1.5.w),
       ),
       child: Row(
         children: [
           Container(
-            width: 56,
-            height: 56,
+            width: 56.w,
+            height: 56.h,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(28.r),
               child: Container(
-                color: const Color(0xFF2E8EFF).withOpacity(0.1),
+                color: Color(0xFF2E8EFF).withOpacity(0.1),
                 child: Center(
                   child: Text(
                     initials,
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF2E8EFF),
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -1157,7 +1219,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1165,16 +1227,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 Text(
                   item.name,
                   style: GoogleFonts.poppins(
-                    fontSize: 17,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w800,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   item.email.isNotEmpty ? item.email : 'No email address',
                   style: GoogleFonts.poppins(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey.shade600,
                   ),
                   maxLines: 1,
@@ -1202,10 +1264,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
         GestureDetector(
           onTap: onToggle,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: const BoxDecoration(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
+              borderRadius: BorderRadius.all(Radius.circular(12.r)),
               boxShadow: [
                 BoxShadow(
                   color: Color(0x40000000),
@@ -1218,12 +1280,12 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
             child: Row(
               children: [
                 Icon(icon, size: 20, color: const Color(0xFF2E8EFF)),
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: Text(
                     title,
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -1241,12 +1303,12 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           ),
         ),
         if (isExpanded && activeChildren.isNotEmpty) ...[
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+              borderRadius: BorderRadius.all(Radius.circular(16.r)),
               boxShadow: [
                 BoxShadow(
                   color: Color(0x40000000),
@@ -1289,32 +1351,32 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           isScrollControlled: true,
           builder: (ctx) {
             return Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 40,
-                    height: 4,
+                    width: 40.w,
+                    height: 4.h,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Text(
                     title,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       color: const Color(0xFF2E8EFF),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   const Divider(),
                   Flexible(
                     child: ListView.builder(
@@ -1346,16 +1408,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           },
         );
       },
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(10.r),
       child: InputDecorator(
         decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
             child: Container(
-              padding: const EdgeInsets.all(6),
+              padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
                 color: const Color(0xFFF2F6FE),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(
                 prefixIcon,
@@ -1364,17 +1426,17 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               ),
             ),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
           ),
         ),
@@ -1383,60 +1445,12 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
             Expanded(
               child: Text(
                 value.toString(),
-                style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey.shade700),
+                style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
               ),
             ),
             const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _infoSection(String title, IconData icon, List<Widget> children) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x40000000),
-            blurRadius: 4,
-            spreadRadius: 0,
-            offset: Offset.zero,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 14, 10, 0),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2E8EFF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, size: 14, color: const Color(0xFF2E8EFF)),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          ...children,
-        ],
       ),
     );
   }
@@ -1451,13 +1465,13 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: const Color(0xFF2E8EFF).withOpacity(0.08)),
+          top: BorderSide(color: Color(0xFF2E8EFF).withOpacity(0.08)),
         ),
       ),
       child: Row(
         children: [
           Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1465,16 +1479,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   value,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF000000),
                   ),
@@ -1488,7 +1502,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
     if (onTap == null) return row;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(8.r),
       child: row,
     );
   }
@@ -1504,14 +1518,14 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: const Color(0xFF2E8EFF).withOpacity(0.08)),
+          top: BorderSide(color: Color(0xFF2E8EFF).withOpacity(0.08)),
         ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 16, color: const Color(0xFF2E8EFF)),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1519,16 +1533,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 Text(
                   label,
                   style: GoogleFonts.poppins(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: const Color(0xFF000000),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   value,
                   style: GoogleFonts.poppins(
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF000000),
                   ),
@@ -1545,19 +1559,19 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                 onPressed: onCall,
                 icon: Image.asset(
                   'assets/svgs/mobile.png',
-                  width: 30,
-                  height: 30,
+                  width: 30.w,
+                  height: 30.h,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: onWhatsApp,
                 icon: Image.asset(
                   'assets/svgs/whatsapp.png',
-                  width: 30,
-                  height: 30,
+                  width: 30.w,
+                  height: 30.h,
                 ),
               ),
             ],
@@ -1582,11 +1596,11 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           builder: (ctx, state) {
             final users = state.items;
             return Container(
-              margin: const EdgeInsets.all(12),
+              margin: EdgeInsets.all(12.w),
               padding: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(color: AppColors.primary),
               ),
               child: Column(
@@ -1597,16 +1611,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                     child: Text(
                       'Assign to User',
                       style: GoogleFonts.poppins(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary,
                       ),
                     ),
                   ),
-                  const Divider(height: 1),
+                  Divider(height: 1.h),
                   if (state.status == AppStatus.loading)
-                    const Padding(
-                      padding: EdgeInsets.all(16),
+                    Padding(
+                      padding: EdgeInsets.all(16.w),
                       child: Center(
                         child: CircularProgressIndicator(
                           color: AppColors.primary,
@@ -1616,12 +1630,12 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                     )
                   else if (users.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16.w),
                       child: Text(
                         'No users found.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey.shade600,
                         ),
                       ),
@@ -1652,14 +1666,14 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             title: Text(
                               u.name,
                               style: GoogleFonts.poppins(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             subtitle: Text(
                               u.email,
                               style: GoogleFonts.poppins(
-                                fontSize: 12,
+                                fontSize: 12.sp,
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -1668,7 +1682,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                         },
                       ),
                     ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                 ],
               ),
             );

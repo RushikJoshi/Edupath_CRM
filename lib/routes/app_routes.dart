@@ -24,7 +24,6 @@ import 'package:gtcrm/features/inquiry/presentation/pages/add_inquiry_screen.dar
 import 'package:gtcrm/features/inquiry/presentation/pages/inquiry_detail_screen.dart';
 import 'package:gtcrm/features/lead/presentation/pages/add_lead_screen.dart';
 import 'package:gtcrm/features/lead/presentation/pages/lead_detail_screen.dart';
-import 'package:gtcrm/features/pipeline/presentation/pages/pipeline_screen.dart';
 import 'package:gtcrm/features/follow_up/presentation/pages/follow_up_screen.dart';
 import 'package:gtcrm/features/meeting/presentation/pages/add_meeting_screen.dart';
 import 'package:gtcrm/features/meeting/presentation/pages/meeting_detail_screen.dart';
@@ -48,7 +47,6 @@ class AppRoutes {
   static const leadList = '/lead-list';
   static const addLead = '/add-lead';
   static const leadDetail = '/lead-detail';
-  static const pipeline = '/pipeline';
   static const followUp = '/follow-up';
 
   static const accounts = '/accounts';
@@ -125,8 +123,6 @@ class AppRoutes {
         return animated(
           LeadDetailScreen(lead: settings.arguments as LeadModel?),
         );
-      case pipeline:
-        return animated(const PipelineScreen());
       case followUp:
         return animated(FollowUpScreen(lead: settings.arguments));
       case accounts:

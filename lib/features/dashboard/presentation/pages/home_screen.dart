@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inner_shadow/flutter_inner_shadow.dart';
@@ -61,13 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBottomNav() {
     return Container(
-      decoration: BoxDecoration(color: Colors.white, boxShadow: const []),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: []),
       child: NavigationBarTheme(
         data: NavigationBarThemeData(
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             final isSelected = states.contains(WidgetState.selected);
             return GoogleFonts.poppins(
-              fontSize: 11,
+              fontSize: 11.sp,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               color: isSelected ? const Color(0xFF2E8EFF) : const Color(0xFF0E4C7D),
             );
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
           surfaceTintColor: Colors.transparent,
           indicatorColor: AppColors.primary.withValues(alpha: 0.1),
           elevation: 0,
-          height: 65,
+          height: 65.h,
           destinations: [
             _navDestination('assets/svgs/bottom_dashboard.png', 'Dashboard'),
             _navDestination('assets/svgs/bottom_enquiry.png', 'Enquiry'),
@@ -139,54 +140,54 @@ class _HomeScreenState extends State<HomeScreen> {
           // Header
           Container(
             padding: const EdgeInsets.fromLTRB(16, 36, 16, 20),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: AppColors.primaryGradient,
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.only(bottomRight: Radius.circular(32)),
+              borderRadius: BorderRadius.only(bottomRight: Radius.circular(32.r)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 42,
-                  height: 42,
+                  width: 42.w,
+                  height: 42.h,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Center(
                     child: Text(
                       initials,
                       style: GoogleFonts.poppins(
                         color: AppColors.primary,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   user?.name ?? 'User Name',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                   ),
                 ),
                 Text(
                   user?.email ?? 'email@example.com',
                   style: GoogleFonts.poppins(
                     color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     decoration: TextDecoration.underline,
                     decorationColor: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 _buildBranchText(role, user),
               ],
             ),
@@ -195,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Nav items
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
               physics: const BouncingScrollPhysics(),
               children: <Widget>[
                 _drawerItem('assets/svgs/Dashboard.svg', 'Dashboard', 0),
@@ -204,16 +205,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 _drawerItem('assets/svgs/meetings.svg', 'Meetings', 3),
                 _drawerItem('assets/svgs/profile.svg', 'Profile', 4),
 
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   child: Divider(color: Color(0xFFEEEEEE)),
                 ),
 
-                _drawerRouteItem(
-                  'assets/svgs/stages.svg',
-                  'Sales Pipeline',
-                  AppRoutes.pipeline,
-                ),
+                // _drawerRouteItem(
+                //   'assets/svgs/stages.svg',
+                //   'Sales Pipeline',
+                //   AppRoutes.pipeline,
+                // ),
                 _drawerRouteItem(
                   'assets/svgs/follow-up.svg',
                   'Follow-ups',
@@ -260,12 +261,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0.w),
               child: Text(
                 'EduPath v2.0',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   color: Colors.grey.shade400,
                   fontWeight: FontWeight.normal,
                 ),
@@ -283,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'All Branches',
         style: GoogleFonts.poppins(
           color: Colors.white.withValues(alpha: 0.9),
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
         ),
       );
@@ -308,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
       name,
       style: GoogleFonts.poppins(
         color: Colors.white.withValues(alpha: 0.9),
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -322,13 +323,13 @@ class _HomeScreenState extends State<HomeScreen> {
         color: selected
             ? AppColors.primary.withValues(alpha: 0.08)
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: selected
-            ? Border.all(color: AppColors.primary, width: 1)
+            ? Border.all(color: AppColors.primary, width: 1.w)
             : null,
       ),
       child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         onTap: () {
           if (index == 0) {
             final role =
@@ -342,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
             color: selected ? AppColors.primary : Colors.grey.shade700,
           ),
@@ -375,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
@@ -384,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           label,
           style: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: Colors.grey.shade700,
           ),
@@ -439,8 +440,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (pngAsset != null) {
       return Image.asset(
         pngAsset,
-        width: 38,
-        height: 38,
+        width: 38.w,
+        height: 38.h,
       );
     }
 
@@ -483,13 +484,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Container(
-      width: 38,
-      height: 38,
+      width: 38.w,
+      height: 38.h,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8.w),
       child: SvgPicture.asset(
         svgAsset,
         colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
@@ -508,15 +509,15 @@ class _NavIcon extends StatelessWidget {
     if (assetPath.endsWith('.png')) {
       return Image.asset(
         assetPath,
-        width: 24,
-        height: 24,
+        width: 24.w,
+        height: 24.h,
         color: color,
       );
     }
     return SvgPicture.asset(
       assetPath,
-      width: 24,
-      height: 24,
+      width: 24.w,
+      height: 24.h,
       colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
     );
   }

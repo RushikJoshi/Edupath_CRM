@@ -10,22 +10,52 @@ class LeadRepositoryImpl implements LeadRepository {
   LeadRepositoryImpl(this._apiClient);
   final LeadApiClient _apiClient;
 
+  LeadModel _parseLeadFromResponse(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      final lead = data['lead'];
+      final dataField = data['data'];
+      final Map<String, dynamic> json;
+      if (lead is Map<String, dynamic>) {
+        json = lead;
+      } else if (dataField is Map<String, dynamic>) {
+        json = dataField;
+      } else {
+        json = data;
+      }
+      return LeadModel.fromJson(json);
+    }
+    throw const AppException(type: AppErrorType.invalidResponse, userMessage: 'Something went wrong');
+  }
+
+  List<LeadModel> _parseLeadsListFromResponse(dynamic data) {
+    List<dynamic> list;
+    if (data is List) {
+      list = data;
+    } else if (data is Map && data['leads'] != null) {
+      list = data['leads'] as List<dynamic>;
+    } else if (data is Map && data['data'] != null) {
+      list = data['data'] as List<dynamic>;
+    } else {
+      list = [];
+    }
+    return list.map((e) => LeadModel.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
   @override
   Future<List<LeadModel>> fetchAll({String? search}) async {
     try {
       final response = await _apiClient.getLeads(search: search);
-      final data = response.data;
-      List<dynamic> list;
-      if (data is List) {
-        list = data;
-      } else if (data is Map && data['leads'] != null) {
-        list = data['leads'] as List<dynamic>;
-      } else if (data is Map && data['data'] != null) {
-        list = data['data'] as List<dynamic>;
-      } else {
-        list = [];
-      }
-      return list.map((e) => LeadModel.fromJson(e as Map<String, dynamic>)).toList();
+      return _parseLeadsListFromResponse(response.data);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<LeadModel> getLeadById(String leadId) async {
+    try {
+      final response = await _apiClient.getLeadById(leadId);
+      return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -72,12 +102,7 @@ class LeadRepositoryImpl implements LeadRepository {
       if (assignedTo != null && assignedTo.isNotEmpty) body['assignedTo'] = assignedTo;
 
       final response = await _apiClient.createLead(body);
-      final data = response.data;
-      if (data is Map<String, dynamic>) {
-        final json = data['lead'] as Map<String, dynamic>? ?? data['data'] ?? data;
-        return LeadModel.fromJson(json);
-      }
-      throw const AppException(type: AppErrorType.invalidResponse, userMessage: 'Something went wrong');
+      return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -107,12 +132,21 @@ class LeadRepositoryImpl implements LeadRepository {
       }
 
       final response = await _apiClient.updateLead(leadId, body);
-      final data = response.data;
-      if (data is Map<String, dynamic>) {
-        final json = data['lead'] as Map<String, dynamic>? ?? data['data'] ?? data;
-        return LeadModel.fromJson(json);
-      }
-      throw const AppException(type: AppErrorType.invalidResponse, userMessage: 'Something went wrong');
+      return _parseLeadFromResponse(response.data);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<LeadModel> updateLeadStage({required String leadId, required String status, String? remark}) async {
+    try {
+      final body = <String, dynamic>{
+        'status': status,
+        if (remark != null && remark.isNotEmpty) 'remark': remark,
+      };
+      final response = await _apiClient.updateLeadStage(leadId, body);
+      return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -139,12 +173,17 @@ class LeadRepositoryImpl implements LeadRepository {
         if (notes != null && notes.isNotEmpty) 'notes': notes,
       };
       final response = await _apiClient.markLeadAsLost(leadId, body);
-      final data = response.data;
-      if (data is Map<String, dynamic>) {
-        final lead = data['lead'] ?? data['mergedLead'] ?? data['data'] ?? data;
-        return LeadModel.fromJson(lead as Map<String, dynamic>);
-      }
-      throw const AppException(type: AppErrorType.invalidResponse, userMessage: 'Something went wrong');
+      return _parseLeadFromResponse(response.data);
+    } on DioException catch (e) {
+      throw AppErrorHandler.fromDioException(e);
+    }
+  }
+
+  @override
+  Future<List<LeadModel>> getLostLeads() async {
+    try {
+      final response = await _apiClient.getLostLeads();
+      return _parseLeadsListFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

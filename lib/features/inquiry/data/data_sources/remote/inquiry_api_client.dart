@@ -31,6 +31,18 @@ abstract class InquiryApiClient {
   @POST(ApiEndpoints.inquiryConvert)
   Future<HttpResponse<dynamic>> convertToLead(@Path('id') String id, @Body() Map<String, dynamic> body);
 
+  @GET(ApiEndpoints.inquiryDetail)
+  Future<HttpResponse<dynamic>> getInquiryById(@Path('id') String id);
+
+  @PATCH(ApiEndpoints.inquiryDetail)
+  Future<HttpResponse<dynamic>> updateInquiry(@Path('id') String id, @Body() Map<String, dynamic> body);
+
+  @GET(ApiEndpoints.inquiryDuplicates)
+  Future<HttpResponse<dynamic>> getDuplicates(@Path('id') String id);
+
+  @POST(ApiEndpoints.inquiryMerge)
+  Future<HttpResponse<dynamic>> mergeInquiry(@Path('id') String id, @Body() Map<String, dynamic> body);
+
   @DELETE(ApiEndpoints.inquiryDetail)
   Future<void> deleteInquiry(@Path('id') String id);
 }
