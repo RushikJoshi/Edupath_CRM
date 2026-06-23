@@ -16,6 +16,10 @@ import 'package:gtcrm/core/constants/app_enums.dart';
 import 'package:gtcrm/core/widgets/responsive_wrapper.dart';
 import 'package:gtcrm/core/widgets/shimmer_loading.dart';
 import 'package:gtcrm/core/widgets/app_drawer.dart';
+import 'package:gtcrm/features/inquiry/presentation/bloc/inquiry_bloc.dart';
+import 'package:gtcrm/features/inquiry/presentation/bloc/inquiry_event.dart';
+import 'package:gtcrm/features/inquiry/presentation/bloc/inquiry_state.dart';
+import 'package:gtcrm/features/inquiry/data/models/inquiry_model.dart';
 
 class FollowUpScreen extends StatefulWidget {
   const FollowUpScreen({super.key, this.lead});
@@ -34,19 +38,90 @@ class _FollowUpScreenState extends State<FollowUpScreen>
 
   static const List<String> _tabsList = ['Scheduled', 'Completed', 'Cancelled'];
 
+  LeadModel _inquiryToLead(InquiryModel inq) {
+    return LeadModel(
+      id: inq.id,
+      inquiryId: inq.id,
+      name: '${inq.name} (Enquiry)',
+      stage: inq.status,
+      assignedTo: inq.assignedTo ?? '',
+      branchId: inq.branchId,
+      branchName: inq.branchName,
+      email: inq.email,
+      phone: inq.phone,
+      companyName: inq.companyName,
+      notes: inq.notes,
+      city: inq.city,
+      address: inq.address,
+      course: inq.course,
+      location: inq.location,
+      value: inq.value,
+      sourceId: inq.sourceId,
+    );
+  }
+
+  void _checkAndInitDefaultClient(BuildContext context) {
+    if (_isLeadLocked) return;
+    if (_selectedLeadId != null) {
+      // Refresh currentLead details if matching one is found in state
+      final leads = context.read<LeadBloc>().state.items;
+      final inquiries = context.read<InquiryBloc>().state.items;
+      
+      final matchedLead = leads.where((l) => l.id == _selectedLeadId);
+      if (matchedLead.isNotEmpty) {
+        setState(() {
+          _currentLead = matchedLead.first;
+        });
+        return;
+      }
+      
+      final matchedInq = inquiries.where((i) => i.id == _selectedLeadId);
+      if (matchedInq.isNotEmpty) {
+        setState(() {
+          _currentLead = _inquiryToLead(matchedInq.first);
+        });
+        return;
+      }
+      return;
+    }
+
+    // If no client is selected yet, select the first available lead or inquiry
+    final leads = context.read<LeadBloc>().state.items;
+    final inquiries = context.read<InquiryBloc>().state.items;
+
+    if (leads.isNotEmpty) {
+      setState(() {
+        _currentLead = leads.first;
+        _selectedLeadId = _currentLead!.id;
+      });
+      context.read<FollowUpBloc>().add(FollowUpsFetched(_selectedLeadId!));
+    } else if (inquiries.isNotEmpty) {
+      setState(() {
+        _currentLead = _inquiryToLead(inquiries.first);
+        _selectedLeadId = _currentLead!.id;
+      });
+      context.read<FollowUpBloc>().add(FollowUpsFetched(_selectedLeadId!));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _tc = TabController(length: _tabsList.length, vsync: this);
 
-    // Fetch leads first to populate dropdown/find lead details
+    // Fetch leads and inquiries to populate dropdown/find details
     context.read<LeadBloc>().add(LeadFetched());
+    context.read<InquiryBloc>().add(const InquiryFetched());
 
     if (widget.lead != null) {
       _isLeadLocked = true;
       if (widget.lead is LeadModel) {
         _currentLead = widget.lead as LeadModel;
         _selectedLeadId = _currentLead!.id;
+      } else if (widget.lead is InquiryModel) {
+        final inq = widget.lead as InquiryModel;
+        _currentLead = _inquiryToLead(inq);
+        _selectedLeadId = inq.id;
       } else if (widget.lead is String) {
         _selectedLeadId = widget.lead as String;
       }
@@ -401,35 +476,15 @@ class _FollowUpScreenState extends State<FollowUpScreen>
       listeners: [
         BlocListener<LeadBloc, LeadState>(
           listener: (context, leadState) {
-            if (leadState.status == AppStatus.success &&
-                leadState.items.isNotEmpty) {
-              if (!_isLeadLocked) {
-                if (_selectedLeadId == null) {
-                  setState(() {
-                    _currentLead = leadState.items.first;
-                    _selectedLeadId = _currentLead!.id;
-                  });
-                  context
-                      .read<FollowUpBloc>()
-                      .add(FollowUpsFetched(_selectedLeadId!));
-                } else {
-                  final matched = leadState.items.firstWhere(
-                    (l) => l.id == _selectedLeadId,
-                    orElse: () => leadState.items.first,
-                  );
-                  setState(() {
-                    _currentLead = matched;
-                  });
-                }
-              } else if (_currentLead == null && _selectedLeadId != null) {
-                final matchedList =
-                    leadState.items.where((l) => l.id == _selectedLeadId);
-                if (matchedList.isNotEmpty) {
-                  setState(() {
-                    _currentLead = matchedList.first;
-                  });
-                }
-              }
+            if (leadState.status == AppStatus.success) {
+              _checkAndInitDefaultClient(context);
+            }
+          },
+        ),
+        BlocListener<InquiryBloc, InquiryState>(
+          listener: (context, inquiryState) {
+            if (inquiryState.status == AppStatus.success) {
+              _checkAndInitDefaultClient(context);
             }
           },
         ),
@@ -598,177 +653,235 @@ class _FollowUpScreenState extends State<FollowUpScreen>
   Widget _buildLeadDropdownSection() {
     return BlocBuilder<LeadBloc, LeadState>(
       builder: (context, leadState) {
-        if (leadState.status == AppStatus.loading && leadState.items.isEmpty) {
-          return const LinearProgressIndicator(color: AppColors.primary);
-        }
-        return Container(
-          margin: EdgeInsets.all(10.w),
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0xFFF1F5F9),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8.w),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEFF5FF),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: const Icon(Icons.person_outline_rounded, size: 18, color: AppColors.primary),
+        return BlocBuilder<InquiryBloc, InquiryState>(
+          builder: (context, inquiryState) {
+            if ((leadState.status == AppStatus.loading && leadState.items.isEmpty) ||
+                (inquiryState.status == AppStatus.loading && inquiryState.items.isEmpty)) {
+              return const LinearProgressIndicator(color: AppColors.primary);
+            }
+
+            final inquiriesAsLeads = inquiryState.items.map((inq) => _inquiryToLead(inq)).toList();
+            final allClients = [...leadState.items, ...inquiriesAsLeads];
+
+            return Container(
+              margin: EdgeInsets.all(10.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0xFFF1F5F9),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
                   ),
-                  SizedBox(width: 12.w),
-                  Text(
-                    'Client Information',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1E293B),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEFF5FF),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: const Icon(Icons.person_outline_rounded, size: 18, color: AppColors.primary),
+                      ),
+                      SizedBox(width: 12.w),
+                      Text(
+                        'Client Information',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                  InkWell(
+                    onTap: () {
+                      _showLeadSelectionBottomSheet(context, allClients);
+                    },
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.person_rounded, size: 20, color: Color(0xFF94A3B8)),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: Text(
+                              _currentLead == null
+                                  ? 'Select Lead / Client'
+                                  : '${_currentLead!.name} (${_currentLead!.phone})',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: _currentLead == null ? const Color(0xFF64748B) : const Color(0xFF1E293B),
+                                fontWeight: _currentLead == null ? FontWeight.normal : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const Icon(Icons.expand_more_rounded, color: Color(0xFF94A3B8)),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
-              InkWell(
-                onTap: () {
-                  _showLeadSelectionBottomSheet(context, leadState.items);
-                },
-                borderRadius: BorderRadius.circular(12.r),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.person_rounded, size: 20, color: Color(0xFF94A3B8)),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: Text(
-                          _currentLead == null
-                              ? 'Select Lead / Client'
-                              : '${_currentLead!.name} (${_currentLead!.phone})',
-                          style: GoogleFonts.poppins(
-                            fontSize: 13.sp,
-                            color: _currentLead == null ? const Color(0xFF64748B) : const Color(0xFF1E293B),
-                            fontWeight: _currentLead == null ? FontWeight.normal : FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      const Icon(Icons.expand_more_rounded, color: Color(0xFF94A3B8)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
   void _showLeadSelectionBottomSheet(BuildContext context, List<LeadModel> leads) {
+    String searchQuery = '';
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          ),
-          child: Column(
-            children: [
-              SizedBox(height: 12.h),
-              Center(
-                child: Container(
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(2.r),
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            final filteredLeads = leads.where((l) {
+              final q = searchQuery.trim().toLowerCase();
+              return q.isEmpty ||
+                  l.name.toLowerCase().contains(q) ||
+                  l.phone.contains(q) ||
+                  l.email.toLowerCase().contains(q);
+            }).toList();
+
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: 12.h),
+                  Center(
+                    child: Container(
+                      width: 40.w,
+                      height: 4.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(2.r),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                'Select Lead / Client',
-                style: GoogleFonts.poppins(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1E293B),
-                ),
-              ),
-              SizedBox(height: 16.h),
-              Divider(height: 1.h, color: Color(0xFFE2E8F0)),
-              Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                  itemCount: leads.length,
-                  separatorBuilder: (context, index) => const Divider(color: Color(0xFFF1F5F9)),
-                  itemBuilder: (context, index) {
-                    final lead = leads[index];
-                    final isSelected = lead.id == _selectedLeadId;
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: CircleAvatar(
-                        backgroundColor: isSelected ? AppColors.primary : const Color(0xFFF1F5F9),
-                        child: Text(
-                          lead.name.isNotEmpty ? lead.name[0].toUpperCase() : 'L',
-                          style: GoogleFonts.poppins(
-                            color: isSelected ? Colors.white : Color(0xFF64748B),
-                            fontWeight: FontWeight.bold,
+                  SizedBox(height: 16.h),
+                  Text(
+                    'Select Lead / Client',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: TextField(
+                        onChanged: (value) {
+                          setSheetState(() {
+                            searchQuery = value;
+                          });
+                        },
+                        style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: 'Search client...',
+                          hintStyle: GoogleFonts.poppins(
+                            fontSize: 14.sp,
+                            color: Colors.grey.shade500,
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          isDense: true,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
                           ),
                         ),
                       ),
-                      title: Text(
-                        lead.name,
-                        style: GoogleFonts.poppins(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E293B),
-                        ),
-                      ),
-                      subtitle: Text(
-                        lead.phone,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12.sp,
-                          color: const Color(0xFF64748B),
-                        ),
-                      ),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _selectedLeadId = lead.id;
-                          _currentLead = lead;
-                        });
-                        this.context.read<FollowUpBloc>().add(FollowUpsFetched(lead.id));
-                        Navigator.pop(ctx);
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Divider(height: 1.h, color: const Color(0xFFE2E8F0)),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                      itemCount: filteredLeads.length,
+                      separatorBuilder: (context, index) => const Divider(color: Color(0xFFF1F5F9)),
+                      itemBuilder: (context, index) {
+                        final lead = filteredLeads[index];
+                        final isSelected = lead.id == _selectedLeadId;
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: CircleAvatar(
+                            backgroundColor: isSelected ? AppColors.primary : const Color(0xFFF1F5F9),
+                            child: Text(
+                              lead.name.isNotEmpty ? lead.name[0].toUpperCase() : 'L',
+                              style: GoogleFonts.poppins(
+                                color: isSelected ? Colors.white : Color(0xFF64748B),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            lead.name,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF1E293B),
+                            ),
+                          ),
+                          subtitle: Text(
+                            lead.phone,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12.sp,
+                              color: const Color(0xFF64748B),
+                            ),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(Icons.check_circle_rounded, color: AppColors.primary)
+                              : null,
+                          onTap: () {
+                            setState(() {
+                              _selectedLeadId = lead.id;
+                              _currentLead = lead;
+                            });
+                            this.context.read<FollowUpBloc>().add(FollowUpsFetched(lead.id));
+                            Navigator.pop(ctx);
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

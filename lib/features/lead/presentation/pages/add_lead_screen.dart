@@ -91,8 +91,8 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
         ? statusOptions.first
         : _leadStatus;
 
-    final isMgr = RoleGuard.isBranchManager(role);
-    if (isMgr && _branchId == null && myBranch.isNotEmpty) {
+    final canSeeAll = RoleGuard.canSeeAllBranches(role);
+    if (!canSeeAll && _branchId == null && myBranch.isNotEmpty) {
       _branchId = myBranch;
     }
 
@@ -287,7 +287,7 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                     SizedBox(height: 14.h),
                     _label('Branch'),
                     SizedBox(height: 8.h),
-                    if (isMgr || branches.isEmpty)
+                    if (!RoleGuard.canSeeAllBranches(role) || branches.isEmpty)
                       _lockedBranch(
                         auth.user != null && auth.user!.branchName.isNotEmpty
                             ? auth.user!.branchName

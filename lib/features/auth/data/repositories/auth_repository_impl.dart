@@ -191,4 +191,9 @@ class AuthRepositoryImpl implements AuthRepository {
     }
     return null;
   }
+
+  @override
+  Future<bool> isFirstLaunch() async {
+    return _storageService.isFirstLaunch();
+  }
 }

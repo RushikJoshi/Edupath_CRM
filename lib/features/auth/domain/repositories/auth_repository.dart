@@ -8,4 +8,5 @@ abstract class AuthRepository {
   Future<UserModel?> getSession();
   Future<void> logout();
   Future<DateTime?> getStoredTokenExpiry();
+  Future<bool> isFirstLaunch();
 }

@@ -75,8 +75,8 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
         ? statusOptions.first
         : _inquiryStatus;
 
-    final isMgr = RoleGuard.isBranchManager(role);
-    if (isMgr && _branchId == null && myBranch.isNotEmpty) {
+    final canSeeAll = RoleGuard.canSeeAllBranches(role);
+    if (!canSeeAll && _branchId == null && myBranch.isNotEmpty) {
       _branchId = myBranch;
     }
 
@@ -240,16 +240,21 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                     SizedBox(height: 14.h),
                     _label('Inquiry Status'),
                     SizedBox(height: 8.h),
-                    _dropdownField<String>(
-                      value: effectiveStatus,
-                      icon: Icons.flag_outlined,
-                      items: statusOptions.isEmpty ? ['—'] : statusOptions,
-                      onChanged: (v) {
-                        if (statusOptions.isNotEmpty) {
-                          setState(() => _inquiryStatus = v ?? effectiveStatus);
-                        }
-                      },
-                    ),
+                    if (pipelineState.status == AppStatus.loading && statusOptions.isEmpty)
+                      _loadingField('Loading stages...')
+                    else if (statusOptions.isEmpty)
+                      _emptyField('No stages available')
+                    else
+                      _dropdownField<String>(
+                        value: effectiveStatus,
+                        icon: Icons.flag_outlined,
+                        items: statusOptions,
+                        onChanged: (v) {
+                          if (statusOptions.isNotEmpty) {
+                            setState(() => _inquiryStatus = v ?? effectiveStatus);
+                          }
+                        },
+                      ),
                     SizedBox(height: 14.h),
                     _field(
                       'Value (₹)',
@@ -261,7 +266,7 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                     SizedBox(height: 14.h),
                     _label('Branch'),
                     SizedBox(height: 8.h),
-                    if (isMgr || branches.isEmpty)
+                    if (!RoleGuard.canSeeAllBranches(role) || branches.isEmpty)
                       _lockedBranch(
                         auth.user != null && auth.user!.branchName.isNotEmpty
                             ? auth.user!.branchName
@@ -566,6 +571,46 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
       onChanged: onChanged,
       dropdownColor: Colors.white,
       iconEnabledColor: const Color(0xFF003055),
+    );
+  }
+
+  Widget _loadingField(String message) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5.w),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 16.w,
+            height: 16.h,
+            child: const CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+          ),
+          SizedBox(width: 12.w),
+          Text(
+            message,
+            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _emptyField(String message) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: const Color(0xFFE8ECF3), width: 1.5.w),
+      ),
+      child: Text(
+        message,
+        style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+      ),
     );
   }
 

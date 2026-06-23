@@ -262,29 +262,34 @@ class AppDrawer extends StatelessWidget {
             ? Border.all(color: AppColors.primary, width: 1)
             : null,
       ),
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        onTap: () {
-          Navigator.pop(context);
-          if (activeRoute == route) return;
-          Navigator.pushNamed(context, route);
-        },
-        leading: _buildLeadingIcon(label, svgAsset),
-        title: Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? AppColors.primary : Colors.grey.shade700,
+      child: Material(
+        color: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(12),
+        child: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          onTap: () {
+            Navigator.pop(context);
+            if (activeRoute == route) return;
+            Navigator.pushNamed(context, route);
+          },
+          leading: _buildLeadingIcon(label, svgAsset),
+          title: Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              color: selected ? AppColors.primary : Colors.grey.shade700,
+            ),
           ),
+          trailing: showChevron
+              ? Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.grey.shade400,
+                  size: 20,
+                )
+              : null,
         ),
-        trailing: showChevron
-            ? Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.grey.shade400,
-                size: 20,
-              )
-            : null,
       ),
     );
   }

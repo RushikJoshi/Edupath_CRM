@@ -240,9 +240,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                   }
 
                   // API already returns search-filtered list when search was sent
-                  final filtered = state.items
-                      .where((e) => !isLeadStageWon(e.stage))
-                      .toList();
+                  final filtered = state.items;
 
                   if (filtered.isEmpty) {
                     return RefreshIndicator(

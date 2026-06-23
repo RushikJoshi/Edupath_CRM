@@ -11,6 +11,20 @@ class InquiryRepositoryImpl implements InquiryRepository {
   final InquiryApiClient _apiClient;
   final StorageService _storageService;
 
+  bool _hasIsDeletedTrue(dynamic data) {
+    if (data is Map) {
+      if (data['isDeleted'] == true) return true;
+      for (final val in data.values) {
+        if (_hasIsDeletedTrue(val)) return true;
+      }
+    } else if (data is List) {
+      for (final item in data) {
+        if (_hasIsDeletedTrue(item)) return true;
+      }
+    }
+    return false;
+  }
+
   @override
   Future<List<InquiryModel>> fetchAll({
     int? page,
@@ -95,7 +109,13 @@ class InquiryRepositoryImpl implements InquiryRepository {
       final response = await _apiClient.createInquiry(body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['inquiry'] as Map<String, dynamic>? ?? data;
+        if (_hasIsDeletedTrue(data)) {
+          throw const AppException(
+            type: AppErrorType.badRequest,
+            userMessage: 'This enquiry already exists (Duplicate prevented)',
+          );
+        }
+        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] as Map<String, dynamic>? ?? data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(

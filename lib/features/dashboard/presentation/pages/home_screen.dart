@@ -328,24 +328,29 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Border.all(color: AppColors.primary, width: 1.w)
             : null,
       ),
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-        onTap: () {
-          if (index == 0) {
-            final role =
-                context.read<AuthBloc>().state.user?.role ?? AppConstants.sales;
-            context.read<DashboardBloc>().add(DashboardFetched(role));
-          }
-          setState(() => _currentIndex = index);
-          Navigator.pop(context);
-        },
-        leading: _buildLeadingIcon(label, svgAsset),
-        title: Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14.sp,
-            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? AppColors.primary : Colors.grey.shade700,
+      child: Material(
+        color: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(12.r),
+        child: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          onTap: () {
+            if (index == 0) {
+              final role =
+                  context.read<AuthBloc>().state.user?.role ?? AppConstants.sales;
+              context.read<DashboardBloc>().add(DashboardFetched(role));
+            }
+            setState(() => _currentIndex = index);
+            Navigator.pop(context);
+          },
+          leading: _buildLeadingIcon(label, svgAsset),
+          title: Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              color: selected ? AppColors.primary : Colors.grey.shade700,
+            ),
           ),
         ),
       ),

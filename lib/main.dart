@@ -122,7 +122,7 @@ Future<void> main() async {
     _log('Firebase initialized');
   } catch (e) {
     _log('Firebase initialization failed: $e');
-    rethrow;
+    // REMOVED rethrow so the app can at least start and show the error!
   }
 
   try {
@@ -132,13 +132,41 @@ Future<void> main() async {
     _log('Failed to register background handler: $e');
   }
 
-  runApp(const MultiBranchCrmApp());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+  };
 
-  // Keep native splash on-screen briefly for a smoother startup.
-  Timer(const Duration(seconds: 2), FlutterNativeSplash.remove);
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Material(
+        child: Container(
+          color: Colors.red,
+          padding: const EdgeInsets.all(20),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Text(
+                'CRASH DETECTED:\n${details.exceptionAsString()}\n\n${details.stack}',
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  };
 
-  // Do notification setup in background so native splash exits quickly.
-  unawaited(_initializeMessaging());
+  runZonedGuarded(() {
+    runApp(const MultiBranchCrmApp());
+
+    // Keep native splash on-screen briefly for a smoother startup.
+    Timer(const Duration(seconds: 2), FlutterNativeSplash.remove);
+
+    // Do notification setup in background so native splash exits quickly.
+    unawaited(_initializeMessaging());
+  }, (error, stackTrace) {
+    _log('RunZonedGuarded Error: $error');
+  });
 }
 
 Future<void> _initializeMessaging() async {

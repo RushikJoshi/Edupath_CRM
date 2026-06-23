@@ -44,10 +44,29 @@ class CustomerRepositoryImpl implements CustomerRepository {
       final role = await _storageService.getRole();
       final branchId = await _storageService.getBranchId();
 
-      if (role == null || role.toLowerCase().contains('admin')) return customers;
-      if (branchId == null || branchId.isEmpty) return customers;
+      print('=== CUSTOMER REPO DEBUG ===');
+      print('Total fetched from API: ${customers.length}');
+      print('User Role: $role');
+      print('User Branch ID: $branchId');
+      for (var c in customers) {
+        print('Customer: ${c.name}, Branch ID: ${c.branchId}');
+      }
 
-      return customers.where((customer) => customer.branchId == branchId).toList();
+      if (role == null || role.toLowerCase().contains('admin')) {
+        print('Admin role bypass, returning all: ${customers.length}');
+        print('===========================');
+        return customers;
+      }
+      if (branchId == null || branchId.isEmpty) {
+        print('No branch ID, returning all: ${customers.length}');
+        print('===========================');
+        return customers;
+      }
+
+      final filtered = customers.where((customer) => customer.branchId == branchId).toList();
+      print('Filtered Count: ${filtered.length}');
+      print('===========================');
+      return filtered;
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

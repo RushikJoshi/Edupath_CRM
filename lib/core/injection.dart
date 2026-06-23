@@ -47,7 +47,6 @@ import 'package:gtcrm/features/follow_up/domain/repositories/follow_up_repositor
 import 'package:gtcrm/core/services/storage_service.dart';
 import 'network/dio_client.dart';
 import 'constants/app_constants.dart';
-import 'constants/app_enums.dart';
 import 'theme/app_theme.dart';
 import 'package:gtcrm/routes/app_routes.dart';
 
@@ -217,7 +216,7 @@ class _StartupAuthGate extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         // Show a fullscreen loader only during the very first boot check.
-        if (state.status == AppStatus.initial) {
+        if (!state.sessionChecked) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );

@@ -110,7 +110,11 @@ Future<void> setupLocator() async {
   getIt.registerLazySingleton<TaskRepository>(() => TaskRepositoryImpl(getIt<TaskApiClient>()));
   getIt.registerLazySingleton<FollowUpRepository>(() => FollowUpRepositoryImpl(getIt<FollowUpApiClient>()));
   getIt.registerLazySingleton<ActivityRepository>(() => ActivityRepositoryImpl(getIt<ActivityApiClient>()));
-  getIt.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(getIt<DashboardApiClient>(), getIt<StorageService>()));
+  getIt.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(
+    getIt<DashboardApiClient>(),
+    getIt<StorageService>(),
+    getIt<CustomerRepository>(),
+  ));
 
   // Blocs
   getIt.registerFactory<AuthBloc>(() => AuthBloc(getIt<AuthRepository>()));

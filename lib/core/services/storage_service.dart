@@ -36,77 +36,142 @@ class StorageService {
   }
 
   Future<String?> getToken() async {
-    final secure = await _secureStorage.read(key: AppConstants.tokenKey);
-    if (secure != null && secure.isNotEmpty) return secure;
-
-    // Backward compatibility with legacy shared_preferences storage.
-    final prefs = await SharedPreferences.getInstance();
-    final legacy = prefs.getString(AppConstants.tokenKey);
-    if (legacy != null && legacy.isNotEmpty) {
-      await _secureStorage.write(key: AppConstants.tokenKey, value: legacy);
-      await prefs.remove(AppConstants.tokenKey);
+    try {
+      final secure = await _secureStorage.read(key: AppConstants.tokenKey);
+      if (secure != null && secure.isNotEmpty) return secure;
+    } catch (e) {
+      // Keystore decryption errors can occur on reinstall due to Auto Backup. Clear it.
+      await clearSession();
+      return null;
     }
-    return legacy;
+
+    try {
+      // Backward compatibility with legacy shared_preferences storage.
+      final prefs = await SharedPreferences.getInstance();
+      final legacy = prefs.getString(AppConstants.tokenKey);
+      if (legacy != null && legacy.isNotEmpty) {
+        try {
+          await _secureStorage.write(key: AppConstants.tokenKey, value: legacy);
+        } catch (_) {}
+        await prefs.remove(AppConstants.tokenKey);
+      }
+      return legacy;
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.roleKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.roleKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getBranchId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.branchIdKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.branchIdKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getBranchName() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.branchNameKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.branchNameKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.userIdKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.userIdKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getUserName() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.userNameKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.userNameKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getUserEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(AppConstants.userEmailKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(AppConstants.userEmailKey);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<String?> getTokenExpiry() async {
-    final secure = await _secureStorage.read(key: AppConstants.tokenExpiryKey);
-    if (secure != null && secure.isNotEmpty) return secure;
-
-    final prefs = await SharedPreferences.getInstance();
-    final legacy = prefs.getString(AppConstants.tokenExpiryKey);
-    if (legacy != null && legacy.isNotEmpty) {
-      await _secureStorage.write(
-        key: AppConstants.tokenExpiryKey,
-        value: legacy,
-      );
-      await prefs.remove(AppConstants.tokenExpiryKey);
+    try {
+      final secure = await _secureStorage.read(key: AppConstants.tokenExpiryKey);
+      if (secure != null && secure.isNotEmpty) return secure;
+    } catch (_) {
+      return null;
     }
-    return legacy;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final legacy = prefs.getString(AppConstants.tokenExpiryKey);
+      if (legacy != null && legacy.isNotEmpty) {
+        try {
+          await _secureStorage.write(
+            key: AppConstants.tokenExpiryKey,
+            value: legacy,
+          );
+        } catch (_) {}
+        await prefs.remove(AppConstants.tokenExpiryKey);
+      }
+      return legacy;
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<void> clearSession() async {
-    final prefs = await SharedPreferences.getInstance();
-    await _secureStorage.delete(key: AppConstants.tokenKey);
-    await prefs.remove(AppConstants.roleKey);
-    await prefs.remove(AppConstants.branchIdKey);
-    await prefs.remove(AppConstants.branchNameKey);
-    await prefs.remove(AppConstants.userIdKey);
-    await prefs.remove(AppConstants.userNameKey);
-    await prefs.remove(AppConstants.userEmailKey);
-    await _secureStorage.delete(key: AppConstants.tokenExpiryKey);
-    // Also remove any legacy values if present.
-    await prefs.remove(AppConstants.tokenKey);
-    await prefs.remove(AppConstants.tokenExpiryKey);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      try {
+        await _secureStorage.delete(key: AppConstants.tokenKey);
+      } catch (_) {}
+      await prefs.remove(AppConstants.roleKey);
+      await prefs.remove(AppConstants.branchIdKey);
+      await prefs.remove(AppConstants.branchNameKey);
+      await prefs.remove(AppConstants.userIdKey);
+      await prefs.remove(AppConstants.userNameKey);
+      await prefs.remove(AppConstants.userEmailKey);
+      try {
+        await _secureStorage.delete(key: AppConstants.tokenExpiryKey);
+      } catch (_) {}
+      // Also remove any legacy values if present.
+      await prefs.remove(AppConstants.tokenKey);
+      await prefs.remove(AppConstants.tokenExpiryKey);
+    } catch (_) {}
+  }
+
+  Future<bool> isFirstLaunch() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final isFirst = prefs.getBool('is_first_launch') ?? true;
+      if (isFirst) {
+        await prefs.setBool('is_first_launch', false);
+      }
+      return isFirst;
+    } catch (_) {
+      return false;
+    }
   }
 }

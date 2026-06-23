@@ -22,6 +22,7 @@ import 'package:gtcrm/features/notification/presentation/bloc/notification_state
 import 'package:gtcrm/core/constants/app_colors.dart';
 import 'package:gtcrm/core/constants/app_enums.dart';
 import 'package:gtcrm/core/widgets/responsive_wrapper.dart';
+import 'package:gtcrm/core/utils/role_guard.dart';
 import 'package:gtcrm/features/dashboard/data/models/dashboard_model.dart';
 import 'package:gtcrm/routes/app_routes.dart';
 import 'package:gtcrm/features/customer/presentation/pages/customer_list_screen.dart';
@@ -139,6 +140,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           );
         }
+
+        print('=== UI DASHBOARD BUILD ===');
+        print('Total Customers: ${data.totalCustomers}');
+        print('Total Leads: ${data.totalLeads}');
+        print('Total Inquiries: ${data.totalInquiries}');
+        print('===========================');
+
+        final role = context.read<AuthBloc>().state.user?.role ?? 'sales';
 
         // final cards = <_MetricData>[
         //   _MetricData(
@@ -357,8 +366,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 16.h),
                     _todayMeetingsCard(),
-                    SizedBox(height: 12.h),
-                    _recentActivityCard(),
+                    if (!RoleGuard.isSales(role)) ...[
+                      SizedBox(height: 12.h),
+                      _recentActivityCard(),
+                    ],
                   ],
                 ),
               ),

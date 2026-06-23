@@ -47,21 +47,93 @@ class DashboardModel extends Equatable {
     return DashboardModel(
       totalInquiries: _toInt(
         payload['totalInquiries'] ??
+            payload['total_inquiries'] ??
             payload['totalInquiry'] ??
+            payload['total_inquiry'] ??
             payload['totalEnquiries'] ??
+            payload['total_enquiries'] ??
             payload['inquiryCount'] ??
+            payload['inquiry_count'] ??
             payload['enquiryCount'] ??
-            payload['totalContacts'],
+            payload['enquiry_count'] ??
+            payload['totalContacts'] ??
+            payload['total_contacts'] ??
+            payload['inquiries'] ??
+            payload['enquiries'],
       ),
-      totalLeads: _toInt(payload['totalLeads']),
-      totalDeals: _toInt(payload['totalDeals']),
-      totalCustomers: _toInt(payload['totalCustomers']),
-      totalContacts: _toInt(payload['totalContacts']),
-      todayCalls: _toInt(payload['todayCalls']),
-      todayMeetings: _toInt(payload['todayMeetings']),
-      todayTasks: _toInt(payload['todayTasks']),
-      totalRevenue: _toDouble(payload['totalRevenue']),
-      conversionRate: _toDouble(payload['conversionRate']),
+      totalLeads: _toInt(
+        payload['totalLeads'] ??
+            payload['total_leads'] ??
+            payload['totalLead'] ??
+            payload['total_lead'] ??
+            payload['leadCount'] ??
+            payload['lead_count'] ??
+            payload['leads'],
+      ),
+      totalDeals: _toInt(
+        payload['totalDeals'] ??
+            payload['total_deals'] ??
+            payload['totalDeal'] ??
+            payload['total_deal'] ??
+            payload['dealCount'] ??
+            payload['deal_count'] ??
+            payload['deals'],
+      ),
+      totalCustomers: _toInt(
+        payload['totalCustomers'] ??
+            payload['total_customers'] ??
+            payload['totalCustomer'] ??
+            payload['total_customer'] ??
+            payload['totalAccounts'] ??
+            payload['total_accounts'] ??
+            payload['totalAccount'] ??
+            payload['total_account'] ??
+            payload['customerCount'] ??
+            payload['customer_count'] ??
+            payload['accountCount'] ??
+            payload['account_count'] ??
+            payload['customers'] ??
+            payload['accounts'],
+      ),
+      totalContacts: _toInt(
+        payload['totalContacts'] ??
+            payload['total_contacts'] ??
+            payload['contactCount'] ??
+            payload['contact_count'] ??
+            payload['contacts'],
+      ),
+      todayCalls: _toInt(
+        payload['todayCalls'] ??
+            payload['today_calls'] ??
+            payload['callCount'] ??
+            payload['call_count'] ??
+            payload['calls'],
+      ),
+      todayMeetings: _toInt(
+        payload['todayMeetings'] ??
+            payload['today_meetings'] ??
+            payload['meetingCount'] ??
+            payload['meeting_count'] ??
+            payload['meetings'],
+      ),
+      todayTasks: _toInt(
+        payload['todayTasks'] ??
+            payload['today_tasks'] ??
+            payload['taskCount'] ??
+            payload['task_count'] ??
+            payload['tasks'],
+      ),
+      totalRevenue: _toDouble(
+        payload['totalRevenue'] ??
+            payload['total_revenue'] ??
+            payload['revenue'] ??
+            payload['totalRevenueCount'] ??
+            payload['total_revenue_count'],
+      ),
+      conversionRate: _toDouble(
+        payload['conversionRate'] ??
+            payload['conversion_rate'],
+      ),
     );
   }
 

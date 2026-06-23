@@ -10,6 +10,20 @@ class LeadRepositoryImpl implements LeadRepository {
   LeadRepositoryImpl(this._apiClient);
   final LeadApiClient _apiClient;
 
+  bool _hasIsDeletedTrue(dynamic data) {
+    if (data is Map) {
+      if (data['isDeleted'] == true) return true;
+      for (final val in data.values) {
+        if (_hasIsDeletedTrue(val)) return true;
+      }
+    } else if (data is List) {
+      for (final item in data) {
+        if (_hasIsDeletedTrue(item)) return true;
+      }
+    }
+    return false;
+  }
+
   LeadModel _parseLeadFromResponse(dynamic data) {
     if (data is Map<String, dynamic>) {
       final lead = data['lead'];
@@ -102,6 +116,15 @@ class LeadRepositoryImpl implements LeadRepository {
       if (assignedTo != null && assignedTo.isNotEmpty) body['assignedTo'] = assignedTo;
 
       final response = await _apiClient.createLead(body);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        if (_hasIsDeletedTrue(data)) {
+          throw const AppException(
+            type: AppErrorType.badRequest,
+            userMessage: 'This lead already exists (Duplicate prevented)',
+          );
+        }
+      }
       return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);

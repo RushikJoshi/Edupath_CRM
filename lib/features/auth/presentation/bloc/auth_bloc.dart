@@ -39,18 +39,55 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
-    emit(state.copyWith(status: AppStatus.loading));
-    final user = await _repository.getSession();
-    if (user != null) {
-      // Valid persisted session found → stay logged in
-      emit(
-        state.copyWith(status: AppStatus.success, hasToken: true, user: user),
-      );
-      _scheduleAutoLogout(await _repository.getStoredTokenExpiry());
-    } else {
-      // No session → show login screen
+    try {
+      final isFirst = await _repository.isFirstLaunch();
+      if (isFirst) {
+        _cancelLogoutTimer();
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            hasToken: false,
+            sessionChecked: true,
+          ),
+        );
+        return;
+      }
+    } catch (_) {}
+
+    emit(state.copyWith(status: AppStatus.initial, sessionChecked: false));
+    try {
+      final user = await _repository.getSession();
+      if (user != null) {
+        // Valid persisted session found → stay logged in
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            hasToken: true,
+            user: user,
+            sessionChecked: true,
+          ),
+        );
+        _scheduleAutoLogout(await _repository.getStoredTokenExpiry());
+      } else {
+        // No session → show login screen
+        _cancelLogoutTimer();
+        emit(
+          state.copyWith(
+            status: AppStatus.success,
+            hasToken: false,
+            sessionChecked: true,
+          ),
+        );
+      }
+    } catch (_) {
       _cancelLogoutTimer();
-      emit(state.copyWith(status: AppStatus.success, hasToken: false));
+      emit(
+        state.copyWith(
+          status: AppStatus.success,
+          hasToken: false,
+          sessionChecked: true,
+        ),
+      );
     }
   }
 
