@@ -1,7 +1,12 @@
 import 'package:gtcrm/features/inquiry/data/models/inquiry_model.dart';
 
 abstract class InquiryRepositoryInterface {
-  Future<List<InquiryModel>> getInquiries({String? search, String? status, int? page, int? limit});
+  Future<List<InquiryModel>> getInquiries({
+    String? search,
+    String? status,
+    int? page,
+    int? limit,
+  });
   Future<InquiryModel> createInquiry({
     required String name,
     required String email,
@@ -19,5 +24,8 @@ abstract class InquiryRepositoryInterface {
     String? notes,
   });
   Future<void> deleteInquiry(String inquiryId);
-  Future<void> assignInquiry({required String inquiryId, required String assignedTo});
+  Future<void> assignInquiry({
+    required String inquiryId,
+    required String assignedTo,
+  });
 }

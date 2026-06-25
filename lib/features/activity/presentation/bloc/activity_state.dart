@@ -40,7 +40,12 @@ class ActivityState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [status, items, leadId, errorMessage, actionStatus, actionMessage];
+  List<Object?> get props => [
+    status,
+    items,
+    leadId,
+    errorMessage,
+    actionStatus,
+    actionMessage,
+  ];
 }
-

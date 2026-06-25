@@ -16,8 +16,12 @@ abstract class AuthApiClient {
   Future<HttpResponse<dynamic>> fetchMe();
 
   @PUT(ApiEndpoints.updateProfile)
-  Future<HttpResponse<dynamic>> updateProfile(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateProfile(
+    @Body() Map<String, dynamic> body,
+  );
 
   @PUT(ApiEndpoints.changePassword)
-  Future<HttpResponse<dynamic>> changePassword(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> changePassword(
+    @Body() Map<String, dynamic> body,
+  );
 }

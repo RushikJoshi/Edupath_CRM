@@ -110,17 +110,22 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                     ),
                   ],
                 ),
-                child:Padding(
+                child: Padding(
                   padding: EdgeInsets.all(8.0.w),
                   child: Row(
                     children: [
-                      Icon(Icons.search_rounded, size: 20,color: Colors.black,),
-                      SizedBox(width: 7.w,),
-                      Text('Search...',style: TextStyle(fontSize: 13.sp, color: Colors.grey.shade500,),)
-
+                      Icon(Icons.search_rounded, size: 20, color: Colors.black),
+                      SizedBox(width: 7.w),
+                      Text(
+                        'Search...',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
                     ],
                   ),
-                )
+                ),
                 // TextField(
                 //   controller: _searchCtrl,
                 //   style: GoogleFonts.poppins(
@@ -150,10 +155,12 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                 buildWhen: (prev, curr) =>
                     prev.status != curr.status || prev.items != curr.items,
                 builder: (context, state) {
-                  if (state.status == AppStatus.loading && state.items.isEmpty) {
+                  if (state.status == AppStatus.loading &&
+                      state.items.isEmpty) {
                     return ShimmerLoading.listPlaceholder();
                   }
-                  if (state.status == AppStatus.failure && state.items.isEmpty) {
+                  if (state.status == AppStatus.failure &&
+                      state.items.isEmpty) {
                     return Center(
                       child: Padding(
                         padding: EdgeInsets.all(24.w),
@@ -163,7 +170,9 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                             Text(
                               state.errorMessage ?? 'Failed to load activity',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(color: AppColors.error),
+                              style: GoogleFonts.poppins(
+                                color: AppColors.error,
+                              ),
                             ),
                             SizedBox(height: 16.h),
                             ElevatedButton(
@@ -201,7 +210,8 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             children: [
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.2,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
                               ),
                               Center(
                                 child: Column(
@@ -209,13 +219,17 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                                     Container(
                                       padding: EdgeInsets.all(24.w),
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF2E8EFF).withOpacity(0.08),
+                                        color: Color(
+                                          0xFF2E8EFF,
+                                        ).withOpacity(0.08),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
                                         Icons.history_toggle_off_rounded,
                                         size: 48,
-                                        color: Color(0xFF2E8EFF).withOpacity(0.4),
+                                        color: Color(
+                                          0xFF2E8EFF,
+                                        ).withOpacity(0.4),
                                       ),
                                     ),
                                     SizedBox(height: 16.h),
@@ -233,7 +247,10 @@ class _AuditLogsScreenState extends State<AuditLogsScreen> {
                             ],
                           )
                         : ListView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14.w,
+                              vertical: 6.h,
+                            ),
                             itemCount: filteredItems.length,
                             itemBuilder: (context, index) => _LogTile(
                               log: filteredItems[index],
@@ -259,8 +276,10 @@ class _LogTile extends StatelessWidget {
 
   Color _actionColor(String action) {
     final a = action.toLowerCase();
-    if (a.contains('create') || a.contains('added')) return const Color(0xFF2EC4AC); // Teal/green
-    if (a.contains('delete') || a.contains('remove')) return const Color(0xFFE53935); // Red
+    if (a.contains('create') || a.contains('added'))
+      return const Color(0xFF2EC4AC); // Teal/green
+    if (a.contains('delete') || a.contains('remove'))
+      return const Color(0xFFE53935); // Red
     if (a.contains('update') || a.contains('edit') || a.contains('change')) {
       return const Color(0xFF2E8EFF); // Blue
     }
@@ -275,7 +294,9 @@ class _LogTile extends StatelessWidget {
 
     final actionColor = _actionColor(log.action);
     final displayAction = log.action.replaceAll('_', ' ').replaceAll('-', ' ');
-    final displayEntity = log.entityType.replaceAll('_', ' ').replaceAll('-', ' ');
+    final displayEntity = log.entityType
+        .replaceAll('_', ' ')
+        .replaceAll('-', ' ');
 
     final timeText = formatRelativeTime(log.createdAt);
 
@@ -356,17 +377,20 @@ class _LogTile extends StatelessWidget {
                     Expanded(
                       child: Text(
                         () {
-                          final e = displayEntity.isEmpty ? 'record' : displayEntity.toLowerCase();
+                          final e = displayEntity.isEmpty
+                              ? 'record'
+                              : displayEntity.toLowerCase();
                           final a = displayAction.toLowerCase();
                           String actionWord = 'updated';
                           if (a.contains('create') || a.contains('added')) {
                             actionWord = 'created';
-                          } else if (a.contains('delete') || a.contains('remove')) {
+                          } else if (a.contains('delete') ||
+                              a.contains('remove')) {
                             actionWord = 'deleted';
                           }
-                          
+
                           final displayE = e[0].toUpperCase() + e.substring(1);
-                          
+
                           if (log.details.isNotEmpty) {
                             final firstChar = log.details[0].toUpperCase();
                             final rest = log.details.substring(1);
@@ -389,16 +413,23 @@ class _LogTile extends StatelessWidget {
                     SizedBox(width: 8.w),
                     // Action badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 3.h,
+                      ),
                       decoration: BoxDecoration(
                         color: actionColor.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
-                        displayAction.split(' ').map((word) {
-                          if (word.isEmpty) return '';
-                          return word[0].toUpperCase() + word.substring(1).toLowerCase();
-                        }).join(' '),
+                        displayAction
+                            .split(' ')
+                            .map((word) {
+                              if (word.isEmpty) return '';
+                              return word[0].toUpperCase() +
+                                  word.substring(1).toLowerCase();
+                            })
+                            .join(' '),
                         style: GoogleFonts.poppins(
                           fontSize: 9.sp,
                           fontWeight: FontWeight.w700,
@@ -416,4 +447,3 @@ class _LogTile extends StatelessWidget {
     );
   }
 }
-                

@@ -38,11 +38,19 @@ class UserState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       actionStatus: actionStatus ?? this.actionStatus,
       actionError: clearActionError ? null : (actionError ?? this.actionError),
-      selectedUser: clearSelectedUser ? null : (selectedUser ?? this.selectedUser),
+      selectedUser: clearSelectedUser
+          ? null
+          : (selectedUser ?? this.selectedUser),
     );
   }
 
   @override
-  List<Object?> get props =>
-      [status, items, errorMessage, actionStatus, actionError, selectedUser];
+  List<Object?> get props => [
+    status,
+    items,
+    errorMessage,
+    actionStatus,
+    actionError,
+    selectedUser,
+  ];
 }

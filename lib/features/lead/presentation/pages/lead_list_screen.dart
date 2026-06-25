@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import 'package:gtcrm/features/lead/presentation/bloc/lead_bloc.dart';
 import 'package:gtcrm/features/lead/presentation/bloc/lead_event.dart';
 import 'package:gtcrm/features/lead/presentation/bloc/lead_state.dart';
@@ -210,10 +209,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.r),
-                      borderSide: BorderSide(
-                        color: Colors.black,
-                        width: 1.5.w,
-                      ),
+                      borderSide: BorderSide(color: Colors.black, width: 1.5.w),
                     ),
                   ),
                 ),
@@ -223,7 +219,13 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
             // ── List ──
             Expanded(
-              child: BlocBuilder<LeadBloc, LeadState>(
+              child: BlocConsumer<LeadBloc, LeadState>(
+                listenWhen: (p, c) => c.actionStatus != p.actionStatus,
+                listener: (context, state) {
+                  if (state.actionStatus == AppStatus.success) {
+                    context.read<LeadBloc>().add(LeadFetched());
+                  }
+                },
                 builder: (context, state) {
                   if (state.status == AppStatus.loading) {
                     return ShimmerLoading.listPlaceholder();
@@ -306,7 +308,10 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     onRefresh: _refreshLeads,
                     child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14.w,
+                        vertical: 10.h,
+                      ),
                       itemCount: filtered.length,
                       separatorBuilder: (_, __) => SizedBox(height: 12.h),
                       itemBuilder: (context, i) {
@@ -358,22 +363,30 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         // --- TOP ROW ---
                                         Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 14.w,
+                                          ),
                                           child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
                                             children: [
                                               // Avatar
                                               CircleAvatar(
                                                 radius: 24,
-                                                backgroundColor: Color(0xFF2E8EFF).withOpacity(0.1),
+                                                backgroundColor: Color(
+                                                  0xFF2E8EFF,
+                                                ).withOpacity(0.1),
                                                 child: Text(
                                                   initials,
                                                   style: GoogleFonts.poppins(
-                                                    color: const Color(0xFF2E8EFF),
+                                                    color: const Color(
+                                                      0xFF2E8EFF,
+                                                    ),
                                                     fontWeight: FontWeight.w700,
                                                     fontSize: 14.sp,
                                                   ),
@@ -383,31 +396,49 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                               // Name & Company/Branch
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       lead.name,
-                                                      style: GoogleFonts.poppins(
-                                                        color: const Color(0xFF000000),
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: 15.sp,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            color: const Color(
+                                                              0xFF000000,
+                                                            ),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 15.sp,
+                                                          ),
                                                       maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     SizedBox(height: 2.h),
                                                     Text(
-                                                      lead.companyName?.trim().isNotEmpty == true
+                                                      lead.companyName
+                                                                  ?.trim()
+                                                                  .isNotEmpty ==
+                                                              true
                                                           ? lead.companyName!
-                                                          : (lead.branchName.trim().isNotEmpty ? lead.branchName : 'No Company'),
-                                                      style: GoogleFonts.poppins(
-                                                        color: Color(0xFF000000).withOpacity(0.8),
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 12.sp,
-                                                      ),
+                                                          : (lead.branchName
+                                                                    .trim()
+                                                                    .isNotEmpty
+                                                                ? lead.branchName
+                                                                : 'No Company'),
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            color: Color(
+                                                              0xFF000000,
+                                                            ).withOpacity(0.8),
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 12.sp,
+                                                          ),
                                                       maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -415,7 +446,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                               Text(
                                                 _getTimeAgo(lead.id),
                                                 style: GoogleFonts.poppins(
-                                                  color: const Color(0xE5000000),
+                                                  color: const Color(
+                                                    0xE5000000,
+                                                  ),
                                                   fontSize: 11.sp,
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -424,16 +457,24 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 10.h),
-                                        Divider(height: 1.h, color: Color(0x332E8EFF)),
+                                        Divider(
+                                          height: 1.h,
+                                          color: Color(0x332E8EFF),
+                                        ),
                                         SizedBox(height: 10.h),
 
                                         // --- MIDDLE ROW (Was Bottom Row) ---
                                         Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 14.w,
+                                          ),
                                           child: Row(
                                             children: [
                                               // Status Pill
-                                              _pill(lead.stage.toUpperCase(), sc),
+                                              _pill(
+                                                lead.stage.toUpperCase(),
+                                                sc,
+                                              ),
                                               SizedBox(width: 10.w),
                                               // Assigned User Name
                                               const Icon(
@@ -444,28 +485,39 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                               SizedBox(width: 4.w),
                                               Flexible(
                                                 child: Text(
-                                                  lead.assignedTo.isNotEmpty ? lead.assignedTo : 'Unassigned',
+                                                  lead.assignedTo.isNotEmpty
+                                                      ? lead.assignedTo
+                                                      : 'Unassigned',
                                                   style: GoogleFonts.poppins(
-                                                    color: const Color(0xFF000000),
+                                                    color: const Color(
+                                                      0xFF000000,
+                                                    ),
                                                     fontSize: 12.sp,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                   maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         SizedBox(height: 10.h),
-                                        Divider(height: 1.h, color: Color(0x332E8EFF)),
+                                        Divider(
+                                          height: 1.h,
+                                          color: Color(0x332E8EFF),
+                                        ),
                                         SizedBox(height: 10.h),
 
                                         // --- BOTTOM ROW (Was Middle Row) ---
                                         Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 14.w),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 14.w,
+                                          ),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: [
@@ -477,14 +529,21 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   SizedBox(width: 6.w),
                                                   Flexible(
                                                     child: Text(
-                                                      lead.phone.isNotEmpty ? lead.phone : 'No phone',
-                                                      style: GoogleFonts.poppins(
-                                                        color: const Color(0xE5000000),
-                                                        fontSize: 12.sp,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
+                                                      lead.phone.isNotEmpty
+                                                          ? lead.phone
+                                                          : 'No phone',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            color: const Color(
+                                                              0xE5000000,
+                                                            ),
+                                                            fontSize: 12.sp,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                       maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                 ],
@@ -500,12 +559,18 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   SizedBox(width: 6.w),
                                                   Expanded(
                                                     child: Text(
-                                                      lead.email.isNotEmpty ? lead.email : 'No email',
-                                                      style: GoogleFonts.poppins(
-                                                        color: const Color(0xE5000000),
-                                                        fontSize: 12.sp,
-                                                        fontWeight: FontWeight.w500,
-                                                      ),
+                                                      lead.email.isNotEmpty
+                                                          ? lead.email
+                                                          : 'No email',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            color: const Color(
+                                                              0xE5000000,
+                                                            ),
+                                                            fontSize: 12.sp,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -534,10 +599,12 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
                                               SizedBox(width: 3.w),
@@ -546,7 +613,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                           ),
                                           SizedBox(height: 3.h),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
                                               SizedBox(width: 3.w),
@@ -555,7 +623,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                           ),
                                           SizedBox(height: 3.h),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               _Dot(),
                                               SizedBox(width: 3.w),
@@ -614,7 +683,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
       ),
     );
   }
-
 }
 
 class _Dot extends StatelessWidget {

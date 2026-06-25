@@ -25,10 +25,15 @@ abstract class MeetingApiClient {
   Future<HttpResponse<dynamic>> getMeetingById(@Path('id') String id);
 
   @POST(ApiEndpoints.meetings)
-  Future<HttpResponse<dynamic>> createMeeting(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> createMeeting(
+    @Body() Map<String, dynamic> body,
+  );
 
   @PUT(ApiEndpoints.meetingDetail)
-  Future<HttpResponse<dynamic>> updateMeeting(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateMeeting(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE(ApiEndpoints.meetingDetail)
   Future<void> deleteMeeting(@Path('id') String id);

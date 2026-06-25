@@ -21,13 +21,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
           list = data['data'] as List<dynamic>;
         } else if (data['notifications'] is List) {
           list = data['notifications'] as List<dynamic>;
-        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+        } else if (data['data'] is Map &&
+            data['data']['notifications'] is List) {
           list = data['data']['notifications'] as List<dynamic>;
         } else if (data['data'] is Map && data['data']['data'] is List) {
           list = data['data']['data'] as List<dynamic>;
         }
       }
-      return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -46,13 +49,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
           list = data['data'] as List<dynamic>;
         } else if (data['notifications'] is List) {
           list = data['notifications'] as List<dynamic>;
-        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+        } else if (data['data'] is Map &&
+            data['data']['notifications'] is List) {
           list = data['data']['notifications'] as List<dynamic>;
         } else if (data['data'] is Map && data['data']['data'] is List) {
           list = data['data']['data'] as List<dynamic>;
         }
       }
-      return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -81,8 +87,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<List<NotificationModel>> markAllAsRead() async {
     try {
       final response = await _apiClient.markAllNotificationsRead();
-      final data = response.data;/// data store in variable///response.data is json
-      List<dynamic> list = [];/// store notification
+      final data = response.data;
+
+      /// data store in variable///response.data is json
+      List<dynamic> list = [];
+
+      /// store notification
       if (data is List) {
         list = data;
       } else if (data is Map) {
@@ -90,13 +100,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
           list = data['data'] as List<dynamic>;
         } else if (data['notifications'] is List) {
           list = data['notifications'] as List<dynamic>;
-        } else if (data['data'] is Map && data['data']['notifications'] is List) {
+        } else if (data['data'] is Map &&
+            data['data']['notifications'] is List) {
           list = data['data']['notifications'] as List<dynamic>;
         } else if (data['data'] is Map && data['data']['data'] is List) {
           list = data['data']['data'] as List<dynamic>;
         }
       }
-      return list.map((e) => NotificationModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

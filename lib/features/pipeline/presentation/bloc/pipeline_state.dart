@@ -20,8 +20,10 @@ class PipelineState extends Equatable {
   final AppStatus status;
   final List<PipelineModel> pipelines;
   final List<StageModel> stages;
+
   /// Stages used for Lead status dropdowns + lead pipeline screen.
   final List<StageModel> leadStages;
+
   /// Stages used for Deal stage dropdowns + deal pipeline screen.
   final List<StageModel> dealStages;
   final String? selectedPipelineId;
@@ -59,6 +61,15 @@ class PipelineState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [status, pipelines, stages, leadStages, dealStages, selectedPipelineId, errorMessage, actionStatus, actionMessage];
+  List<Object?> get props => [
+    status,
+    pipelines,
+    stages,
+    leadStages,
+    dealStages,
+    selectedPipelineId,
+    errorMessage,
+    actionStatus,
+    actionMessage,
+  ];
 }

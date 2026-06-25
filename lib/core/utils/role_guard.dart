@@ -10,7 +10,8 @@ class RoleGuard {
   // Checks if role is any variation of branch manager
   static bool isBranchManager(String role) {
     final r = role.toLowerCase().trim();
-    return r == AppConstants.branchManager || r == AppConstants.branchManagerAlt;
+    return r == AppConstants.branchManager ||
+        r == AppConstants.branchManagerAlt;
   }
 
   // Checks if role is sales
@@ -43,4 +44,3 @@ class RoleGuard {
     return isCompanyAdmin(role);
   }
 }
-

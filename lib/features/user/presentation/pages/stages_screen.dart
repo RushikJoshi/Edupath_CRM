@@ -103,7 +103,8 @@ class _StagesScreenState extends State<StagesScreen> {
                   color: Colors.white,
                   size: 26,
                 ),
-                onPressed: () => context.read<PipelineBloc>().add(PipelinesFetched()),
+                onPressed: () =>
+                    context.read<PipelineBloc>().add(PipelinesFetched()),
               ),
               SizedBox(width: 8.w),
             ],
@@ -272,9 +273,7 @@ class _StagesScreenState extends State<StagesScreen> {
                               ),
                               if (stages.isEmpty && !isLoading)
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 24.h,
-                                  ),
+                                  padding: EdgeInsets.symmetric(vertical: 24.h),
                                   child: Text(
                                     'No stages in this pipeline. Add one below.',
                                     style: GoogleFonts.poppins(
@@ -300,14 +299,19 @@ class _StagesScreenState extends State<StagesScreen> {
                   context: context,
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20.r),
+                    ),
                   ),
                   builder: (ctx) => SafeArea(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ListTile(
-                          leading: const Icon(Icons.add_chart_rounded, color: Color(0xFF2E8EFF)),
+                          leading: const Icon(
+                            Icons.add_chart_rounded,
+                            color: Color(0xFF2E8EFF),
+                          ),
                           title: Text(
                             'Add New Pipeline',
                             style: GoogleFonts.poppins(
@@ -321,7 +325,10 @@ class _StagesScreenState extends State<StagesScreen> {
                           },
                         ),
                         ListTile(
-                          leading: const Icon(Icons.add_rounded, color: Color(0xFF2E8EFF)),
+                          leading: const Icon(
+                            Icons.add_rounded,
+                            color: Color(0xFF2E8EFF),
+                          ),
                           title: Text(
                             'Add Stage to Current Pipeline',
                             style: GoogleFonts.poppins(
@@ -380,7 +387,10 @@ class _StagesScreenState extends State<StagesScreen> {
                           padding: EdgeInsets.all(8.w),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(color: Color(0xFF2E8EFF), width: 1.w),
+                            border: Border.all(
+                              color: Color(0xFF2E8EFF),
+                              width: 1.w,
+                            ),
                             borderRadius: BorderRadius.circular(12.r),
                           ),
                           child: const Icon(
@@ -412,16 +422,25 @@ class _StagesScreenState extends State<StagesScreen> {
                     SizedBox(height: 20.h),
                     TextFormField(
                       controller: nameCtrl,
-                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        fontSize: 13.sp,
+                        color: Colors.black,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Name',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade500,
+                        ),
                         prefixIcon: const Icon(
                           Icons.badge_outlined,
                           size: 20,
                           color: Colors.grey,
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 14.h,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -432,25 +451,38 @@ class _StagesScreenState extends State<StagesScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
-                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF2E8EFF),
+                          ),
                         ),
                       ),
-                      validator: (v) => (v == null || v.trim().isEmpty) ? 'Pipeline name is required' : null,
+                      validator: (v) => (v == null || v.trim().isEmpty)
+                          ? 'Pipeline name is required'
+                          : null,
                     ),
                     SizedBox(height: 16.h),
                     TextFormField(
                       controller: descCtrl,
                       maxLines: 2,
-                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        fontSize: 13.sp,
+                        color: Colors.black,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Description (Optional)',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade500,
+                        ),
                         prefixIcon: const Icon(
                           Icons.description_outlined,
                           size: 20,
                           color: Colors.grey,
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 14.h,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
                           borderSide: BorderSide(color: Colors.grey.shade300),
@@ -461,7 +493,9 @@ class _StagesScreenState extends State<StagesScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
-                          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF2E8EFF),
+                          ),
                         ),
                       ),
                     ),

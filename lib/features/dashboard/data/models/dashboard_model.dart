@@ -131,8 +131,7 @@ class DashboardModel extends Equatable {
             payload['total_revenue_count'],
       ),
       conversionRate: _toDouble(
-        payload['conversionRate'] ??
-            payload['conversion_rate'],
+        payload['conversionRate'] ?? payload['conversion_rate'],
       ),
     );
   }

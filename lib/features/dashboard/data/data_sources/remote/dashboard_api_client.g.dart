@@ -42,9 +42,17 @@ class _DashboardApiClient implements DashboardApiClient {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getDashboard({String? branchId}) async {
+  Future<HttpResponse<dynamic>> getDashboard({
+    String? branchId,
+    String? branch,
+    String? branch_id,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'branchId': branchId};
+    final queryParameters = <String, dynamic>{
+      r'branchId': branchId,
+      r'branch': branch,
+      r'branch_id': branch_id,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;

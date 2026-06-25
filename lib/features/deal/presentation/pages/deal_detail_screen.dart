@@ -276,9 +276,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
                                   );
                             if (logs.isEmpty) {
                               return Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 8.h,
-                                ),
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
                                 child: Text(
                                   'No activity for this account yet.',
                                   style: GoogleFonts.poppins(
@@ -583,10 +581,7 @@ class _DealDetailScreenState extends State<DealDetailScreen> {
         children: tags
             .map(
               (t) => Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 4.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(12.r),

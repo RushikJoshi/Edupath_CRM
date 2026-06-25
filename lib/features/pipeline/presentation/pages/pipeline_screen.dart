@@ -63,10 +63,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
         actions: [
           IconButton(
             onPressed: _refresh,
-            icon: const Icon(
-              Icons.refresh_rounded,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.refresh_rounded, color: Colors.white),
           ),
         ],
       ),
@@ -139,10 +136,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
                   .toList();
 
           // Build tabs: stage tabs + Lost Leads tab
-          final tabNames = [
-            ...leadStages.map((s) => s.name),
-            'Lost Leads',
-          ];
+          final tabNames = [...leadStages.map((s) => s.name), 'Lost Leads'];
 
           if (leadStages.isEmpty) {
             return Column(
@@ -181,7 +175,8 @@ class _PipelineScreenState extends State<PipelineScreen> {
                   ),
                   child: BlocBuilder<LeadBloc, LeadState>(
                     buildWhen: (prev, curr) =>
-                        prev.items != curr.items || prev.lostLeads != curr.lostLeads,
+                        prev.items != curr.items ||
+                        prev.lostLeads != curr.lostLeads,
                     builder: (context, leadState) {
                       return TabBar(
                         isScrollable: true,
@@ -210,7 +205,11 @@ class _PipelineScreenState extends State<PipelineScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (isLostTab)
-                                  Icon(Icons.cancel_outlined, size: 14, color: Colors.red),
+                                  Icon(
+                                    Icons.cancel_outlined,
+                                    size: 14,
+                                    color: Colors.red,
+                                  ),
                                 if (isLostTab) SizedBox(width: 4.w),
                                 Text(
                                   tabName,
@@ -226,7 +225,9 @@ class _PipelineScreenState extends State<PipelineScreen> {
                                   SizedBox(width: 6.w),
                                   _StageBadge(
                                     count: count,
-                                    color: isLostTab ? Colors.red : Color(0xFF2E8EFF),
+                                    color: isLostTab
+                                        ? Colors.red
+                                        : Color(0xFF2E8EFF),
                                   ),
                                 ],
                               ],
@@ -316,7 +317,9 @@ class _PipelineScreenState extends State<PipelineScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
-                    color: selectedPipeline != null ? Colors.black87 : Colors.grey.shade500,
+                    color: selectedPipeline != null
+                        ? Colors.black87
+                        : Colors.grey.shade500,
                   ),
                 ),
               ),
@@ -363,7 +366,10 @@ class _PipelineScreenState extends State<PipelineScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Colors.black54,
+                      ),
                       onPressed: () => Navigator.pop(sheetCtx),
                     ),
                   ],
@@ -373,7 +379,10 @@ class _PipelineScreenState extends State<PipelineScreen> {
               if (state.pipelines.isEmpty)
                 Padding(
                   padding: EdgeInsets.all(20.w),
-                  child: Text('No pipelines available', style: GoogleFonts.poppins(color: Colors.grey)),
+                  child: Text(
+                    'No pipelines available',
+                    style: GoogleFonts.poppins(color: Colors.grey),
+                  ),
                 )
               else
                 Flexible(
@@ -386,18 +395,27 @@ class _PipelineScreenState extends State<PipelineScreen> {
                       return ListTile(
                         leading: Icon(
                           Icons.schema_outlined,
-                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
+                          color: isSelected
+                              ? const Color(0xFF2E8EFF)
+                              : Colors.black54,
                         ),
                         title: Text(
                           p.name,
                           style: GoogleFonts.poppins(
                             fontSize: 14.sp,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                            color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? const Color(0xFF2E8EFF)
+                                : Colors.black87,
                           ),
                         ),
                         trailing: isSelected
-                            ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                            ? const Icon(
+                                Icons.check_circle_rounded,
+                                color: Color(0xFF2E8EFF),
+                              )
                             : null,
                         onTap: () {
                           setState(() {
@@ -431,7 +449,10 @@ class _PipelineScreenState extends State<PipelineScreen> {
       return Center(
         child: Text(
           'No leads in this stage',
-          style: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 13.sp),
+          style: GoogleFonts.poppins(
+            color: Colors.grey.shade400,
+            fontSize: 13.sp,
+          ),
         ),
       );
     }
@@ -452,7 +473,9 @@ class _PipelineScreenState extends State<PipelineScreen> {
 
   Widget _buildLostLeadsList(LeadState leadState) {
     if (leadState.lostStatus == AppStatus.loading) {
-      return const Center(child: CircularProgressIndicator(color: Color(0xFF2E8EFF)));
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFF2E8EFF)),
+      );
     }
 
     final items = leadState.lostLeads;
@@ -462,11 +485,18 @@ class _PipelineScreenState extends State<PipelineScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.sentiment_satisfied_alt, color: Colors.grey.shade300, size: 48),
+            Icon(
+              Icons.sentiment_satisfied_alt,
+              color: Colors.grey.shade300,
+              size: 48,
+            ),
             SizedBox(height: 12.h),
             Text(
               'No lost leads 🎉',
-              style: GoogleFonts.poppins(color: Colors.grey.shade400, fontSize: 14.sp),
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade400,
+                fontSize: 14.sp,
+              ),
             ),
           ],
         ),
@@ -491,9 +521,7 @@ class _PipelineScreenState extends State<PipelineScreen> {
   void _openLeadDetail(BuildContext context, LeadModel lead) {
     Navigator.push(
       context,
-      MaterialPageRoute<void>(
-        builder: (_) => LeadDetailScreen(lead: lead),
-      ),
+      MaterialPageRoute<void>(builder: (_) => LeadDetailScreen(lead: lead)),
     );
   }
 }
@@ -526,7 +554,11 @@ class _StageBadge extends StatelessWidget {
 }
 
 class _PipelineCard extends StatelessWidget {
-  const _PipelineCard({required this.item, required this.onTap, this.isLost = false});
+  const _PipelineCard({
+    required this.item,
+    required this.onTap,
+    this.isLost = false,
+  });
   final LeadModel item;
   final VoidCallback onTap;
   final bool isLost;
@@ -541,13 +573,7 @@ class _PipelineCard extends StatelessWidget {
     final lostReason = item.lostReason;
 
     final initials = name.isNotEmpty
-        ? name
-              .trim()
-              .split(' ')
-              .map((p) => p[0])
-              .take(2)
-              .join()
-              .toUpperCase()
+        ? name.trim().split(' ').map((p) => p[0]).take(2).join().toUpperCase()
         : '?';
 
     final cardColor = isLost ? Color(0xFFFFF5F5) : Colors.white;
@@ -561,7 +587,9 @@ class _PipelineCard extends StatelessWidget {
           color: cardColor,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isLost ? Colors.red.withValues(alpha: 0.2) : Color(0xFFE2E8F0),
+            color: isLost
+                ? Colors.red.withValues(alpha: 0.2)
+                : Color(0xFFE2E8F0),
           ),
           boxShadow: [
             BoxShadow(
@@ -618,11 +646,18 @@ class _PipelineCard extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.phone_outlined, size: 12, color: Colors.grey.shade500),
+                            Icon(
+                              Icons.phone_outlined,
+                              size: 12,
+                              color: Colors.grey.shade500,
+                            ),
                             SizedBox(width: 3.w),
                             Text(
                               phone,
-                              style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey.shade500),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                color: Colors.grey.shade500,
+                              ),
                             ),
                           ],
                         ),
@@ -630,17 +665,26 @@ class _PipelineCard extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.location_on_outlined, size: 12, color: Color(0xFF2E8EFF)),
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 12,
+                              color: Color(0xFF2E8EFF),
+                            ),
                             SizedBox(width: 2.w),
                             Text(
                               branch,
-                              style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.grey.shade500),
+                              style: GoogleFonts.poppins(
+                                fontSize: 11.sp,
+                                color: Colors.grey.shade500,
+                              ),
                             ),
                           ],
                         ),
                     ],
                   ),
-                  if (isLost && lostReason != null && lostReason.isNotEmpty) ...[
+                  if (isLost &&
+                      lostReason != null &&
+                      lostReason.isNotEmpty) ...[
                     SizedBox(height: 4.h),
                     Row(
                       children: [
@@ -649,7 +693,10 @@ class _PipelineCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             lostReason,
-                            style: GoogleFonts.poppins(fontSize: 11.sp, color: Colors.red.shade400),
+                            style: GoogleFonts.poppins(
+                              fontSize: 11.sp,
+                              color: Colors.red.shade400,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

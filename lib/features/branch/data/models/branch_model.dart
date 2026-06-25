@@ -38,19 +38,29 @@ class BranchModel extends Equatable {
   factory BranchModel.fromJson(Map<String, dynamic> json) {
     String extractString(dynamic value, [String defaultKey = '_id']) {
       if (value is Map) {
-        return (value[defaultKey] ?? value['name'] ?? value['id'] ?? '').toString();
+        return (value[defaultKey] ?? value['name'] ?? value['id'] ?? '')
+            .toString();
       }
       return value?.toString() ?? '';
     }
 
-    final address = extractString(json['addressLine1'] ?? json['address'] ?? json['addressLine1']);
+    final address = extractString(
+      json['addressLine1'] ?? json['address'] ?? json['addressLine1'],
+    );
     final cityId = extractString(json['cityId'] ?? json['city']);
-    final cityName = json['city'] is Map 
-        ? (json['city']['name'] ?? '').toString() 
+    final cityName = json['city'] is Map
+        ? (json['city']['name'] ?? '').toString()
         : (json['cityName'] ?? json['city'] ?? '').toString();
-    final branchManagerId = extractString(json['branchManagerId'] ?? json['branchManager'] ?? json['branch_manager_id']);
-    final branchManagerName = json['branchManager'] is Map 
-        ? (json['branchManager']['name'] ?? json['branchManager']['email'] ?? '').toString()
+    final branchManagerId = extractString(
+      json['branchManagerId'] ??
+          json['branchManager'] ??
+          json['branch_manager_id'],
+    );
+    final branchManagerName = json['branchManager'] is Map
+        ? (json['branchManager']['name'] ??
+                  json['branchManager']['email'] ??
+                  '')
+              .toString()
         : '';
 
     final legacyLocation = (json['location'] ?? '').toString();
@@ -62,21 +72,25 @@ class BranchModel extends Equatable {
       if (state.isNotEmpty) state,
     ];
 
-    final statusVal = json['status'] ?? (json['isActive'] == false ? 'inactive' : 'active');
+    final statusVal =
+        json['status'] ?? (json['isActive'] == false ? 'inactive' : 'active');
 
     return BranchModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
       location: parts.isEmpty ? '' : parts.join(', '),
       isActive: json['isActive'] as bool? ?? (statusVal.toString() == 'active'),
-      userCount: (json['userCount'] as num?)?.toInt() ??
+      userCount:
+          (json['userCount'] as num?)?.toInt() ??
           (json['users'] is List ? (json['users'] as List).length : 0),
       branchType: (json['branchType'] ?? '').toString(),
       email: (json['email'] ?? '').toString(),
       phone: (json['phone'] ?? '').toString(),
       addressLine1: address,
       cityId: cityId,
-      cityName: cityName.startsWith('{') || cityName.startsWith('[') ? '' : cityName,
+      cityName: cityName.startsWith('{') || cityName.startsWith('[')
+          ? ''
+          : cityName,
       postalCode: (json['postalCode'] ?? '').toString(),
       branchManagerId: branchManagerId,
       branchManagerName: branchManagerName,
@@ -85,19 +99,19 @@ class BranchModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        '_id': id,
-        'name': name,
-        'location': location,
-        'isActive': isActive,
-        'branchType': branchType,
-        'email': email,
-        'phone': phone,
-        'addressLine1': addressLine1,
-        'cityId': cityId,
-        'postalCode': postalCode,
-        'branchManagerId': branchManagerId,
-        'status': status,
-      };
+    '_id': id,
+    'name': name,
+    'location': location,
+    'isActive': isActive,
+    'branchType': branchType,
+    'email': email,
+    'phone': phone,
+    'addressLine1': addressLine1,
+    'cityId': cityId,
+    'postalCode': postalCode,
+    'branchManagerId': branchManagerId,
+    'status': status,
+  };
 
   BranchModel copyWith({
     String? id,
@@ -137,20 +151,20 @@ class BranchModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        location,
-        isActive,
-        userCount,
-        branchType,
-        email,
-        phone,
-        addressLine1,
-        cityId,
-        cityName,
-        postalCode,
-        branchManagerId,
-        branchManagerName,
-        status,
-      ];
+    id,
+    name,
+    location,
+    isActive,
+    userCount,
+    branchType,
+    email,
+    phone,
+    addressLine1,
+    cityId,
+    cityName,
+    postalCode,
+    branchManagerId,
+    branchManagerName,
+    status,
+  ];
 }

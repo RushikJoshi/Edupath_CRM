@@ -131,8 +131,12 @@ class _AccountListScreenState extends State<AccountListScreen> {
                   final filtered = state.items
                       .where(
                         (c) =>
-                            c.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                            c.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                            c.name.toLowerCase().contains(
+                              _searchQuery.toLowerCase(),
+                            ) ||
+                            c.email.toLowerCase().contains(
+                              _searchQuery.toLowerCase(),
+                            ) ||
                             c.phone.contains(_searchQuery),
                       )
                       .toList();
@@ -257,9 +261,7 @@ class _AccountListScreenState extends State<AccountListScreen> {
                           SizedBox(height: 12.h),
                           Text(
                             state.errorMessage ?? 'Failed to load accounts',
-                            style: GoogleFonts.poppins(
-                              color: Colors.black54,
-                            ),
+                            style: GoogleFonts.poppins(color: Colors.black54),
                             textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 16.h),
@@ -284,8 +286,12 @@ class _AccountListScreenState extends State<AccountListScreen> {
                   final filtered = state.items
                       .where(
                         (c) =>
-                            c.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                            c.email.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                            c.name.toLowerCase().contains(
+                              _searchQuery.toLowerCase(),
+                            ) ||
+                            c.email.toLowerCase().contains(
+                              _searchQuery.toLowerCase(),
+                            ) ||
                             c.phone.contains(_searchQuery),
                       )
                       .toList();

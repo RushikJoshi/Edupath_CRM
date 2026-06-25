@@ -8,6 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:gtcrm/features/deal/presentation/bloc/deal_bloc.dart';
 import 'package:gtcrm/features/deal/presentation/bloc/deal_event.dart';
+import 'package:gtcrm/features/customer/presentation/bloc/customer_bloc.dart';
+import 'package:gtcrm/features/customer/presentation/bloc/customer_event.dart';
 import 'package:gtcrm/features/follow_up/presentation/bloc/follow_up_bloc.dart';
 import 'package:gtcrm/features/follow_up/presentation/bloc/follow_up_event.dart';
 import 'package:gtcrm/features/follow_up/presentation/bloc/follow_up_state.dart';
@@ -77,8 +79,6 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
     });
   }
 
-
-
   /// Opens bottom sheet that asks for an optional remark before stage update.
   void _showOptionalRemarkBottomSheet(
     BuildContext context, {
@@ -135,10 +135,16 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                     controller: noteController,
                     maxLines: 3,
                     onChanged: (_) => setModalState(() {}),
-                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                    style: GoogleFonts.poppins(
+                      fontSize: 13.sp,
+                      color: Colors.black,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Remark (optional)',
-                      hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                      hintStyle: GoogleFonts.poppins(
+                        fontSize: 13.sp,
+                        color: Colors.grey.shade500,
+                      ),
                       filled: true,
                       fillColor: const Color(0xFFF2F6FE),
                       contentPadding: EdgeInsets.symmetric(
@@ -147,15 +153,24 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.w),
+                        borderSide: BorderSide(
+                          color: Color(0xFF2E8EFF),
+                          width: 1.w,
+                        ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.w),
+                        borderSide: BorderSide(
+                          color: Color(0xFF2E8EFF),
+                          width: 1.w,
+                        ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
-                        borderSide: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
+                        borderSide: BorderSide(
+                          color: Color(0xFF2E8EFF),
+                          width: 1.5.w,
+                        ),
                       ),
                     ),
                   ),
@@ -312,16 +327,26 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                               final d = await showDatePicker(
                                 context: ctx,
                                 initialDate: selectedDate,
-                                firstDate: DateTime.now().subtract(const Duration(days: 1)),
-                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                                firstDate: DateTime.now().subtract(
+                                  const Duration(days: 1),
+                                ),
+                                lastDate: DateTime.now().add(
+                                  const Duration(days: 365),
+                                ),
                               );
-                              if (d != null) setModalState(() => selectedDate = d);
+                              if (d != null)
+                                setModalState(() => selectedDate = d);
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 12.h,
+                              ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(color: const Color(0xFFE8ECF3)),
+                                border: Border.all(
+                                  color: const Color(0xFFE8ECF3),
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -340,7 +365,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                   SizedBox(width: 8.w),
                                   Text(
                                     '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13.sp,
+                                      color: Colors.grey.shade700,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -355,13 +383,19 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                 context: ctx,
                                 initialTime: selectedTime,
                               );
-                              if (t != null) setModalState(() => selectedTime = t);
+                              if (t != null)
+                                setModalState(() => selectedTime = t);
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                                vertical: 12.h,
+                              ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10.r),
-                                border: Border.all(color: const Color(0xFFE8ECF3)),
+                                border: Border.all(
+                                  color: const Color(0xFFE8ECF3),
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -372,7 +406,8 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                     child: const Icon(
-                                      Icons.access_time_filled_rounded, // or access_time
+                                      Icons
+                                          .access_time_filled_rounded, // or access_time
                                       color: Color(0xFF2E8EFF),
                                       size: 18,
                                     ),
@@ -380,7 +415,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                                   SizedBox(width: 8.w),
                                   Text(
                                     selectedTime.format(ctx),
-                                    style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13.sp,
+                                      color: Colors.grey.shade700,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -393,12 +431,23 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                     TextFormField(
                       controller: noteController,
                       maxLines: 2,
-                      style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        fontSize: 13.sp,
+                        color: Colors.black,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Notes',
-                        hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade500,
+                        ),
                         prefixIcon: Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            top: 4,
+                            bottom: 4,
+                          ),
                           child: Container(
                             padding: EdgeInsets.all(6.w),
                             decoration: BoxDecoration(
@@ -412,21 +461,32 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             ),
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 12.h,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
-                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE8ECF3),
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
-                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE8ECF3),
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10.r),
-                          borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE8ECF3),
+                          ),
                         ),
                       ),
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Note is required' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Note is required'
+                          : null,
                     ),
                     SizedBox(height: 32.h),
                     FilledButton(
@@ -500,11 +560,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
 
         // Use the dedicated stage endpoint (PATCH /api/leads/{id}/stage)
         context.read<LeadBloc>().add(
-          LeadStageMoved(
-            leadId: lead.id,
-            status: newStatus,
-            remark: remark,
-          ),
+          LeadStageMoved(leadId: lead.id, status: newStatus, remark: remark),
         );
       },
     );
@@ -575,6 +631,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
             final deal = state.convertedDeal!;
             context.read<LeadBloc>().add(ClearConvertedDeal());
             context.read<DealBloc>().add(DealFetched());
+            context.read<CustomerBloc>().add(const CustomerFetched());
             Navigator.of(context).pushReplacementNamed(
               AppRoutes.dealDetail,
               arguments: DealDetailArgs(
@@ -587,6 +644,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
               context.mounted) {
             // Convert succeeded (account conversion) — go back to list
             context.read<LeadBloc>().add(ClearConvertedDeal());
+            context.read<CustomerBloc>().add(const CustomerFetched());
             Navigator.of(context).pop();
           } else if (state.actionStatus == AppStatus.failure) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -670,7 +728,8 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             isExpanded: _isContactDetailsExpanded,
                             onToggle: () {
                               setState(() {
-                                _isContactDetailsExpanded = !_isContactDetailsExpanded;
+                                _isContactDetailsExpanded =
+                                    !_isContactDetailsExpanded;
                               });
                             },
                             children: [
@@ -732,220 +791,340 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             });
                           },
                           children: [
-                          // Pipeline info row
-                          Builder(
-                            builder: (ctx) {
-                              final pipelines = ctx.watch<PipelineBloc>().state.pipelines;
-                              // Find which pipeline contains this lead's stage
-                              final matchedPipeline = pipelines.firstWhere(
-                                (p) => p.stages.any(
-                                  (s) => s.name.toLowerCase() == item.stage.toLowerCase(),
-                                ),
-                                orElse: () => pipelines.isNotEmpty ? pipelines.first : const PipelineModel(id: '', name: ''),
-                              );
-                              final pipelineName = matchedPipeline.name;
-                              if (pipelineName.isEmpty) return const SizedBox.shrink();
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF2F6FE),
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(color: Color(0xFF2E8EFF).withValues(alpha: 0.15)),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.account_tree_outlined, size: 16, color: Color(0xFF2E8EFF)),
-                                      SizedBox(width: 10.w),
-                                      Text(
-                                        'Pipeline',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12.sp,
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Text(
-                                        pipelineName,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 13.sp,
-                                          color: const Color(0xFF2E8EFF),
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(10.w),
-                            child: Builder(
+                            // Pipeline info row
+                            Builder(
                               builder: (ctx) {
-                                // Lead stages come exclusively from the pipeline API.
-                                final pipelineState = ctx.watch<PipelineBloc>().state;
-                                final stageNames = pipelineState.leadStageNames;
-                                final isLoading = pipelineState.status == AppStatus.loading && stageNames.isEmpty;
-
-                                if (isLoading) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                                final pipelines = ctx
+                                    .watch<PipelineBloc>()
+                                    .state
+                                    .pipelines;
+                                // Find which pipeline contains this lead's stage
+                                final matchedPipeline = pipelines.firstWhere(
+                                  (p) => p.stages.any(
+                                    (s) =>
+                                        s.name.toLowerCase() ==
+                                        item.stage.toLowerCase(),
+                                  ),
+                                  orElse: () => pipelines.isNotEmpty
+                                      ? pipelines.first
+                                      : const PipelineModel(id: '', name: ''),
+                                );
+                                final pipelineName = matchedPipeline.name;
+                                if (pipelineName.isEmpty)
+                                  return const SizedBox.shrink();
+                                return Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    10,
+                                    10,
+                                    10,
+                                    0,
+                                  ),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 14.w,
+                                      vertical: 10.h,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      border: Border.all(color: Color(0xFF2E8EFF), width: 1.5.w),
+                                      color: const Color(0xFFF2F6FE),
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      border: Border.all(
+                                        color: Color(
+                                          0xFF2E8EFF,
+                                        ).withValues(alpha: 0.15),
+                                      ),
                                     ),
                                     child: Row(
                                       children: [
-                                        SizedBox(
-                                          width: 16.w,
-                                          height: 16.h,
-                                          child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+                                        const Icon(
+                                          Icons.account_tree_outlined,
+                                          size: 16,
+                                          color: Color(0xFF2E8EFF),
                                         ),
-                                        SizedBox(width: 12.w),
+                                        SizedBox(width: 10.w),
                                         Text(
-                                          'Loading stages...',
-                                          style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+                                          'Pipeline',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12.sp,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          pipelineName,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13.sp,
+                                            color: const Color(0xFF2E8EFF),
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ],
-                                    ),
-                                  );
-                                }
-
-                                // Use API stages; if empty after loading, show current stage as read-only
-                                final options = stageNames.isNotEmpty ? stageNames : <String>[item.stage];
-                                final value = options.where((s) => s.equalsIgnoreCase(item.stage)).firstOrNull ?? item.stage;
-                                final finalValue = options.contains(value)
-                                    ? value
-                                    : (options.isNotEmpty ? options.first : value);
-
-                                return GestureDetector(
-                                  onTap: stageNames.isEmpty
-                                      ? null
-                                      : () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-                                            ),
-                                            builder: (BuildContext ctx) {
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(vertical: 20.h),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            'Select Current Stage',
-                                                            style: GoogleFonts.poppins(
-                                                              fontSize: 16.sp,
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Colors.black,
-                                                            ),
-                                                          ),
-                                                          IconButton(
-                                                            icon: const Icon(Icons.close_rounded, color: Colors.black54),
-                                                            onPressed: () => Navigator.pop(ctx),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const Divider(),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        itemCount: options.length,
-                                                        itemBuilder: (context, index) {
-                                                          final s = options[index];
-                                                          final isSelected = s == finalValue;
-                                                          return ListTile(
-                                                            leading: Icon(
-                                                              Icons.flag_rounded,
-                                                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54,
-                                                            ),
-                                                            title: Text(
-                                                              s,
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 14.sp,
-                                                                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                                                color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
-                                                              ),
-                                                            ),
-                                                            trailing: isSelected
-                                                                ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
-                                                                : null,
-                                                            onTap: () {
-                                                              Navigator.pop(ctx);
-                                                              _onStatusChanged(item, s);
-                                                            },
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                  child: InputDecorator(
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.flag_rounded,
-                                        size: 18,
-                                        color: Color(0xFF2E8EFF),
-                                      ),
-                                      suffixIcon: const Icon(Icons.arrow_drop_down, color: Color(0xFF2E8EFF)),
-                                      labelText: 'Current Stage',
-                                      labelStyle: GoogleFonts.poppins(
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10.h,
-                                        horizontal: 10.w,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12.r),
-                                        borderSide: BorderSide(
-                                          color: Color(0xFF2E8EFF),
-                                          width: 1.5.w,
-                                        ),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12.r),
-                                        borderSide: BorderSide(
-                                          color: Color(0xFF2E8EFF),
-                                          width: 1.5.w,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      finalValue,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 14.sp,
-                                        color: const Color(0xFF2E8EFF),
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 );
                               },
                             ),
-                          ),
-                        ],
-                      ),
+                            Padding(
+                              padding: EdgeInsets.all(10.w),
+                              child: Builder(
+                                builder: (ctx) {
+                                  // Lead stages come exclusively from the pipeline API.
+                                  final pipelineState = ctx
+                                      .watch<PipelineBloc>()
+                                      .state;
+                                  final stageNames =
+                                      pipelineState.leadStageNames;
+                                  final isLoading =
+                                      pipelineState.status ==
+                                          AppStatus.loading &&
+                                      stageNames.isEmpty;
+
+                                  if (isLoading) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
+                                        vertical: 14.h,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                        border: Border.all(
+                                          color: Color(0xFF2E8EFF),
+                                          width: 1.5.w,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 16.w,
+                                            height: 16.h,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Color(0xFF2E8EFF),
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.w),
+                                          Text(
+                                            'Loading stages...',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 13.sp,
+                                              color: Colors.grey.shade500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+
+                                  // Use API stages; if empty after loading, show current stage as read-only
+                                  final options = stageNames.isNotEmpty
+                                      ? stageNames
+                                      : <String>[item.stage];
+                                  final value =
+                                      options
+                                          .where(
+                                            (s) =>
+                                                s.equalsIgnoreCase(item.stage),
+                                          )
+                                          .firstOrNull ??
+                                      item.stage;
+                                  final finalValue = options.contains(value)
+                                      ? value
+                                      : (options.isNotEmpty
+                                            ? options.first
+                                            : value);
+
+                                  return GestureDetector(
+                                    onTap: stageNames.isEmpty
+                                        ? null
+                                        : () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              backgroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                      top: Radius.circular(
+                                                        20.r,
+                                                      ),
+                                                    ),
+                                              ),
+                                              builder: (BuildContext ctx) {
+                                                return Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 20.h,
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                              horizontal: 20.w,
+                                                            ),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              'Select Current Stage',
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 16.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                            IconButton(
+                                                              icon: const Icon(
+                                                                Icons
+                                                                    .close_rounded,
+                                                                color: Colors
+                                                                    .black54,
+                                                              ),
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                    ctx,
+                                                                  ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const Divider(),
+                                                      Expanded(
+                                                        child: ListView.builder(
+                                                          itemCount:
+                                                              options.length,
+                                                          itemBuilder: (context, index) {
+                                                            final s =
+                                                                options[index];
+                                                            final isSelected =
+                                                                s == finalValue;
+                                                            return ListTile(
+                                                              leading: Icon(
+                                                                Icons
+                                                                    .flag_rounded,
+                                                                color:
+                                                                    isSelected
+                                                                    ? const Color(
+                                                                        0xFF2E8EFF,
+                                                                      )
+                                                                    : Colors
+                                                                          .black54,
+                                                              ),
+                                                              title: Text(
+                                                                s,
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontWeight:
+                                                                      isSelected
+                                                                      ? FontWeight
+                                                                            .w700
+                                                                      : FontWeight
+                                                                            .w500,
+                                                                  color:
+                                                                      isSelected
+                                                                      ? const Color(
+                                                                          0xFF2E8EFF,
+                                                                        )
+                                                                      : Colors
+                                                                            .black87,
+                                                                ),
+                                                              ),
+                                                              trailing:
+                                                                  isSelected
+                                                                  ? const Icon(
+                                                                      Icons
+                                                                          .check_circle_rounded,
+                                                                      color: Color(
+                                                                        0xFF2E8EFF,
+                                                                      ),
+                                                                    )
+                                                                  : null,
+                                                              onTap: () {
+                                                                Navigator.pop(
+                                                                  ctx,
+                                                                );
+                                                                _onStatusChanged(
+                                                                  item,
+                                                                  s,
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                    child: InputDecorator(
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.flag_rounded,
+                                          size: 18,
+                                          color: Color(0xFF2E8EFF),
+                                        ),
+                                        suffixIcon: const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Color(0xFF2E8EFF),
+                                        ),
+                                        labelText: 'Current Stage',
+                                        labelStyle: GoogleFonts.poppins(
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.white,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          vertical: 10.h,
+                                          horizontal: 10.w,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12.r,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Color(0xFF2E8EFF),
+                                            width: 1.5.w,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12.r,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Color(0xFF2E8EFF),
+                                            width: 1.5.w,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        finalValue,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14.sp,
+                                          color: const Color(0xFF2E8EFF),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                         _followUpSection(item.id),
                         SizedBox(height: 10.h),
                         _buildCollapsibleSection(
@@ -958,25 +1137,25 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             });
                           },
                           children: [
-                          _infoRow(
-                            Icons.person_pin_rounded,
-                            'Assigned to',
-                            () {
-                              if (item.assignedTo.isEmpty)
-                                return 'Not assigned';
-                              final users = context
-                                  .read<UserBloc>()
-                                  .state
-                                  .items;
-                              final match = users
-                                  .where((u) => u.id == item.assignedTo)
-                                  .firstOrNull;
-                              return match?.name ?? item.assignedTo;
-                            }(),
-                            onTap: () => _confirmAssign(context, item.id),
-                          ),
-                        ],
-                      ),
+                            _infoRow(
+                              Icons.person_pin_rounded,
+                              'Assigned to',
+                              () {
+                                if (item.assignedTo.isEmpty)
+                                  return 'Not assigned';
+                                final users = context
+                                    .read<UserBloc>()
+                                    .state
+                                    .items;
+                                final match = users
+                                    .where((u) => u.id == item.assignedTo)
+                                    .firstOrNull;
+                                return match?.name ?? item.assignedTo;
+                              }(),
+                              onTap: () => _confirmAssign(context, item.id),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: 10.h),
                         _buildCollapsibleSection(
                           title: 'Status history',
@@ -988,15 +1167,15 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                             });
                           },
                           children: [
-                          Padding(
-                            padding: EdgeInsets.all(10.w),
-                            child: LeadStatusTimeline(
-                              entries: _statusHistory,
-                              currentStage: item.stage,
+                            Padding(
+                              padding: EdgeInsets.all(10.w),
+                              child: LeadStatusTimeline(
+                                entries: _statusHistory,
+                                currentStage: item.stage,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
                         SizedBox(height: 24.h),
                         if (!isLeadStageFinal(item.stage))
                           InnerShadow(
@@ -1078,101 +1257,107 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
             });
           },
           children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Column(
-              children: pending.map((fu) {
-                final dt = fu.scheduledAt.toLocal();
-                final dateStr =
-                    '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.03),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: AppColors.primary.withOpacity(0.1)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Text(
-                              fu.type.toUpperCase(),
-                              style: GoogleFonts.poppins(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            dateStr,
-                            style: GoogleFonts.poppins(
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                children: pending.map((fu) {
+                  final dt = fu.scheduledAt.toLocal();
+                  final dateStr =
+                      '${dt.day}/${dt.month}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.1),
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        fu.note,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13.sp,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 12.h),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          TextButton.icon(
-                            onPressed: () => context.read<FollowUpBloc>().add(
-                              FollowUpStatusUpdated(
-                                leadId: leadId,
-                                followUpId: fu.id,
-                                status: 'completed',
-                                note: 'Completed from lead details',
-                              ),
-                            ),
-                            icon: const Icon(Icons.check_circle_rounded, size: 16),
-                            label: Text(
-                              'Mark Done',
-                              style: GoogleFonts.poppins(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            style: TextButton.styleFrom(
-                              foregroundColor: AppColors.stageWon,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: 0.h,
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Text(
+                                fu.type.toUpperCase(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ),
+                            const Spacer(),
+                            Text(
+                              dateStr,
+                              style: GoogleFonts.poppins(
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          fu.note,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.sp,
+                            color: AppColors.textPrimary,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
+                        ),
+                        SizedBox(height: 12.h),
+                        Row(
+                          children: [
+                            const Spacer(),
+                            TextButton.icon(
+                              onPressed: () => context.read<FollowUpBloc>().add(
+                                FollowUpStatusUpdated(
+                                  leadId: leadId,
+                                  followUpId: fu.id,
+                                  status: 'completed',
+                                  note: 'Completed from lead details',
+                                ),
+                              ),
+                              icon: const Icon(
+                                Icons.check_circle_rounded,
+                                size: 16,
+                              ),
+                              label: Text(
+                                'Mark Done',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.stageWon,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 0.h,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ]);
+          ],
+        );
       },
     );
   }
@@ -1199,9 +1384,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
           Container(
             width: 56.w,
             height: 56.h,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(28.r),
               child: Container(
@@ -1389,11 +1572,20 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
                           title: Text(
                             item.toString(),
                             style: GoogleFonts.poppins(
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                              color: isSelected
+                                  ? const Color(0xFF2E8EFF)
+                                  : Colors.black87,
                             ),
                           ),
-                          trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF)) : null,
+                          trailing: isSelected
+                              ? const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Color(0xFF2E8EFF),
+                                )
+                              : null,
                           onTap: () {
                             onChanged(item);
                             Navigator.pop(ctx);
@@ -1412,21 +1604,25 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
       child: InputDecorator(
         decoration: InputDecoration(
           prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 4,
+              bottom: 4,
+            ),
             child: Container(
               padding: EdgeInsets.all(6.w),
               decoration: BoxDecoration(
                 color: const Color(0xFFF2F6FE),
                 borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Icon(
-                prefixIcon,
-                color: const Color(0xFF2E8EFF),
-                size: 18,
-              ),
+              child: Icon(prefixIcon, color: const Color(0xFF2E8EFF), size: 18),
             ),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.r),
             borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
@@ -1445,7 +1641,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
             Expanded(
               child: Text(
                 value.toString(),
-                style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade700),
+                style: GoogleFonts.poppins(
+                  fontSize: 13.sp,
+                  color: Colors.grey.shade700,
+                ),
               ),
             ),
             const Icon(Icons.arrow_drop_down, color: Color(0xFF003366)),
@@ -1585,7 +1784,7 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
     final userBloc = context.read<UserBloc>();
     final userState = userBloc.state;
     if (userState.items.isEmpty && userState.status != AppStatus.loading) {
-      userBloc.add(UserFetched(role: 'sales'));
+      userBloc.add(UserFetched());
     }
 
     final assigned = await showModalBottomSheet<String>(
@@ -1594,7 +1793,10 @@ class _LeadDetailScreenState extends State<LeadDetailScreen> {
       builder: (ctx) {
         return BlocBuilder<UserBloc, UserState>(
           builder: (ctx, state) {
-            final users = state.items;
+            final users = state.items.where((u) {
+              final r = u.role.toLowerCase();
+              return r == 'sales' || r == 'branch_manager' || r == 'branch manager';
+            }).toList();
             return Container(
               margin: EdgeInsets.all(12.w),
               padding: const EdgeInsets.only(bottom: 12),

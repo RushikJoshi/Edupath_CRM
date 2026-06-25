@@ -37,7 +37,9 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
         limit: event.limit,
         upcoming: event.upcoming,
       );
-      print('DIAGNOSTIC FETCHED MEETINGS: ${items.map((e) => 'ID: ${e.id}, Title: ${e.title}, type: ${e.meetingType}, status: ${e.status}').toList()}');
+      print(
+        'DIAGNOSTIC FETCHED MEETINGS: ${items.map((e) => 'ID: ${e.id}, Title: ${e.title}, type: ${e.meetingType}, status: ${e.status}').toList()}',
+      );
       emit(state.copyWith(status: AppStatus.success, items: items));
     } catch (e) {
       emit(

@@ -66,9 +66,7 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                 duration: const Duration(seconds: 2),
               ),
             );
-          Future.delayed(
-            const Duration(seconds: 1),
-          ).then((_) {
+          Future.delayed(const Duration(seconds: 1)).then((_) {
             if (mounted) Navigator.of(context).pop();
           });
         } else if (state.actionStatus == AppStatus.failure) {
@@ -237,8 +235,9 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed:
-                            isLoading ? null : () => Navigator.pop(context),
+                        onPressed: isLoading
+                            ? null
+                            : () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: Colors.black87,
@@ -307,54 +306,46 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   // ── Helpers ──────────────────────────────────────────────────────────────
 
   Widget _buildLabel(String text) => Text(
-        text,
-        style: GoogleFonts.poppins(
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w600,
-          color: Colors.black54,
-        ),
-      );
+    text,
+    style: GoogleFonts.poppins(
+      fontSize: 12.sp,
+      fontWeight: FontWeight.w600,
+      color: Colors.black54,
+    ),
+  );
 
   InputDecoration _inputDecoration({
     required String hint,
     required IconData icon,
-  }) =>
-      InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.poppins(
-          fontSize: 13.sp,
-          color: Colors.grey.shade500,
-        ),
-        prefixIcon: Icon(
-          icon,
-          size: 20,
-          color: Colors.grey,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 14.h,
-          horizontal: 16.w,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-      );
+  }) => InputDecoration(
+    hintText: hint,
+    hintStyle: GoogleFonts.poppins(
+      fontSize: 13.sp,
+      color: Colors.grey.shade500,
+    ),
+    prefixIcon: Icon(icon, size: 20, color: Colors.grey),
+    filled: true,
+    fillColor: Colors.white,
+    contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.r),
+      borderSide: BorderSide(color: Colors.red),
+    ),
+  );
 }

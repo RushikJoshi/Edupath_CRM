@@ -22,7 +22,10 @@ abstract class UserApiClient {
   Future<HttpResponse<dynamic>> getUserById(@Path('id') String id);
 
   @PUT(ApiEndpoints.userDetail)
-  Future<HttpResponse<dynamic>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateUser(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE(ApiEndpoints.userDetail)
   Future<void> deleteUser(@Path('id') String id);

@@ -50,7 +50,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           margin: EdgeInsets.all(16.w),
         ),
       );
@@ -68,7 +70,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           margin: EdgeInsets.all(16.w),
         ),
       );
@@ -293,7 +297,9 @@ class _PasswordTextFieldState extends State<_PasswordTextField> {
                 border: Border.all(
                   color: hasError
                       ? Colors.red
-                      : (_isFocused ? const Color(0xFF2E8EFF) : const Color(0xFFE2E8F0)),
+                      : (_isFocused
+                            ? const Color(0xFF2E8EFF)
+                            : const Color(0xFFE2E8F0)),
                   width: _isFocused || hasError ? 1.5 : 1.0,
                 ),
                 boxShadow: const [

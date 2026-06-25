@@ -27,7 +27,6 @@ class BranchesScreen extends StatefulWidget {
 class _BranchesScreenState extends State<BranchesScreen> {
   final _searchController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -46,6 +45,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
     _searchController.dispose();
     super.dispose();
   }
+
   void _showAddBranchDialog() {
     final formKey = GlobalKey<FormState>();
     final nameCtrl = TextEditingController();
@@ -55,7 +55,29 @@ class _BranchesScreenState extends State<BranchesScreen> {
     final postalCodeCtrl = TextEditingController();
     final customCityCtrl = TextEditingController();
 
-    String branchType = 'sales_branch';
+    final existingTypes = context
+        .read<BranchBloc>()
+        .state
+        .items
+        .map((e) => e.branchType)
+        .where((t) => t.isNotEmpty)
+        .toSet()
+        .toList();
+
+    final defaultTypes = [
+      'sales_branch',
+      'main_branch',
+      'admin_branch',
+      'support_branch',
+      'regional_branch',
+    ];
+
+    final displayTypes = [
+      ...defaultTypes,
+      ...existingTypes.where((t) => !defaultTypes.contains(t)),
+    ];
+
+    String branchType = displayTypes.first;
     String citySelection = 'Ahmedabad';
     String managerId = '';
     String status = 'active';
@@ -67,9 +89,14 @@ class _BranchesScreenState extends State<BranchesScreen> {
           final showCustomCity = citySelection == 'Other';
 
           return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
             backgroundColor: Colors.white,
-            insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 24.h,
+            ),
             child: SizedBox(
               width: double.maxFinite,
               child: Column(
@@ -78,14 +105,23 @@ class _BranchesScreenState extends State<BranchesScreen> {
                 children: [
                   // Header
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 16.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Color(0xFF2E8EFF),
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16.r),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.business_rounded, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.business_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 10.w),
                         Text(
                           'Add Branch',
@@ -98,7 +134,11 @@ class _BranchesScreenState extends State<BranchesScreen> {
                         const Spacer(),
                         GestureDetector(
                           onTap: () => Navigator.pop(ctx),
-                          child: Icon(Icons.close_rounded, color: Colors.white, size: 24),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ],
                     ),
@@ -117,28 +157,41 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               controller: nameCtrl,
                               label: 'Branch Name *',
                               icon: Icons.business_outlined,
-                              validator: (v) => (v == null || v.isEmpty) ? 'Branch name is required' : null,
+                              validator: (v) => (v == null || v.isEmpty)
+                                  ? 'Branch name is required'
+                                  : null,
                             ),
                             SizedBox(height: 14.h),
 
                             // Branch Type Dropdown
                             Text(
                               'Branch Type *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: branchType,
-                              decoration: _inputDecorationForDialog(hint: 'Select Type', icon: Icons.badge_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
-                              items: const [
-                                DropdownMenuItem(value: 'sales_branch', child: Text('Sales Branch')),
-                                DropdownMenuItem(value: 'main_branch', child: Text('Main Branch')),
-                                DropdownMenuItem(value: 'admin_branch', child: Text('Admin Branch')),
-                                DropdownMenuItem(value: 'support_branch', child: Text('Support Branch')),
-                              ],
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select Type',
+                                icon: Icons.badge_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
+                              items: displayTypes.map((type) {
+                                return DropdownMenuItem<String>(
+                                  value: type,
+                                  child: Text(_formatBranchType(type)),
+                                );
+                              }).toList(),
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => branchType = val);
+                                if (val != null)
+                                  setStateDialog(() => branchType = val);
                               },
                             ),
                             SizedBox(height: 14.h),
@@ -149,8 +202,12 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               icon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Email is required';
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) return 'Enter a valid email';
+                                if (v == null || v.isEmpty)
+                                  return 'Email is required';
+                                if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                ).hasMatch(v))
+                                  return 'Enter a valid email';
                                 return null;
                               },
                             ),
@@ -162,8 +219,10 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               icon: Icons.phone_outlined,
                               keyboardType: TextInputType.phone,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Phone is required';
-                                if (!RegExp(r'^[0-9]{10,12}$').hasMatch(v)) return 'Enter a 10-12 digit phone number';
+                                if (v == null || v.isEmpty)
+                                  return 'Phone is required';
+                                if (!RegExp(r'^[0-9]{10,12}$').hasMatch(v))
+                                  return 'Enter a 10-12 digit phone number';
                                 return null;
                               },
                             ),
@@ -173,33 +232,73 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               controller: addressCtrl,
                               label: 'Address Line 1 *',
                               icon: Icons.location_on_outlined,
-                              validator: (v) => (v == null || v.isEmpty) ? 'Address is required' : null,
+                              validator: (v) => (v == null || v.isEmpty)
+                                  ? 'Address is required'
+                                  : null,
                             ),
                             SizedBox(height: 14.h),
 
                             // City Dropdown
                             Text(
                               'City *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: citySelection,
-                              decoration: _inputDecorationForDialog(hint: 'Select City', icon: Icons.location_city_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select City',
+                                icon: Icons.location_city_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
                               items: const [
-                                DropdownMenuItem(value: 'Ahmedabad', child: Text('Ahmedabad')),
-                                DropdownMenuItem(value: 'Surat', child: Text('Surat')),
-                                DropdownMenuItem(value: 'Vadodara', child: Text('Vadodara')),
-                                DropdownMenuItem(value: 'Rajkot', child: Text('Rajkot')),
-                                DropdownMenuItem(value: 'Mumbai', child: Text('Mumbai')),
-                                DropdownMenuItem(value: 'Pune', child: Text('Pune')),
-                                DropdownMenuItem(value: 'Delhi', child: Text('Delhi')),
-                                DropdownMenuItem(value: 'Bangalore', child: Text('Bangalore')),
-                                DropdownMenuItem(value: 'Other', child: Text('Other (Type custom city)')),
+                                DropdownMenuItem(
+                                  value: 'Ahmedabad',
+                                  child: Text('Ahmedabad'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Surat',
+                                  child: Text('Surat'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Vadodara',
+                                  child: Text('Vadodara'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Rajkot',
+                                  child: Text('Rajkot'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Mumbai',
+                                  child: Text('Mumbai'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Pune',
+                                  child: Text('Pune'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Delhi',
+                                  child: Text('Delhi'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Bangalore',
+                                  child: Text('Bangalore'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Other',
+                                  child: Text('Other (Type custom city)'),
+                                ),
                               ],
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => citySelection = val);
+                                if (val != null)
+                                  setStateDialog(() => citySelection = val);
                               },
                             ),
                             if (showCustomCity) ...[
@@ -208,7 +307,9 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                 controller: customCityCtrl,
                                 label: 'Custom City Name *',
                                 icon: Icons.location_city_rounded,
-                                validator: (v) => (v == null || v.isEmpty) ? 'City name is required' : null,
+                                validator: (v) => (v == null || v.isEmpty)
+                                    ? 'City name is required'
+                                    : null,
                               ),
                             ],
                             SizedBox(height: 14.h),
@@ -219,8 +320,10 @@ class _BranchesScreenState extends State<BranchesScreen> {
                               icon: Icons.local_post_office_outlined,
                               keyboardType: TextInputType.number,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Postal code is required';
-                                if (!RegExp(r'^[0-9]{5,6}$').hasMatch(v)) return 'Enter valid postal code';
+                                if (v == null || v.isEmpty)
+                                  return 'Postal code is required';
+                                if (!RegExp(r'^[0-9]{5,6}$').hasMatch(v))
+                                  return 'Enter valid postal code';
                                 return null;
                               },
                             ),
@@ -229,7 +332,11 @@ class _BranchesScreenState extends State<BranchesScreen> {
                             // Manager selector dropdown
                             Text(
                               'Branch Manager',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             BlocBuilder<UserBloc, UserState>(
@@ -241,8 +348,14 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                 return DropdownButtonFormField<String>(
                                   value: managerId.isEmpty ? null : managerId,
                                   isExpanded: true,
-                                  decoration: _inputDecorationForDialog(hint: 'Select Manager', icon: Icons.person_outline_rounded),
-                                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                                  decoration: _inputDecorationForDialog(
+                                    hint: 'Select Manager',
+                                    icon: Icons.person_outline_rounded,
+                                  ),
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13.sp,
+                                    color: Colors.black,
+                                  ),
                                   items: users.map((u) {
                                     return DropdownMenuItem(
                                       value: u.id,
@@ -253,7 +366,8 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                     );
                                   }).toList(),
                                   onChanged: (val) {
-                                    if (val != null) setStateDialog(() => managerId = val);
+                                    if (val != null)
+                                      setStateDialog(() => managerId = val);
                                   },
                                 );
                               },
@@ -263,19 +377,36 @@ class _BranchesScreenState extends State<BranchesScreen> {
                             // Status dropdown
                             Text(
                               'Status *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: status,
-                              decoration: _inputDecorationForDialog(hint: 'Select Status', icon: Icons.toggle_on_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select Status',
+                                icon: Icons.toggle_on_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
                               items: const [
-                                DropdownMenuItem(value: 'active', child: Text('Active')),
-                                DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
+                                DropdownMenuItem(
+                                  value: 'active',
+                                  child: Text('Active'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'inactive',
+                                  child: Text('Inactive'),
+                                ),
                               ],
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => status = val);
+                                if (val != null)
+                                  setStateDialog(() => status = val);
                               },
                             ),
                             SizedBox(height: 10.h),
@@ -290,19 +421,31 @@ class _BranchesScreenState extends State<BranchesScreen> {
                     padding: EdgeInsets.all(16.w),
                     child: BlocBuilder<BranchBloc, BranchState>(
                       builder: (context, branchState) {
-                        final isLoading = branchState.actionStatus == AppStatus.loading;
+                        final isLoading =
+                            branchState.actionStatus == AppStatus.loading;
                         return Row(
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: isLoading ? null : () => Navigator.pop(ctx),
+                                onPressed: isLoading
+                                    ? null
+                                    : () => Navigator.pop(ctx),
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(0, 48),
                                   foregroundColor: const Color(0xFF2E8EFF),
-                                  side: const BorderSide(color: Color(0xFF2E8EFF)),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                                  side: const BorderSide(
+                                    color: Color(0xFF2E8EFF),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
                                 ),
-                                child: Text('Cancel', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                                child: Text(
+                                  'Cancel',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(width: 12.w),
@@ -312,61 +455,74 @@ class _BranchesScreenState extends State<BranchesScreen> {
                                 style: FilledButton.styleFrom(
                                   backgroundColor: const Color(0xFF2E8EFF),
                                   minimumSize: const Size(0, 48),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
                                 ),
                                 onPressed: isLoading
                                     ? null
                                     : () {
-                                        if (formKey.currentState?.validate() ?? false) {
-                                          final city = citySelection == 'Other' ? customCityCtrl.text.trim() : citySelection;
-                                          final generatedCityId = _getDeterministicCityId(city);
+                                        if (formKey.currentState?.validate() ??
+                                            false) {
+                                          final city = citySelection == 'Other'
+                                              ? customCityCtrl.text.trim()
+                                              : citySelection;
+                                          final generatedCityId =
+                                              _getDeterministicCityId(city);
 
                                           final data = {
                                             'name': nameCtrl.text.trim(),
                                             'branchType': branchType,
                                             'email': emailCtrl.text.trim(),
                                             'phone': phoneCtrl.text.trim(),
-                                            'addressLine1': addressCtrl.text.trim(),
+                                            'addressLine1': addressCtrl.text
+                                                .trim(),
                                             'cityId': generatedCityId,
-                                            'postalCode': postalCodeCtrl.text.trim(),
+                                            'postalCode': postalCodeCtrl.text
+                                                .trim(),
                                             'status': status,
                                           };
                                           if (managerId.isNotEmpty) {
                                             data['branchManagerId'] = managerId;
                                           }
 
-                                          context.read<BranchBloc>().add(BranchCreated(data));
+                                          context.read<BranchBloc>().add(
+                                            BranchCreated(data),
+                                          );
                                           Navigator.pop(ctx);
                                         }
                                       },
-                                  child: isLoading
-                                      ? SizedBox(
-                                          width: 18.w,
-                                          height: 18.h,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : Text(
-                                          'Add',
-                                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white),
+                                child: isLoading
+                                    ? SizedBox(
+                                        width: 18.w,
+                                        height: 18.h,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
                                         ),
-                                ),
+                                      )
+                                    : Text(
+                                        'Add',
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                               ),
-                            ],
-                          );
-                        },
-                      ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      );
-    }
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   // ── build ───────────────────────────────────────────────────────────────────
 
@@ -568,12 +724,14 @@ class _BranchesScreenState extends State<BranchesScreen> {
                 child: BlocBuilder<BranchBloc, BranchState>(
                   builder: (context, state) {
                     // Loading
-                    if (state.status == AppStatus.loading && state.items.isEmpty) {
+                    if (state.status == AppStatus.loading &&
+                        state.items.isEmpty) {
                       return ShimmerLoading.listPlaceholder();
                     }
 
                     // Error
-                    if (state.status == AppStatus.failure && state.items.isEmpty) {
+                    if (state.status == AppStatus.failure &&
+                        state.items.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -593,8 +751,9 @@ class _BranchesScreenState extends State<BranchesScreen> {
                             ),
                             SizedBox(height: 16.h),
                             FilledButton.icon(
-                              onPressed: () =>
-                                  context.read<BranchBloc>().add(BranchFetched()),
+                              onPressed: () => context.read<BranchBloc>().add(
+                                BranchFetched(),
+                              ),
                               icon: Icon(Icons.refresh_rounded),
                               label: Text(
                                 'Retry',
@@ -706,13 +865,53 @@ class _BranchCard extends StatelessWidget {
     final emailCtrl = TextEditingController(text: branch.email);
     final phoneCtrl = TextEditingController(text: branch.phone);
     final addressCtrl = TextEditingController(
-        text: branch.addressLine1.isNotEmpty ? branch.addressLine1 : branch.location);
+      text: branch.addressLine1.isNotEmpty
+          ? branch.addressLine1
+          : branch.location,
+    );
     final postalCodeCtrl = TextEditingController(text: branch.postalCode);
     final customCityCtrl = TextEditingController();
 
-    String branchType = branch.branchType.isNotEmpty ? branch.branchType : 'sales_branch';
+    final existingTypes = context
+        .read<BranchBloc>()
+        .state
+        .items
+        .map((e) => e.branchType)
+        .where((t) => t.isNotEmpty)
+        .toSet()
+        .toList();
 
-    const popularCities = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Mumbai', 'Pune', 'Delhi', 'Bangalore'];
+    final defaultTypes = [
+      'sales_branch',
+      'main_branch',
+      'admin_branch',
+      'support_branch',
+      'regional_branch',
+    ];
+
+    final displayTypes = [
+      ...defaultTypes,
+      ...existingTypes.where((t) => !defaultTypes.contains(t)),
+    ];
+
+    String branchType = branch.branchType.isNotEmpty
+        ? branch.branchType
+        : (displayTypes.isNotEmpty ? displayTypes.first : 'sales_branch');
+
+    if (!displayTypes.contains(branchType)) {
+      displayTypes.add(branchType);
+    }
+
+    const popularCities = [
+      'Ahmedabad',
+      'Surat',
+      'Vadodara',
+      'Rajkot',
+      'Mumbai',
+      'Pune',
+      'Delhi',
+      'Bangalore',
+    ];
     String citySelection = 'Ahmedabad';
     if (branch.cityName.isNotEmpty && popularCities.contains(branch.cityName)) {
       citySelection = branch.cityName;
@@ -739,9 +938,14 @@ class _BranchCard extends StatelessWidget {
           final showCustomCity = citySelection == 'Other';
 
           return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.r),
+            ),
             backgroundColor: Colors.white,
-            insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+            insetPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 24.h,
+            ),
             child: SizedBox(
               width: double.maxFinite,
               child: Column(
@@ -750,14 +954,23 @@ class _BranchCard extends StatelessWidget {
                 children: [
                   // Header
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 16.h,
+                    ),
                     decoration: BoxDecoration(
                       color: Color(0xFF2E8EFF),
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16.r),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.edit_outlined, color: Colors.white, size: 22),
+                        Icon(
+                          Icons.edit_outlined,
+                          color: Colors.white,
+                          size: 22,
+                        ),
                         SizedBox(width: 10.w),
                         Text(
                           'Edit Branch',
@@ -770,7 +983,11 @@ class _BranchCard extends StatelessWidget {
                         const Spacer(),
                         GestureDetector(
                           onTap: () => Navigator.pop(ctx),
-                          child: Icon(Icons.close_rounded, color: Colors.white, size: 24),
+                          child: Icon(
+                            Icons.close_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ],
                     ),
@@ -789,28 +1006,41 @@ class _BranchCard extends StatelessWidget {
                               controller: nameCtrl,
                               label: 'Branch Name *',
                               icon: Icons.business_outlined,
-                              validator: (v) => (v == null || v.isEmpty) ? 'Branch name is required' : null,
+                              validator: (v) => (v == null || v.isEmpty)
+                                  ? 'Branch name is required'
+                                  : null,
                             ),
                             SizedBox(height: 14.h),
 
                             // Branch Type Dropdown
                             Text(
                               'Branch Type *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: branchType,
-                              decoration: _inputDecorationForDialog(hint: 'Select Type', icon: Icons.badge_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
-                              items: const [
-                                DropdownMenuItem(value: 'sales_branch', child: Text('Sales Branch')),
-                                DropdownMenuItem(value: 'main_branch', child: Text('Main Branch')),
-                                DropdownMenuItem(value: 'admin_branch', child: Text('Admin Branch')),
-                                DropdownMenuItem(value: 'support_branch', child: Text('Support Branch')),
-                              ],
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select Type',
+                                icon: Icons.badge_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
+                              items: displayTypes.map((type) {
+                                return DropdownMenuItem<String>(
+                                  value: type,
+                                  child: Text(_formatBranchType(type)),
+                                );
+                              }).toList(),
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => branchType = val);
+                                if (val != null)
+                                  setStateDialog(() => branchType = val);
                               },
                             ),
                             SizedBox(height: 14.h),
@@ -821,8 +1051,12 @@ class _BranchCard extends StatelessWidget {
                               icon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Email is required';
-                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) return 'Enter a valid email';
+                                if (v == null || v.isEmpty)
+                                  return 'Email is required';
+                                if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                ).hasMatch(v))
+                                  return 'Enter a valid email';
                                 return null;
                               },
                             ),
@@ -834,8 +1068,10 @@ class _BranchCard extends StatelessWidget {
                               icon: Icons.phone_outlined,
                               keyboardType: TextInputType.phone,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Phone is required';
-                                if (!RegExp(r'^[0-9]{10,12}$').hasMatch(v)) return 'Enter a 10-12 digit phone number';
+                                if (v == null || v.isEmpty)
+                                  return 'Phone is required';
+                                if (!RegExp(r'^[0-9]{10,12}$').hasMatch(v))
+                                  return 'Enter a 10-12 digit phone number';
                                 return null;
                               },
                             ),
@@ -845,33 +1081,73 @@ class _BranchCard extends StatelessWidget {
                               controller: addressCtrl,
                               label: 'Address Line 1 *',
                               icon: Icons.location_on_outlined,
-                              validator: (v) => (v == null || v.isEmpty) ? 'Address is required' : null,
+                              validator: (v) => (v == null || v.isEmpty)
+                                  ? 'Address is required'
+                                  : null,
                             ),
                             SizedBox(height: 14.h),
 
                             // City Dropdown
                             Text(
                               'City *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: citySelection,
-                              decoration: _inputDecorationForDialog(hint: 'Select City', icon: Icons.location_city_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select City',
+                                icon: Icons.location_city_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
                               items: const [
-                                DropdownMenuItem(value: 'Ahmedabad', child: Text('Ahmedabad')),
-                                DropdownMenuItem(value: 'Surat', child: Text('Surat')),
-                                DropdownMenuItem(value: 'Vadodara', child: Text('Vadodara')),
-                                DropdownMenuItem(value: 'Rajkot', child: Text('Rajkot')),
-                                DropdownMenuItem(value: 'Mumbai', child: Text('Mumbai')),
-                                DropdownMenuItem(value: 'Pune', child: Text('Pune')),
-                                DropdownMenuItem(value: 'Delhi', child: Text('Delhi')),
-                                DropdownMenuItem(value: 'Bangalore', child: Text('Bangalore')),
-                                DropdownMenuItem(value: 'Other', child: Text('Other (Type custom city)')),
+                                DropdownMenuItem(
+                                  value: 'Ahmedabad',
+                                  child: Text('Ahmedabad'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Surat',
+                                  child: Text('Surat'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Vadodara',
+                                  child: Text('Vadodara'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Rajkot',
+                                  child: Text('Rajkot'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Mumbai',
+                                  child: Text('Mumbai'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Pune',
+                                  child: Text('Pune'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Delhi',
+                                  child: Text('Delhi'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Bangalore',
+                                  child: Text('Bangalore'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Other',
+                                  child: Text('Other (Type custom city)'),
+                                ),
                               ],
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => citySelection = val);
+                                if (val != null)
+                                  setStateDialog(() => citySelection = val);
                               },
                             ),
                             if (showCustomCity) ...[
@@ -880,7 +1156,9 @@ class _BranchCard extends StatelessWidget {
                                 controller: customCityCtrl,
                                 label: 'Custom City Name *',
                                 icon: Icons.location_city_rounded,
-                                validator: (v) => (v == null || v.isEmpty) ? 'City name is required' : null,
+                                validator: (v) => (v == null || v.isEmpty)
+                                    ? 'City name is required'
+                                    : null,
                               ),
                             ],
                             SizedBox(height: 14.h),
@@ -891,8 +1169,10 @@ class _BranchCard extends StatelessWidget {
                               icon: Icons.local_post_office_outlined,
                               keyboardType: TextInputType.number,
                               validator: (v) {
-                                if (v == null || v.isEmpty) return 'Postal code is required';
-                                if (!RegExp(r'^[0-9]{5,6}$').hasMatch(v)) return 'Enter valid postal code';
+                                if (v == null || v.isEmpty)
+                                  return 'Postal code is required';
+                                if (!RegExp(r'^[0-9]{5,6}$').hasMatch(v))
+                                  return 'Enter valid postal code';
                                 return null;
                               },
                             ),
@@ -901,7 +1181,11 @@ class _BranchCard extends StatelessWidget {
                             // Manager selector dropdown
                             Text(
                               'Branch Manager',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             BlocBuilder<UserBloc, UserState>(
@@ -913,8 +1197,14 @@ class _BranchCard extends StatelessWidget {
                                 return DropdownButtonFormField<String>(
                                   value: managerId.isEmpty ? null : managerId,
                                   isExpanded: true,
-                                  decoration: _inputDecorationForDialog(hint: 'Select Manager', icon: Icons.person_outline_rounded),
-                                  style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                                  decoration: _inputDecorationForDialog(
+                                    hint: 'Select Manager',
+                                    icon: Icons.person_outline_rounded,
+                                  ),
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13.sp,
+                                    color: Colors.black,
+                                  ),
                                   items: users.map((u) {
                                     return DropdownMenuItem(
                                       value: u.id,
@@ -925,7 +1215,8 @@ class _BranchCard extends StatelessWidget {
                                     );
                                   }).toList(),
                                   onChanged: (val) {
-                                    if (val != null) setStateDialog(() => managerId = val);
+                                    if (val != null)
+                                      setStateDialog(() => managerId = val);
                                   },
                                 );
                               },
@@ -935,19 +1226,36 @@ class _BranchCard extends StatelessWidget {
                             // Status dropdown
                             Text(
                               'Status *',
-                              style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(height: 6.h),
                             DropdownButtonFormField<String>(
                               value: status,
-                              decoration: _inputDecorationForDialog(hint: 'Select Status', icon: Icons.toggle_on_outlined),
-                              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.black),
+                              decoration: _inputDecorationForDialog(
+                                hint: 'Select Status',
+                                icon: Icons.toggle_on_outlined,
+                              ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 13.sp,
+                                color: Colors.black,
+                              ),
                               items: const [
-                                DropdownMenuItem(value: 'active', child: Text('Active')),
-                                DropdownMenuItem(value: 'inactive', child: Text('Inactive')),
+                                DropdownMenuItem(
+                                  value: 'active',
+                                  child: Text('Active'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'inactive',
+                                  child: Text('Inactive'),
+                                ),
                               ],
                               onChanged: (val) {
-                                if (val != null) setStateDialog(() => status = val);
+                                if (val != null)
+                                  setStateDialog(() => status = val);
                               },
                             ),
                             SizedBox(height: 10.h),
@@ -962,19 +1270,31 @@ class _BranchCard extends StatelessWidget {
                     padding: EdgeInsets.all(16.w),
                     child: BlocBuilder<BranchBloc, BranchState>(
                       builder: (context, branchState) {
-                        final isLoading = branchState.actionStatus == AppStatus.loading;
+                        final isLoading =
+                            branchState.actionStatus == AppStatus.loading;
                         return Row(
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: isLoading ? null : () => Navigator.pop(ctx),
+                                onPressed: isLoading
+                                    ? null
+                                    : () => Navigator.pop(ctx),
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(0, 48),
                                   foregroundColor: const Color(0xFF2E8EFF),
-                                  side: const BorderSide(color: Color(0xFF2E8EFF)),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                                  side: const BorderSide(
+                                    color: Color(0xFF2E8EFF),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
                                 ),
-                                child: Text('Cancel', style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                                child: Text(
+                                  'Cancel',
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(width: 12.w),
@@ -984,30 +1304,40 @@ class _BranchCard extends StatelessWidget {
                                 style: FilledButton.styleFrom(
                                   backgroundColor: const Color(0xFF2E8EFF),
                                   minimumSize: const Size(0, 48),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
                                 ),
                                 onPressed: isLoading
                                     ? null
                                     : () {
-                                        if (formKey.currentState?.validate() ?? false) {
-                                          final city = citySelection == 'Other' ? customCityCtrl.text.trim() : citySelection;
-                                          final generatedCityId = _getDeterministicCityId(city);
+                                        if (formKey.currentState?.validate() ??
+                                            false) {
+                                          final city = citySelection == 'Other'
+                                              ? customCityCtrl.text.trim()
+                                              : citySelection;
+                                          final generatedCityId =
+                                              _getDeterministicCityId(city);
 
                                           final data = {
                                             'name': nameCtrl.text.trim(),
                                             'branchType': branchType,
                                             'email': emailCtrl.text.trim(),
                                             'phone': phoneCtrl.text.trim(),
-                                            'addressLine1': addressCtrl.text.trim(),
+                                            'addressLine1': addressCtrl.text
+                                                .trim(),
                                             'cityId': generatedCityId,
-                                            'postalCode': postalCodeCtrl.text.trim(),
+                                            'postalCode': postalCodeCtrl.text
+                                                .trim(),
                                             'status': status,
                                           };
                                           if (managerId.isNotEmpty) {
                                             data['branchManagerId'] = managerId;
                                           }
 
-                                          context.read<BranchBloc>().add(BranchUpdated(branch.id, data));
+                                          context.read<BranchBloc>().add(
+                                            BranchUpdated(branch.id, data),
+                                          );
                                           Navigator.pop(ctx);
                                         }
                                       },
@@ -1022,7 +1352,10 @@ class _BranchCard extends StatelessWidget {
                                       )
                                     : Text(
                                         'Save',
-                                        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white),
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
                                       ),
                               ),
                             ),
@@ -1108,9 +1441,7 @@ class _BranchCard extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  context.read<BranchBloc>().add(
-                    BranchDeleted(branch.id),
-                  );
+                  context.read<BranchBloc>().add(BranchDeleted(branch.id));
                   Navigator.pop(ctx);
                 },
                 child: Text(
@@ -1128,7 +1459,6 @@ class _BranchCard extends StatelessWidget {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1168,9 +1498,7 @@ class _BranchCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Color(0xFF2E8EFF).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(
-                  color: Color(0xFF2E8EFF).withOpacity(0.2),
-                ),
+                border: Border.all(color: Color(0xFF2E8EFF).withOpacity(0.2)),
               ),
               child: const Icon(
                 Icons.business_rounded,
@@ -1234,7 +1562,9 @@ class _BranchCard extends StatelessWidget {
                       SizedBox(width: 4.w),
                       Expanded(
                         child: Text(
-                          branch.location.isEmpty ? 'No address' : branch.location,
+                          branch.location.isEmpty
+                              ? 'No address'
+                              : branch.location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
@@ -1276,8 +1606,8 @@ class _BranchCard extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           context.read<BranchBloc>().add(
-                                BranchStatusToggled(branch.id),
-                              );
+                            BranchStatusToggled(branch.id),
+                          );
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(
@@ -1374,32 +1704,39 @@ Widget _buildDialogField({
 InputDecoration _inputDecorationForDialog({
   required String hint,
   required IconData icon,
-}) =>
-    InputDecoration(
-      hintText: hint,
-      hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
-      prefixIcon: Icon(icon, size: 20, color: Colors.grey),
-      filled: true,
-      fillColor: Colors.white,
-      contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(color: Colors.grey.shade300),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(color: Colors.red),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(color: Colors.red),
-      ),
-    );
+}) => InputDecoration(
+  hintText: hint,
+  hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+  prefixIcon: Icon(icon, size: 20, color: Colors.grey),
+  filled: true,
+  fillColor: Colors.white,
+  contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 14.w),
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.r),
+    borderSide: BorderSide(color: Colors.grey.shade300),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.r),
+    borderSide: BorderSide(color: Colors.grey.shade300),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.r),
+    borderSide: const BorderSide(color: Color(0xFF2E8EFF)),
+  ),
+  errorBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.r),
+    borderSide: BorderSide(color: Colors.red),
+  ),
+  focusedErrorBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.r),
+    borderSide: BorderSide(color: Colors.red),
+  ),
+);
+
+String _formatBranchType(String type) {
+  if (type.isEmpty) return '';
+  return type
+      .split('_')
+      .map((word) => word.isEmpty ? '' : '${word[0].toUpperCase()}${word.substring(1)}')
+      .join(' ');
+}

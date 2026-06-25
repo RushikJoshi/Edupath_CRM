@@ -75,61 +75,145 @@ final getIt = GetIt.instance;
 Future<void> setupLocator() async {
   // Core Services
   getIt.registerLazySingleton<StorageService>(() => StorageService());
-  getIt.registerLazySingleton<DioClient>(() => DioClient(getIt<StorageService>()));
+  getIt.registerLazySingleton<DioClient>(
+    () => DioClient(getIt<StorageService>()),
+  );
   getIt.registerLazySingleton<Dio>(() => getIt<DioClient>().client);
 
   // Retrofit Clients
   getIt.registerLazySingleton<AuthApiClient>(() => AuthApiClient(getIt<Dio>()));
   getIt.registerLazySingleton<UserApiClient>(() => UserApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<BranchApiClient>(() => BranchApiClient(getIt<Dio>()));
+  getIt.registerLazySingleton<BranchApiClient>(
+    () => BranchApiClient(getIt<Dio>()),
+  );
   getIt.registerLazySingleton<LeadApiClient>(() => LeadApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<CustomerApiClient>(() => CustomerApiClient(getIt<Dio>()));
+  getIt.registerLazySingleton<CustomerApiClient>(
+    () => CustomerApiClient(getIt<Dio>()),
+  );
   getIt.registerLazySingleton<DealApiClient>(() => DealApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<InquiryApiClient>(() => InquiryApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<MeetingApiClient>(() => MeetingApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<AuditLogApiClient>(() => AuditLogApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<NotificationApiClient>(() => NotificationApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<PipelineApiClient>(() => PipelineApiClient(getIt<Dio>()));
+  getIt.registerLazySingleton<InquiryApiClient>(
+    () => InquiryApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<MeetingApiClient>(
+    () => MeetingApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<AuditLogApiClient>(
+    () => AuditLogApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<NotificationApiClient>(
+    () => NotificationApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<PipelineApiClient>(
+    () => PipelineApiClient(getIt<Dio>()),
+  );
   getIt.registerLazySingleton<TaskApiClient>(() => TaskApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<FollowUpApiClient>(() => FollowUpApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<ActivityApiClient>(() => ActivityApiClient(getIt<Dio>()));
-  getIt.registerLazySingleton<DashboardApiClient>(() => DashboardApiClient(getIt<Dio>()));
+  getIt.registerLazySingleton<FollowUpApiClient>(
+    () => FollowUpApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<ActivityApiClient>(
+    () => ActivityApiClient(getIt<Dio>()),
+  );
+  getIt.registerLazySingleton<DashboardApiClient>(
+    () => DashboardApiClient(getIt<Dio>()),
+  );
 
   // Repositories
-  getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt<AuthApiClient>(), getIt<StorageService>()));
-  getIt.registerLazySingleton<UserRepository>(() => UserRepositoryImpl(getIt<UserApiClient>()));
-  getIt.registerLazySingleton<BranchRepository>(() => BranchRepositoryImpl(getIt<BranchApiClient>()));
-  getIt.registerLazySingleton<LeadRepository>(() => LeadRepositoryImpl(getIt<LeadApiClient>()));
-  getIt.registerLazySingleton<CustomerRepository>(() => CustomerRepositoryImpl(getIt<CustomerApiClient>(), getIt<StorageService>()));
-  getIt.registerLazySingleton<DealRepository>(() => DealRepositoryImpl(getIt<DealApiClient>(), getIt<StorageService>()));
-  getIt.registerLazySingleton<InquiryRepository>(() => InquiryRepositoryImpl(getIt<InquiryApiClient>(), getIt<StorageService>()));
-  getIt.registerLazySingleton<MeetingRepository>(() => MeetingRepositoryImpl(getIt<MeetingApiClient>(), getIt<StorageService>()));
-  getIt.registerLazySingleton<AuditLogRepository>(() => AuditLogRepositoryImpl(getIt<AuditLogApiClient>()));
-  getIt.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl(getIt<NotificationApiClient>()));
-  getIt.registerLazySingleton<PipelineRepository>(() => PipelineRepositoryImpl(getIt<PipelineApiClient>()));
-  getIt.registerLazySingleton<TaskRepository>(() => TaskRepositoryImpl(getIt<TaskApiClient>()));
-  getIt.registerLazySingleton<FollowUpRepository>(() => FollowUpRepositoryImpl(getIt<FollowUpApiClient>()));
-  getIt.registerLazySingleton<ActivityRepository>(() => ActivityRepositoryImpl(getIt<ActivityApiClient>()));
-  getIt.registerLazySingleton<DashboardRepository>(() => DashboardRepositoryImpl(
-    getIt<DashboardApiClient>(),
-    getIt<StorageService>(),
-    getIt<CustomerRepository>(),
-  ));
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(getIt<AuthApiClient>(), getIt<StorageService>()),
+  );
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(getIt<UserApiClient>()),
+  );
+  getIt.registerLazySingleton<BranchRepository>(
+    () => BranchRepositoryImpl(getIt<BranchApiClient>()),
+  );
+  getIt.registerLazySingleton<LeadRepository>(
+    () => LeadRepositoryImpl(
+      getIt<LeadApiClient>(),
+      getIt<StorageService>(),
+    ),
+  );
+  getIt.registerLazySingleton<CustomerRepository>(
+    () => CustomerRepositoryImpl(
+      getIt<CustomerApiClient>(),
+      getIt<StorageService>(),
+    ),
+  );
+  getIt.registerLazySingleton<DealRepository>(
+    () => DealRepositoryImpl(getIt<DealApiClient>(), getIt<StorageService>()),
+  );
+  getIt.registerLazySingleton<InquiryRepository>(
+    () => InquiryRepositoryImpl(
+      getIt<InquiryApiClient>(),
+      getIt<StorageService>(),
+    ),
+  );
+  getIt.registerLazySingleton<MeetingRepository>(
+    () => MeetingRepositoryImpl(
+      getIt<MeetingApiClient>(),
+      getIt<StorageService>(),
+    ),
+  );
+  getIt.registerLazySingleton<AuditLogRepository>(
+    () => AuditLogRepositoryImpl(getIt<AuditLogApiClient>()),
+  );
+  getIt.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(getIt<NotificationApiClient>()),
+  );
+  getIt.registerLazySingleton<PipelineRepository>(
+    () => PipelineRepositoryImpl(getIt<PipelineApiClient>()),
+  );
+  getIt.registerLazySingleton<TaskRepository>(
+    () => TaskRepositoryImpl(getIt<TaskApiClient>()),
+  );
+  getIt.registerLazySingleton<FollowUpRepository>(
+    () => FollowUpRepositoryImpl(getIt<FollowUpApiClient>()),
+  );
+  getIt.registerLazySingleton<ActivityRepository>(
+    () => ActivityRepositoryImpl(getIt<ActivityApiClient>()),
+  );
+  getIt.registerLazySingleton<DashboardRepository>(
+    () => DashboardRepositoryImpl(
+      getIt<DashboardApiClient>(),
+      getIt<StorageService>(),
+      getIt<CustomerRepository>(),
+    ),
+  );
 
   // Blocs
   getIt.registerFactory<AuthBloc>(() => AuthBloc(getIt<AuthRepository>()));
   getIt.registerFactory<UserBloc>(() => UserBloc(getIt<UserRepository>()));
-  getIt.registerFactory<BranchBloc>(() => BranchBloc(getIt<BranchRepository>()));
+  getIt.registerFactory<BranchBloc>(
+    () => BranchBloc(getIt<BranchRepository>()),
+  );
   getIt.registerFactory<LeadBloc>(() => LeadBloc(getIt<LeadRepository>()));
-  getIt.registerFactory<CustomerBloc>(() => CustomerBloc(getIt<CustomerRepository>()));
+  getIt.registerFactory<CustomerBloc>(
+    () => CustomerBloc(getIt<CustomerRepository>()),
+  );
   getIt.registerFactory<DealBloc>(() => DealBloc(getIt<DealRepository>()));
-  getIt.registerFactory<InquiryBloc>(() => InquiryBloc(getIt<InquiryRepository>()));
-  getIt.registerFactory<MeetingBloc>(() => MeetingBloc(getIt<MeetingRepository>()));
-  getIt.registerFactory<AuditLogBloc>(() => AuditLogBloc(getIt<AuditLogRepository>()));
-  getIt.registerFactory<NotificationBloc>(() => NotificationBloc(getIt<NotificationRepository>()));
-  getIt.registerFactory<PipelineBloc>(() => PipelineBloc(getIt<PipelineRepository>()));
+  getIt.registerFactory<InquiryBloc>(
+    () => InquiryBloc(getIt<InquiryRepository>()),
+  );
+  getIt.registerFactory<MeetingBloc>(
+    () => MeetingBloc(getIt<MeetingRepository>()),
+  );
+  getIt.registerFactory<AuditLogBloc>(
+    () => AuditLogBloc(getIt<AuditLogRepository>()),
+  );
+  getIt.registerFactory<NotificationBloc>(
+    () => NotificationBloc(getIt<NotificationRepository>()),
+  );
+  getIt.registerFactory<PipelineBloc>(
+    () => PipelineBloc(getIt<PipelineRepository>()),
+  );
   getIt.registerFactory<TaskBloc>(() => TaskBloc(getIt<TaskRepository>()));
-  getIt.registerFactory<FollowUpBloc>(() => FollowUpBloc(getIt<FollowUpRepository>()));
-  getIt.registerFactory<ActivityBloc>(() => ActivityBloc(getIt<ActivityRepository>()));
-  getIt.registerFactory<DashboardBloc>(() => DashboardBloc(getIt<DashboardRepository>()));
+  getIt.registerFactory<FollowUpBloc>(
+    () => FollowUpBloc(getIt<FollowUpRepository>()),
+  );
+  getIt.registerFactory<ActivityBloc>(
+    () => ActivityBloc(getIt<ActivityRepository>()),
+  );
+  getIt.registerFactory<DashboardBloc>(
+    () => DashboardBloc(getIt<DashboardRepository>()),
+  );
 }

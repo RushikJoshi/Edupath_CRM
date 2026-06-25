@@ -76,7 +76,11 @@ class AppErrorHandler {
     }
 
     if (statusCode != null && statusCode >= 500) {
-      final serverMsg = _mapMessage(apiMessage, code, 'Server error. Please try again later');
+      final serverMsg = _mapMessage(
+        apiMessage,
+        code,
+        'Server error. Please try again later',
+      );
       return AppException(
         type: AppErrorType.server,
         statusCode: statusCode,

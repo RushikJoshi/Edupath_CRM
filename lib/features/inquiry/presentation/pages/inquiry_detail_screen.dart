@@ -226,7 +226,9 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                           _rowSideBySide(
                             Icons.location_city_rounded,
                             'City',
-                            inq.city?.isNotEmpty == true ? inq.city!.toUpperCase() : 'AHMADABAD',
+                            inq.city?.isNotEmpty == true
+                                ? inq.city!.toUpperCase()
+                                : 'AHMADABAD',
                             'State',
                             'GUJRAT',
                           ),
@@ -243,7 +245,11 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                               inq.address!,
                             ),
                           if (inq.website?.isNotEmpty == true)
-                            _row(Icons.language_rounded, 'Website', inq.website!),
+                            _row(
+                              Icons.language_rounded,
+                              'Website',
+                              inq.website!,
+                            ),
                         ],
                       ),
                       SizedBox(height: 14.h),
@@ -260,7 +266,11 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                         },
                         children: [
                           _row(Icons.flag_rounded, 'Status', _cap(inq.status)),
-                          _row(Icons.place_rounded, 'Location', inq.location ?? 'AHMADABAD'),
+                          _row(
+                            Icons.place_rounded,
+                            'Location',
+                            inq.location ?? 'AHMADABAD',
+                          ),
                           _row(Icons.alt_route_rounded, 'Source', inq.source),
                           _row(
                             Icons.currency_rupee_rounded,
@@ -418,7 +428,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
     final userBloc = context.read<UserBloc>();
     final userState = userBloc.state;
     if (userState.items.isEmpty && userState.status != AppStatus.loading) {
-      userBloc.add(UserFetched(role: 'sales'));
+      userBloc.add(UserFetched());
     }
 
     const allBranchesValue = '__all_branches__';
@@ -453,6 +463,12 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                 }
 
                 final filteredUsers = users.where((u) {
+                  final roleLower = u.role.toLowerCase();
+                  final isSalesOrMgr = roleLower == 'sales' ||
+                      roleLower == 'branch_manager' ||
+                      roleLower == 'branch manager';
+                  if (!isSalesOrMgr) return false;
+
                   final q = searchQuery.trim().toLowerCase();
                   final queryOk =
                       q.isEmpty ||
@@ -471,12 +487,15 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
 
                 // Get currently assigned user for this inquiry
                 final inqState = context.read<InquiryBloc>().state;
-                final currentlyAssigned = inqState.items
-                    .where((inq) => inq.id == id)
-                    .map((e) => e.assignedTo)
-                    .isNotEmpty 
-                        ? inqState.items.firstWhere((inq) => inq.id == id).assignedTo 
-                        : null;
+                final currentlyAssigned =
+                    inqState.items
+                        .where((inq) => inq.id == id)
+                        .map((e) => e.assignedTo)
+                        .isNotEmpty
+                    ? inqState.items
+                          .firstWhere((inq) => inq.id == id)
+                          .assignedTo
+                    : null;
 
                 // Color generators for avatars
                 Color getAvatarBg(String name) {
@@ -585,7 +604,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                           ),
                         ),
                         SizedBox(height: 20.h),
-                        
+
                         // SEARCH ROW
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -598,8 +617,9 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                     borderRadius: BorderRadius.circular(12.r),
                                   ),
                                   child: TextField(
-                                    onChanged: (value) =>
-                                        setSheetState(() => searchQuery = value),
+                                    onChanged: (value) => setSheetState(
+                                      () => searchQuery = value,
+                                    ),
                                     style: GoogleFonts.poppins(
                                       fontSize: 13.sp,
                                       color: Colors.black,
@@ -690,7 +710,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                             ),
                           ),
                         SizedBox(height: 20.h),
-                        
+
                         // USER LIST
                         if (state.status == AppStatus.loading)
                           Padding(
@@ -727,7 +747,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                 final isSelected = (tappedUserId != null)
                                     ? u.id == tappedUserId
                                     : u.id == currentlyAssigned;
-                                    
+
                                 return Container(
                                   margin: const EdgeInsets.only(
                                     bottom: 12,
@@ -751,10 +771,16 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(12.r),
                                       onTap: () {
-                                        setSheetState(() => tappedUserId = u.id);
-                                        Future.delayed(const Duration(milliseconds: 300), () {
-                                          if (ctx.mounted) Navigator.pop(ctx, u.id);
-                                        });
+                                        setSheetState(
+                                          () => tappedUserId = u.id,
+                                        );
+                                        Future.delayed(
+                                          const Duration(milliseconds: 300),
+                                          () {
+                                            if (ctx.mounted)
+                                              Navigator.pop(ctx, u.id);
+                                          },
+                                        );
                                       },
                                       child: Padding(
                                         padding: EdgeInsets.symmetric(
@@ -775,13 +801,19 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                                   child: Center(
                                                     child: Text(
                                                       u.name.isNotEmpty
-                                                          ? u.name[0].toUpperCase()
+                                                          ? u.name[0]
+                                                                .toUpperCase()
                                                           : '?',
-                                                      style: GoogleFonts.poppins(
-                                                        fontWeight: FontWeight.w700,
-                                                        fontSize: 16.sp,
-                                                        color: getAvatarText(u.name),
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 16.sp,
+                                                            color:
+                                                                getAvatarText(
+                                                                  u.name,
+                                                                ),
+                                                          ),
                                                     ),
                                                   ),
                                                 ),
@@ -792,7 +824,9 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                                     width: 12.w,
                                                     height: 12.h,
                                                     decoration: BoxDecoration(
-                                                      color: const Color(0xFF4CAF50),
+                                                      color: const Color(
+                                                        0xFF4CAF50,
+                                                      ),
                                                       shape: BoxShape.circle,
                                                       border: Border.all(
                                                         color: Colors.white,
@@ -813,7 +847,8 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                                     u.name,
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 14.sp,
-                                                      fontWeight: FontWeight.w700,
+                                                      fontWeight:
+                                                          FontWeight.w700,
                                                       color: Colors.black,
                                                     ),
                                                   ),
@@ -821,10 +856,12 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
                                                     '${u.email}${u.branchName.trim().isNotEmpty ? '   |   ${u.branchName}' : ''}',
                                                     style: GoogleFonts.poppins(
                                                       fontSize: 11.sp,
-                                                      color: Colors.grey.shade500,
+                                                      color:
+                                                          Colors.grey.shade500,
                                                     ),
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
@@ -916,9 +953,7 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
           Container(
             width: 56.w,
             height: 56.h,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
+            decoration: const BoxDecoration(shape: BoxShape.circle),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(28.r),
               child: Container(
@@ -966,7 +1001,6 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
       ),
     );
   }
-
 
   Widget _buildCollapsibleSection({
     required String title,
@@ -1044,7 +1078,6 @@ class _InquiryDetailScreenState extends State<InquiryDetailScreen> {
       ],
     );
   }
-
 
   Widget _row(IconData icon, String label, String value) {
     return Container(

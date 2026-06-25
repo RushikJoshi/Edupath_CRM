@@ -117,7 +117,9 @@ class StorageService {
 
   Future<String?> getTokenExpiry() async {
     try {
-      final secure = await _secureStorage.read(key: AppConstants.tokenExpiryKey);
+      final secure = await _secureStorage.read(
+        key: AppConstants.tokenExpiryKey,
+      );
       if (secure != null && secure.isNotEmpty) return secure;
     } catch (_) {
       return null;

@@ -48,22 +48,29 @@ class DealBloc extends Bloc<DealEvent, DealState> {
         tags: event.tags,
         notes: event.notes,
       );
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Deal created',
-        items: [created, ...state.items],
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Deal created',
+          items: [created, ...state.items],
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: e.toString().contains('Exception: ')
-            ? e.toString().split('Exception: ').last
-            : 'Create failed',
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: e.toString().contains('Exception: ')
+              ? e.toString().split('Exception: ').last
+              : 'Create failed',
+        ),
+      );
     }
   }
 
-  Future<void> _onStageUpdated(DealStageUpdated event, Emitter<DealState> emit) async {
+  Future<void> _onStageUpdated(
+    DealStageUpdated event,
+    Emitter<DealState> emit,
+  ) async {
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
       final updated = await _repository.updateDealStage(
@@ -71,17 +78,23 @@ class DealBloc extends Bloc<DealEvent, DealState> {
         stage: event.stage,
         stageId: event.stageId,
       );
-      final newItems = state.items.map((e) => e.id == updated.id ? updated : e).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Stage updated',
-        items: newItems,
-      ));
+      final newItems = state.items
+          .map((e) => e.id == updated.id ? updated : e)
+          .toList();
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Stage updated',
+          items: newItems,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 
@@ -99,17 +112,23 @@ class DealBloc extends Bloc<DealEvent, DealState> {
         tags: event.tags,
         notes: event.notes,
       );
-      final newItems = state.items.map((e) => e.id == updated.id ? updated : e).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Deal updated',
-        items: newItems,
-      ));
+      final newItems = state.items
+          .map((e) => e.id == updated.id ? updated : e)
+          .toList();
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Deal updated',
+          items: newItems,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 }

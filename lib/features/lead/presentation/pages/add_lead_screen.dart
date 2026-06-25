@@ -81,7 +81,8 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
           );
 
     // Stages come from the selected pipeline
-    final statusOptions = selectedPipeline?.stages
+    final statusOptions =
+        selectedPipeline?.stages
             .map((s) => s.name)
             .where((n) => n.isNotEmpty)
             .toList() ??
@@ -94,6 +95,8 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
     final canSeeAll = RoleGuard.canSeeAllBranches(role);
     if (!canSeeAll && _branchId == null && myBranch.isNotEmpty) {
       _branchId = myBranch;
+    } else if (canSeeAll && _branchId == null && branches.isNotEmpty) {
+      _branchId = branches.first.id;
     }
 
     return BlocListener<LeadBloc, LeadState>(
@@ -239,7 +242,8 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                     SizedBox(height: 14.h),
                     _label('Pipeline'),
                     SizedBox(height: 8.h),
-                    if (pipelineState.status == AppStatus.loading && pipelines.isEmpty)
+                    if (pipelineState.status == AppStatus.loading &&
+                        pipelines.isEmpty)
                       _loadingField('Loading pipelines...')
                     else if (pipelines.isEmpty)
                       _emptyField('No pipelines available')
@@ -253,14 +257,16 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                         onChanged: (v) {
                           setState(() {
                             _selectedPipelineId = v;
-                            _leadStatus = ''; // reset stage when pipeline changes
+                            _leadStatus =
+                                ''; // reset stage when pipeline changes
                           });
                         },
                       ),
                     SizedBox(height: 14.h),
                     _label('Lead Stage'),
                     SizedBox(height: 8.h),
-                    if (pipelineState.status == AppStatus.loading && statusOptions.isEmpty)
+                    if (pipelineState.status == AppStatus.loading &&
+                        statusOptions.isEmpty)
                       _loadingField('Loading stages...')
                     else if (statusOptions.isEmpty)
                       _emptyField('No stages in this pipeline')
@@ -335,7 +341,9 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: loading ? null : () => Navigator.pop(context),
+                        onPressed: loading
+                            ? null
+                            : () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: const Color(0xFF2E8EFF),
@@ -415,7 +423,8 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
             (p) => p.id == _selectedPipelineId,
             orElse: () => pipelines.first,
           );
-    final opts = selPipeline?.stages
+    final opts =
+        selPipeline?.stages
             .map((s) => s.name)
             .where((n) => n.isNotEmpty)
             .toList() ??
@@ -479,12 +488,18 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
           SizedBox(
             width: 16.w,
             height: 16.h,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Color(0xFF2E8EFF),
+            ),
           ),
           SizedBox(width: 12.w),
           Text(
             message,
-            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              color: Colors.grey.shade500,
+            ),
           ),
         ],
       ),
@@ -501,7 +516,10 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
       ),
       child: Text(
         message,
-        style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+        style: GoogleFonts.poppins(
+          fontSize: 13.sp,
+          color: Colors.grey.shade400,
+        ),
       ),
     );
   }
@@ -601,16 +619,17 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
             ),
             child: const Padding(
               padding: EdgeInsets.only(top: 8),
-              child: Icon(Icons.edit_outlined, size: 18, color: Color(0xFF2E8EFF)),
+              child: Icon(
+                Icons.edit_outlined,
+                size: 18,
+                color: Color(0xFF2E8EFF),
+              ),
             ),
           ),
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 14.h,
-          horizontal: 14.w,
-        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 14.w),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
@@ -686,17 +705,28 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
                       itemCount: items.length,
                       itemBuilder: (context, i) {
                         final item = items[i];
-                        final label = labels != null ? labels[i] : item.toString();
+                        final label = labels != null
+                            ? labels[i]
+                            : item.toString();
                         final isSelected = value == item;
                         return ListTile(
                           title: Text(
                             label,
                             style: GoogleFonts.poppins(
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                              color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                              color: isSelected
+                                  ? const Color(0xFF2E8EFF)
+                                  : Colors.black87,
                             ),
                           ),
-                          trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF)) : null,
+                          trailing: isSelected
+                              ? const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: Color(0xFF2E8EFF),
+                                )
+                              : null,
                           onTap: () {
                             onChanged(item);
                             Navigator.pop(ctx);
@@ -719,7 +749,10 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
             Expanded(
               child: Text(
                 displayLabel,
-                style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: Colors.black,
+                ),
               ),
             ),
             const Icon(Icons.arrow_drop_down, color: Color(0xFF003055)),
@@ -775,7 +808,10 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
 
   InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
     hintText: hint,
-    hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+    hintStyle: GoogleFonts.poppins(
+      fontSize: 13.sp,
+      color: Colors.grey.shade400,
+    ),
     prefixIcon: Padding(
       padding: EdgeInsets.all(6.w),
       child: Container(

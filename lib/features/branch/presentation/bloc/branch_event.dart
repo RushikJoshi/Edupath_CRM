@@ -8,12 +8,7 @@ abstract class BranchEvent extends Equatable {
 }
 
 class BranchFetched extends BranchEvent {
-  const BranchFetched({
-    this.search,
-    this.page,
-    this.limit,
-    this.status,
-  });
+  const BranchFetched({this.search, this.page, this.limit, this.status});
 
   final String? search;
   final int? page;

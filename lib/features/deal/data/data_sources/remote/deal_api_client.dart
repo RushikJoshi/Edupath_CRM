@@ -9,13 +9,14 @@ abstract class DealApiClient {
   factory DealApiClient(Dio dio, {String baseUrl}) = _DealApiClient;
 
   @GET(ApiEndpoints.accounts)
-  Future<HttpResponse<dynamic>> getDeals({
-    @Query('search') String? query,
-  });
+  Future<HttpResponse<dynamic>> getDeals({@Query('search') String? query});
 
   @POST(ApiEndpoints.accounts)
   Future<HttpResponse<dynamic>> createDeal(@Body() Map<String, dynamic> body);
 
   @PUT(ApiEndpoints.accountDetail)
-  Future<HttpResponse<dynamic>> updateDeal(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateDeal(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 }

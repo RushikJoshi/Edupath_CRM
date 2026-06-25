@@ -85,7 +85,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     final rawType = meeting?.meetingType ?? 'Consultation';
     if (rawType.isNotEmpty) {
       String formatted = rawType[0].toUpperCase() + rawType.substring(1);
-      if (formatted == 'Meeting' || formatted == 'Call' || formatted == 'Visit') {
+      if (formatted == 'Meeting' ||
+          formatted == 'Call' ||
+          formatted == 'Visit') {
         formatted = 'Consultation';
       }
       _meetingType = formatted;
@@ -93,12 +95,20 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       _meetingType = 'Consultation';
     }
     String incomingStatus = meeting?.status ?? 'Scheduled';
-    if (incomingStatus.toLowerCase() == 'scheduled') _status = 'Scheduled';
-    else if (incomingStatus.toLowerCase() == 'confirmed') _status = 'Confirmed';
-    else if (incomingStatus.toLowerCase() == 'in progress' || incomingStatus.toLowerCase() == 'in_progress') _status = 'In Progress';
-    else if (incomingStatus.toLowerCase() == 'completed') _status = 'Completed';
-    else if (incomingStatus.toLowerCase() == 'cancelled' || incomingStatus.toLowerCase() == 'canceled') _status = 'Cancelled';
-    else _status = 'Scheduled';
+    if (incomingStatus.toLowerCase() == 'scheduled')
+      _status = 'Scheduled';
+    else if (incomingStatus.toLowerCase() == 'confirmed')
+      _status = 'Confirmed';
+    else if (incomingStatus.toLowerCase() == 'in progress' ||
+        incomingStatus.toLowerCase() == 'in_progress')
+      _status = 'In Progress';
+    else if (incomingStatus.toLowerCase() == 'completed')
+      _status = 'Completed';
+    else if (incomingStatus.toLowerCase() == 'cancelled' ||
+        incomingStatus.toLowerCase() == 'canceled')
+      _status = 'Cancelled';
+    else
+      _status = 'Scheduled';
     _startDate = meeting?.startDate;
     _startTime = _startDate != null
         ? TimeOfDay.fromDateTime(_startDate!)
@@ -174,7 +184,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
               content: Text(
                 state.actionMessage ??
                     (editing ? 'Meeting updated' : 'Meeting scheduled'),
-                style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
+                style: GoogleFonts.poppins(
+                  fontSize: 13.sp,
+                  color: Colors.white,
+                ),
               ),
               backgroundColor: AppColors.stageWon,
               behavior: SnackBarBehavior.floating,
@@ -195,7 +208,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
             SnackBar(
               content: Text(
                 _inlineError ?? 'Failed to save meeting',
-                style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
+                style: GoogleFonts.poppins(
+                  fontSize: 13.sp,
+                  color: Colors.white,
+                ),
               ),
               backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
@@ -308,7 +324,10 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildSectionHeader('Basic Details', Icons.info_outline_rounded),
+                        _buildSectionHeader(
+                          'Basic Details',
+                          Icons.info_outline_rounded,
+                        ),
                         SizedBox(height: 16.h),
                         _gridInput(
                           icon: Icons.title_rounded,
@@ -325,8 +344,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                   final picked = await showDatePicker(
                                     context: context,
                                     initialDate: _startDate ?? DateTime.now(),
-                                    firstDate: DateTime.now().subtract(const Duration(days: 30)),
-                                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    firstDate: DateTime.now().subtract(
+                                      const Duration(days: 30),
+                                    ),
+                                    lastDate: DateTime.now().add(
+                                      const Duration(days: 365),
+                                    ),
                                     builder: _pickerThemeBuilder,
                                   );
                                   if (picked != null) {
@@ -339,24 +362,46 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                 },
                                 borderRadius: BorderRadius.circular(12.r),
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 14.h,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFF8FAFC),
                                     borderRadius: BorderRadius.circular(12.r),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    border: Border.all(
+                                      color: const Color(0xFFE2E8F0),
+                                    ),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.calendar_today_rounded, color: Color(0xFF94A3B8), size: 20),
+                                      const Icon(
+                                        Icons.calendar_today_rounded,
+                                        color: Color(0xFF94A3B8),
+                                        size: 20,
+                                      ),
                                       SizedBox(width: 8.w),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text('Date', style: GoogleFonts.poppins(fontSize: 11.sp, color: Color(0xFF64748B))),
                                             Text(
-                                              _startDate == null ? 'Select Date' : '${_startDate!.day} ${_getMonth(_startDate!.month)}',
-                                              style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                                              'Date',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 11.sp,
+                                                color: Color(0xFF64748B),
+                                              ),
+                                            ),
+                                            Text(
+                                              _startDate == null
+                                                  ? 'Select Date'
+                                                  : '${_startDate!.day} ${_getMonth(_startDate!.month)}',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xFF1E293B),
+                                              ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -387,24 +432,46 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                 },
                                 borderRadius: BorderRadius.circular(12.r),
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                    vertical: 14.h,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFFF8FAFC),
                                     borderRadius: BorderRadius.circular(12.r),
-                                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                                    border: Border.all(
+                                      color: const Color(0xFFE2E8F0),
+                                    ),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.access_time_rounded, color: Color(0xFF94A3B8), size: 20),
+                                      const Icon(
+                                        Icons.access_time_rounded,
+                                        color: Color(0xFF94A3B8),
+                                        size: 20,
+                                      ),
                                       SizedBox(width: 8.w),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text('Time', style: GoogleFonts.poppins(fontSize: 11.sp, color: Color(0xFF64748B))),
                                             Text(
-                                              _startTime == null ? 'Select Time' : _startTime!.format(context),
-                                              style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xFF1E293B)),
+                                              'Time',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 11.sp,
+                                                color: Color(0xFF64748B),
+                                              ),
+                                            ),
+                                            Text(
+                                              _startTime == null
+                                                  ? 'Select Time'
+                                                  : _startTime!.format(context),
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xFF1E293B),
+                                              ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -418,38 +485,71 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                             ),
                           ],
                         ),
-                        
+
                         SizedBox(height: 24.h),
                         Divider(height: 1.h, color: Color(0xFFE2E8F0)),
                         SizedBox(height: 24.h),
-                        
-                        _buildSectionHeader('Client & Type', Icons.person_outline_rounded),
+
+                        _buildSectionHeader(
+                          'Client & Type',
+                          Icons.person_outline_rounded,
+                        ),
                         SizedBox(height: 16.h),
                         DropdownButtonFormField<String?>(
                           value: safeSelectedLeadId,
                           isExpanded: true,
-                          icon: const Icon(Icons.expand_more_rounded, color: Color(0xFF94A3B8)),
-                          style: GoogleFonts.poppins(fontSize: 13.sp, color: Color(0xFF1E293B), fontWeight: FontWeight.w500),
+                          icon: const Icon(
+                            Icons.expand_more_rounded,
+                            color: Color(0xFF94A3B8),
+                          ),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.sp,
+                            color: Color(0xFF1E293B),
+                            fontWeight: FontWeight.w500,
+                          ),
                           decoration: InputDecoration(
                             labelText: 'Lead / Client',
-                            labelStyle: GoogleFonts.poppins(color: Color(0xFF64748B), fontSize: 13.sp),
-                            prefixIcon: const Icon(Icons.person_outline_rounded, size: 20, color: Color(0xFF94A3B8)),
+                            labelStyle: GoogleFonts.poppins(
+                              color: Color(0xFF64748B),
+                              fontSize: 13.sp,
+                            ),
+                            prefixIcon: const Icon(
+                              Icons.person_outline_rounded,
+                              size: 20,
+                              color: Color(0xFF94A3B8),
+                            ),
                             filled: true,
                             fillColor: const Color(0xFFF8FAFC),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Color(0xFFE2E8F0))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Color(0xFFE2E8F0))),
-                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: AppColors.primary)),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 14.h),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 14.h,
+                            ),
                           ),
-                          items: leadItems.fold<List<LeadModel>>([], (list, element) {
-                            if (!list.any((e) => e.id == element.id)) list.add(element);
-                            return list;
-                          }).map((lead) {
-                            return DropdownMenuItem<String?>(
-                              value: lead.id,
-                              child: Text(lead.name),
-                            );
-                          }).toList(),
+                          items: leadItems
+                              .fold<List<LeadModel>>([], (list, element) {
+                                if (!list.any((e) => e.id == element.id))
+                                  list.add(element);
+                                return list;
+                              })
+                              .map((lead) {
+                                return DropdownMenuItem<String?>(
+                                  value: lead.id,
+                                  child: Text(lead.name),
+                                );
+                              })
+                              .toList(),
                           onChanged: (val) {
                             setState(() => _selectedLeadId = val);
                           },
@@ -459,31 +559,53 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           icon: Icons.videocam_outlined,
                           title: 'Meeting Type',
                           value: _meetingType,
-                          items: (['Consultation', 'Follow-up', 'Demo', 'Other']..removeWhere((e) => e == _meetingType)..insert(0, _meetingType)).toSet().map((type) {
-                            return DropdownMenuItem(value: type, child: Text(type));
-                          }).toList(),
+                          items:
+                              (['Consultation', 'Follow-up', 'Demo', 'Other']
+                                    ..removeWhere((e) => e == _meetingType)
+                                    ..insert(0, _meetingType))
+                                  .toSet()
+                                  .map((type) {
+                                    return DropdownMenuItem(
+                                      value: type,
+                                      child: Text(type),
+                                    );
+                                  })
+                                  .toList(),
                           onChanged: (val) {
                             if (val != null) setState(() => _meetingType = val);
                           },
                         ),
-                        
+
                         SizedBox(height: 24.h),
                         Divider(height: 1.h, color: Color(0xFFE2E8F0)),
                         SizedBox(height: 24.h),
-                        
-                        _buildSectionHeader('Location & Link', Icons.location_on_outlined),
+
+                        _buildSectionHeader(
+                          'Location & Link',
+                          Icons.location_on_outlined,
+                        ),
                         SizedBox(height: 16.h),
                         _gridDropdown<String>(
                           icon: Icons.devices_other_rounded,
                           title: 'Mode',
                           value: _attendanceMode,
                           items: const [
-                            DropdownMenuItem(value: 'online', child: Text('Online')),
-                            DropdownMenuItem(value: 'offline', child: Text('Offline')),
-                            DropdownMenuItem(value: 'hybrid', child: Text('Hybrid')),
+                            DropdownMenuItem(
+                              value: 'online',
+                              child: Text('Online'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'offline',
+                              child: Text('Offline'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'hybrid',
+                              child: Text('Hybrid'),
+                            ),
                           ],
                           onChanged: (val) {
-                            if (val != null) setState(() => _attendanceMode = val);
+                            if (val != null)
+                              setState(() => _attendanceMode = val);
                           },
                         ),
                         SizedBox(height: 16.h),
@@ -500,12 +622,15 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           controller: _locationCtrl,
                           hint: 'Enter Location',
                         ),
-                        
+
                         SizedBox(height: 24.h),
                         Divider(height: 1.h, color: Color(0xFFE2E8F0)),
                         SizedBox(height: 24.h),
-                        
-                        _buildSectionHeader('Schedule Details', Icons.schedule_rounded),
+
+                        _buildSectionHeader(
+                          'Schedule Details',
+                          Icons.schedule_rounded,
+                        ),
                         SizedBox(height: 16.h),
                         Row(
                           children: [
@@ -515,12 +640,30 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                 title: 'Duration',
                                 value: _duration,
                                 items: const [
-                                  DropdownMenuItem(value: '15 Mins', child: Text('15 Mins')),
-                                  DropdownMenuItem(value: '30 Mins', child: Text('30 Mins')),
-                                  DropdownMenuItem(value: '45 Mins', child: Text('45 Mins')),
-                                  DropdownMenuItem(value: '1 Hour', child: Text('1 Hour')),
-                                  DropdownMenuItem(value: '1.5 Hours', child: Text('1.5 Hours')),
-                                  DropdownMenuItem(value: '2 Hours', child: Text('2 Hours')),
+                                  DropdownMenuItem(
+                                    value: '15 Mins',
+                                    child: Text('15 Mins'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: '30 Mins',
+                                    child: Text('30 Mins'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: '45 Mins',
+                                    child: Text('45 Mins'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: '1 Hour',
+                                    child: Text('1 Hour'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: '1.5 Hours',
+                                    child: Text('1.5 Hours'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: '2 Hours',
+                                    child: Text('2 Hours'),
+                                  ),
                                 ],
                                 onChanged: (val) {
                                   if (val != null) {
@@ -539,14 +682,30 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                                 title: 'Status',
                                 value: _status,
                                 items: const [
-                                  DropdownMenuItem(value: 'Scheduled', child: Text('Scheduled')),
-                                  DropdownMenuItem(value: 'Confirmed', child: Text('Confirmed')),
-                                  DropdownMenuItem(value: 'In Progress', child: Text('In Progress')),
-                                  DropdownMenuItem(value: 'Completed', child: Text('Completed')),
-                                  DropdownMenuItem(value: 'Cancelled', child: Text('Cancelled')),
+                                  DropdownMenuItem(
+                                    value: 'Scheduled',
+                                    child: Text('Scheduled'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Confirmed',
+                                    child: Text('Confirmed'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'In Progress',
+                                    child: Text('In Progress'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Completed',
+                                    child: Text('Completed'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Cancelled',
+                                    child: Text('Cancelled'),
+                                  ),
                                 ],
                                 onChanged: (val) {
-                                  if (val != null) setState(() => _status = val);
+                                  if (val != null)
+                                    setState(() => _status = val);
                                 },
                               ),
                             ),
@@ -559,11 +718,11 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           controller: _reminderCtrl,
                           hint: 'e.g. 30, 60',
                         ),
-                        
+
                         SizedBox(height: 24.h),
                         Divider(height: 1.h, color: Color(0xFFE2E8F0)),
                         SizedBox(height: 24.h),
-                        
+
                         _buildSectionHeader('Notes', Icons.notes_rounded),
                         SizedBox(height: 16.h),
                         TextFormField(
@@ -571,25 +730,49 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                           minLines: 4,
                           maxLines: null,
                           textAlign: TextAlign.start,
-                          style: GoogleFonts.poppins(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xFF1E293B)),
+                          style: GoogleFonts.poppins(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF1E293B),
+                          ),
                           decoration: InputDecoration(
                             labelText: 'Meeting Notes',
-                            labelStyle: GoogleFonts.poppins(color: Color(0xFF64748B), fontSize: 13.sp),
+                            labelStyle: GoogleFonts.poppins(
+                              color: Color(0xFF64748B),
+                              fontSize: 13.sp,
+                            ),
                             prefixIcon: const Padding(
                               padding: EdgeInsets.only(bottom: 60),
-                              child: Icon(Icons.notes_rounded, size: 20, color: Color(0xFF94A3B8)),
+                              child: Icon(
+                                Icons.notes_rounded,
+                                size: 20,
+                                color: Color(0xFF94A3B8),
+                              ),
                             ),
                             filled: true,
                             fillColor: const Color(0xFFF8FAFC),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Color(0xFFE2E8F0))),
-                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: Color(0xFFE2E8F0))),
-                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r), borderSide: BorderSide(color: AppColors.primary)),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                              borderSide: BorderSide(color: AppColors.primary),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 14.h,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ) ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -607,10 +790,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(0, 48),
                       foregroundColor: AppColors.primary,
-                      side: BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5.w,
-                      ),
+                      side: BorderSide(color: AppColors.primary, width: 1.5.w),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.r),
                       ),
@@ -697,20 +877,36 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-
-
-
-    String _getMonth(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  String _getMonth(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return months[month - 1];
   }
 
   String _getWeekday(int weekday) {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
     return days[weekday - 1];
   }
-
-
 
   void _updateEndDate() {
     if (_startDate == null || _startTime == null) return;
@@ -842,8 +1038,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-
-
   Widget _buildSectionHeader(String title, IconData icon) {
     return Row(
       children: [
@@ -906,8 +1100,12 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       _showError('Location is required for offline meetings');
       return;
     }
-    if (_attendanceMode == 'hybrid' && meetingLink.isEmpty && location.isEmpty) {
-      _showError('Either meeting link or location is required for hybrid meetings');
+    if (_attendanceMode == 'hybrid' &&
+        meetingLink.isEmpty &&
+        location.isEmpty) {
+      _showError(
+        'Either meeting link or location is required for hybrid meetings',
+      );
       return;
     }
 
@@ -1017,7 +1215,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     );
   }
 
-
   void _clearInlineError() {
     if (!mounted || _inlineError == null) return;
     setState(() => _inlineError = null);
@@ -1034,7 +1231,9 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
         ),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.r),
+        ),
         margin: EdgeInsets.all(16.w),
       ),
     );

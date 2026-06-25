@@ -1,7 +1,9 @@
 import 'dart:io';
 
 void main() async {
-  final file = File(r'c:\Users\tanvi\AndroidStudioProjects\Edupath_CRM\lib\presentation\meetings\add_meeting_screen.dart');
+  final file = File(
+    r'c:\Users\tanvi\AndroidStudioProjects\Edupath_CRM\lib\presentation\meetings\add_meeting_screen.dart',
+  );
   var content = await file.readAsString();
 
   final newBody = '''SingleChildScrollView(
@@ -574,12 +576,18 @@ void main() async {
   }
 ''';
 
-  final regex = RegExp(r'SingleChildScrollView\(.*?\n          \)', dotAll: true);
+  final regex = RegExp(
+    r'SingleChildScrollView\(.*?\n          \)',
+    dotAll: true,
+  );
   if (regex.hasMatch(content)) {
     content = content.replaceFirst(regex, newBody);
   }
 
-  content = content.replaceFirst('Widget _dropdown<T>({', helpers + '\\n  Widget _dropdown<T>({');
+  content = content.replaceFirst(
+    'Widget _dropdown<T>({',
+    helpers + '\\n  Widget _dropdown<T>({',
+  );
 
   await file.writeAsString(content);
 }

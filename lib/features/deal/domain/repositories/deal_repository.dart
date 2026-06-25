@@ -19,7 +19,11 @@ abstract class DealRepository {
     List<String>? tags,
     String? notes,
   });
-  Future<DealModel> updateDealStage({required String id, required String stage, String? stageId});
+  Future<DealModel> updateDealStage({
+    required String id,
+    required String stage,
+    String? stageId,
+  });
   Future<DealModel> updateDeal({
     required String id,
     String? title,

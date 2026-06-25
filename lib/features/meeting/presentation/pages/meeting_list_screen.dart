@@ -85,12 +85,20 @@ class _MeetingListScreenState extends State<MeetingListScreen>
     });
   }
 
-
-
   String _formatSelectedDateHeader(DateTime dt) {
     const months = [
-      'jan', 'feb', 'mar', 'apr', 'may', 'jun',
-      'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec',
     ];
     final monthName = months[dt.month - 1];
     return '${dt.day},$monthName, ${dt.year}';
@@ -98,8 +106,18 @@ class _MeetingListScreenState extends State<MeetingListScreen>
 
   String _formatMonthNameShort(DateTime dt) {
     const months = [
-      'jan', 'feb', 'mar', 'apr', 'may', 'jun',
-      'jul', 'aug', 'sep', 'oct', 'nov', 'dec'
+      'jan',
+      'feb',
+      'mar',
+      'apr',
+      'may',
+      'jun',
+      'jul',
+      'aug',
+      'sep',
+      'oct',
+      'nov',
+      'dec',
     ];
     return months[dt.month - 1];
   }
@@ -112,8 +130,18 @@ class _MeetingListScreenState extends State<MeetingListScreen>
   String _formatDate(DateTime dt) {
     final localDt = dt.toLocal();
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${localDt.day} ${months[localDt.month - 1].toLowerCase()} ${localDt.year}';
   }
@@ -158,7 +186,11 @@ class _MeetingListScreenState extends State<MeetingListScreen>
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_none_rounded, color: Colors.white, size: 24),
+            icon: Icon(
+              Icons.notifications_none_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
             onPressed: () {},
           ),
         ],
@@ -310,7 +342,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                   style: GoogleFonts.poppins(
                     fontSize: 11.sp,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                    color: isSelected
+                        ? const Color(0xFF2E8EFF)
+                        : Colors.black87,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -384,7 +418,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
             GestureDetector(
               onTap: () {
                 setState(() {
-                  _selectedDate = _selectedDate.subtract(const Duration(days: 1));
+                  _selectedDate = _selectedDate.subtract(
+                    const Duration(days: 1),
+                  );
                   _filterDate = _selectedDate;
                 });
               },
@@ -408,11 +444,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(5, (index) {
                   final dayDate = _selectedDate.add(Duration(days: index - 2));
-                  final isSelected = _filterDate != null &&
+                  final isSelected =
+                      _filterDate != null &&
                       dayDate.year == _filterDate!.year &&
                       dayDate.month == _filterDate!.month &&
                       dayDate.day == _filterDate!.day;
-                  final isHighlighted = isSelected || (_filterDate == null && index == 2);
+                  final isHighlighted =
+                      isSelected || (_filterDate == null && index == 2);
 
                   return Expanded(
                     child: GestureDetector(
@@ -424,12 +462,19 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 3.w),
-                        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8.h,
+                          horizontal: 4.w,
+                        ),
                         decoration: BoxDecoration(
-                          color: isHighlighted ? Color(0xFF2E8EFF) : Colors.white,
+                          color: isHighlighted
+                              ? Color(0xFF2E8EFF)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(8.r),
                           border: Border.all(
-                            color: isHighlighted ? const Color(0xFF2E8EFF) : Colors.grey.shade200,
+                            color: isHighlighted
+                                ? const Color(0xFF2E8EFF)
+                                : Colors.grey.shade200,
                           ),
                         ),
                         child: Column(
@@ -440,7 +485,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                               style: GoogleFonts.poppins(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
-                                color: isHighlighted ? Colors.white : Colors.black87,
+                                color: isHighlighted
+                                    ? Colors.white
+                                    : Colors.black87,
                               ),
                             ),
                             SizedBox(height: 2.h),
@@ -449,7 +496,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                               style: GoogleFonts.poppins(
                                 fontSize: 8.sp,
                                 fontWeight: FontWeight.w500,
-                                color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
+                                color: isHighlighted
+                                    ? Colors.white70
+                                    : Colors.grey.shade500,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -460,7 +509,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                               style: GoogleFonts.poppins(
                                 fontSize: 8.sp,
                                 fontWeight: FontWeight.w500,
-                                color: isHighlighted ? Colors.white70 : Colors.grey.shade500,
+                                color: isHighlighted
+                                    ? Colors.white70
+                                    : Colors.grey.shade500,
                               ),
                             ),
                           ],
@@ -504,7 +555,8 @@ class _MeetingListScreenState extends State<MeetingListScreen>
       final s = e.status.toLowerCase();
       bool statusMatches = false;
       if (status.toLowerCase() == 'scheduled') {
-        statusMatches = (s == 'scheduled' ||
+        statusMatches =
+            (s == 'scheduled' ||
             s == 'upcoming' ||
             s == 'confirmed' ||
             s == 'in progress' ||
@@ -528,9 +580,13 @@ class _MeetingListScreenState extends State<MeetingListScreen>
 
     // Sort chronologically date-wise
     if (status.toLowerCase() == 'scheduled') {
-      items.sort((a, b) => a.startDate.toLocal().compareTo(b.startDate.toLocal()));
+      items.sort(
+        (a, b) => a.startDate.toLocal().compareTo(b.startDate.toLocal()),
+      );
     } else {
-      items.sort((a, b) => b.startDate.toLocal().compareTo(a.startDate.toLocal()));
+      items.sort(
+        (a, b) => b.startDate.toLocal().compareTo(a.startDate.toLocal()),
+      );
     }
 
     if (items.isEmpty) {
@@ -695,7 +751,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                     ),
                     child: Center(
                       child: Icon(
-                        isOnline ? Icons.videocam_rounded : Icons.business_rounded,
+                        isOnline
+                            ? Icons.videocam_rounded
+                            : Icons.business_rounded,
                         size: 30,
                         color: const Color(0xFF2E8EFF),
                       ),
@@ -721,7 +779,9 @@ class _MeetingListScreenState extends State<MeetingListScreen>
                           children: [
                             CircleAvatar(
                               radius: 10,
-                              backgroundColor: Color(0xFF2E8EFF).withOpacity(0.1),
+                              backgroundColor: Color(
+                                0xFF2E8EFF,
+                              ).withOpacity(0.1),
                               child: const Icon(
                                 Icons.person_rounded,
                                 size: 12,

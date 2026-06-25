@@ -6,7 +6,8 @@ part 'notification_api_client.g.dart';
 
 @RestApi()
 abstract class NotificationApiClient {
-  factory NotificationApiClient(Dio dio, {String baseUrl}) = _NotificationApiClient;
+  factory NotificationApiClient(Dio dio, {String baseUrl}) =
+      _NotificationApiClient;
 
   @GET(ApiEndpoints.notifications)
   Future<HttpResponse<dynamic>> getNotifications();
@@ -19,7 +20,4 @@ abstract class NotificationApiClient {
 
   @PUT(ApiEndpoints.notificationReadAll)
   Future<HttpResponse<dynamic>> markAllNotificationsRead();
-
-
 }
-

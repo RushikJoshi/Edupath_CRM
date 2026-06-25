@@ -106,9 +106,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   Future<void> _onMarkedAllRead(
     NotificationMarkedAllRead event,
     Emitter<NotificationState> emit,
-  ) async
-  {
-
+  ) async {
     if (state.actionStatus == AppStatus.loading) {
       return;
     }

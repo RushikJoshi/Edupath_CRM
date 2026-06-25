@@ -19,10 +19,15 @@ abstract class CustomerApiClient {
   Future<HttpResponse<dynamic>> getCustomer(@Path('id') String id);
 
   @POST(ApiEndpoints.accounts)
-  Future<HttpResponse<dynamic>> createCustomer(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> createCustomer(
+    @Body() Map<String, dynamic> body,
+  );
 
   @PUT(ApiEndpoints.accountDetail)
-  Future<HttpResponse<dynamic>> updateCustomer(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateCustomer(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE(ApiEndpoints.accountDetail)
   Future<void> deleteCustomer(@Path('id') String id);

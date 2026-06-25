@@ -95,23 +95,55 @@ class Injection {
 
     return MultiRepositoryProvider(
       providers: <RepositoryProvider<dynamic>>[
-        RepositoryProvider<StorageService>(create: (_) => getIt<StorageService>()),
+        RepositoryProvider<StorageService>(
+          create: (_) => getIt<StorageService>(),
+        ),
         RepositoryProvider<DioClient>(create: (_) => getIt<DioClient>()),
-        RepositoryProvider<AuthRepository>(create: (_) => getIt<AuthRepository>()),
-        RepositoryProvider<UserRepository>(create: (_) => getIt<UserRepository>()),
-        RepositoryProvider<BranchRepository>(create: (_) => getIt<BranchRepository>()),
-        RepositoryProvider<LeadRepository>(create: (_) => getIt<LeadRepository>()),
-        RepositoryProvider<CustomerRepository>(create: (_) => getIt<CustomerRepository>()),
-        RepositoryProvider<DealRepository>(create: (_) => getIt<DealRepository>()),
-        RepositoryProvider<ActivityRepository>(create: (_) => getIt<ActivityRepository>()),
-        RepositoryProvider<DashboardRepository>(create: (_) => getIt<DashboardRepository>()),
-        RepositoryProvider<InquiryRepository>(create: (_) => getIt<InquiryRepository>()),
-        RepositoryProvider<MeetingRepository>(create: (_) => getIt<MeetingRepository>()),
-        RepositoryProvider<PipelineRepository>(create: (_) => getIt<PipelineRepository>()),
-        RepositoryProvider<AuditLogRepository>(create: (_) => getIt<AuditLogRepository>()),
-        RepositoryProvider<FollowUpRepository>(create: (_) => getIt<FollowUpRepository>()),
-        RepositoryProvider<NotificationRepository>(create: (_) => getIt<NotificationRepository>()),
-        RepositoryProvider<TaskRepository>(create: (_) => getIt<TaskRepository>()),
+        RepositoryProvider<AuthRepository>(
+          create: (_) => getIt<AuthRepository>(),
+        ),
+        RepositoryProvider<UserRepository>(
+          create: (_) => getIt<UserRepository>(),
+        ),
+        RepositoryProvider<BranchRepository>(
+          create: (_) => getIt<BranchRepository>(),
+        ),
+        RepositoryProvider<LeadRepository>(
+          create: (_) => getIt<LeadRepository>(),
+        ),
+        RepositoryProvider<CustomerRepository>(
+          create: (_) => getIt<CustomerRepository>(),
+        ),
+        RepositoryProvider<DealRepository>(
+          create: (_) => getIt<DealRepository>(),
+        ),
+        RepositoryProvider<ActivityRepository>(
+          create: (_) => getIt<ActivityRepository>(),
+        ),
+        RepositoryProvider<DashboardRepository>(
+          create: (_) => getIt<DashboardRepository>(),
+        ),
+        RepositoryProvider<InquiryRepository>(
+          create: (_) => getIt<InquiryRepository>(),
+        ),
+        RepositoryProvider<MeetingRepository>(
+          create: (_) => getIt<MeetingRepository>(),
+        ),
+        RepositoryProvider<PipelineRepository>(
+          create: (_) => getIt<PipelineRepository>(),
+        ),
+        RepositoryProvider<AuditLogRepository>(
+          create: (_) => getIt<AuditLogRepository>(),
+        ),
+        RepositoryProvider<FollowUpRepository>(
+          create: (_) => getIt<FollowUpRepository>(),
+        ),
+        RepositoryProvider<NotificationRepository>(
+          create: (_) => getIt<NotificationRepository>(),
+        ),
+        RepositoryProvider<TaskRepository>(
+          create: (_) => getIt<TaskRepository>(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: <BlocProvider<dynamic>>[
@@ -121,24 +153,16 @@ class Injection {
           BlocProvider<BranchBloc>(
             create: (context) => getIt<BranchBloc>()..add(BranchFetched()),
           ),
-          BlocProvider<InquiryBloc>(
-            create: (context) => getIt<InquiryBloc>(),
-          ),
-          BlocProvider<LeadBloc>(
-            create: (context) => getIt<LeadBloc>(),
-          ),
+          BlocProvider<InquiryBloc>(create: (context) => getIt<InquiryBloc>()),
+          BlocProvider<LeadBloc>(create: (context) => getIt<LeadBloc>()),
           BlocProvider<CustomerBloc>(
             create: (context) => getIt<CustomerBloc>(),
           ),
-          BlocProvider<DealBloc>(
-            create: (context) => getIt<DealBloc>(),
-          ),
+          BlocProvider<DealBloc>(create: (context) => getIt<DealBloc>()),
           BlocProvider<ActivityBloc>(
             create: (context) => getIt<ActivityBloc>(),
           ),
-          BlocProvider<MeetingBloc>(
-            create: (context) => getIt<MeetingBloc>(),
-          ),
+          BlocProvider<MeetingBloc>(create: (context) => getIt<MeetingBloc>()),
           BlocProvider<PipelineBloc>(
             create: (context) => getIt<PipelineBloc>()..add(PipelinesFetched()),
           ),
@@ -148,18 +172,14 @@ class Injection {
           BlocProvider<DashboardBloc>(
             create: (context) => getIt<DashboardBloc>(),
           ),
-          BlocProvider<UserBloc>(
-            create: (context) => getIt<UserBloc>(),
-          ),
+          BlocProvider<UserBloc>(create: (context) => getIt<UserBloc>()),
           BlocProvider<FollowUpBloc>(
             create: (context) => getIt<FollowUpBloc>(),
           ),
           BlocProvider<NotificationBloc>(
             create: (context) => getIt<NotificationBloc>(),
           ),
-          BlocProvider<TaskBloc>(
-            create: (context) => getIt<TaskBloc>(),
-          ),
+          BlocProvider<TaskBloc>(create: (context) => getIt<TaskBloc>()),
         ],
         child: Builder(
           builder: (context) {
@@ -170,39 +190,39 @@ class Injection {
               builder: (context, child) {
                 return BlocListener<AuthBloc, AuthState>(
                   listenWhen: (previous, current) =>
-                  previous.hasToken && !current.hasToken,
-              listener: (context, state) {
-                navigatorKey.currentState?.pushNamedAndRemoveUntil(
-                  AppRoutes.login,
-                  (route) => false,
+                      previous.hasToken && !current.hasToken,
+                  listener: (context, state) {
+                    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+                      AppRoutes.login,
+                      (route) => false,
+                    );
+                  },
+                  child: MaterialApp(
+                    navigatorKey: navigatorKey,
+                    title: AppConstants.appName,
+                    debugShowCheckedModeBanner: false,
+                    theme: AppTheme.lightTheme,
+                    home: const _StartupAuthGate(),
+                    onGenerateRoute: AppRoutes.onGenerateRoute,
+                    builder: (context, child) => ResponsiveBreakpoints.builder(
+                      child: child!,
+                      breakpoints: [
+                        const Breakpoint(start: 0, end: 450, name: MOBILE),
+                        const Breakpoint(start: 451, end: 800, name: TABLET),
+                        const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                        const Breakpoint(
+                          start: 1921,
+                          end: double.infinity,
+                          name: '4K',
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
-              child: MaterialApp(
-                navigatorKey: navigatorKey,
-                title: AppConstants.appName,
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.lightTheme,
-                home: const _StartupAuthGate(),
-                onGenerateRoute: AppRoutes.onGenerateRoute,
-                builder: (context, child) => ResponsiveBreakpoints.builder(
-                  child: child!,
-                  breakpoints: [
-                    const Breakpoint(start: 0, end: 450, name: MOBILE),
-                    const Breakpoint(start: 451, end: 800, name: TABLET),
-                    const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-                    const Breakpoint(
-                      start: 1921,
-                      end: double.infinity,
-                      name: '4K',
-                    ),
-                  ],
-                ),
-              ),
             );
           },
-        );
-      },
-    ),
+        ),
       ),
     );
   }

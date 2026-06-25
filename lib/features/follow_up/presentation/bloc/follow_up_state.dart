@@ -34,5 +34,11 @@ class FollowUpState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, items, actionStatus, actionMessage, errorMessage];
+  List<Object?> get props => [
+    status,
+    items,
+    actionStatus,
+    actionMessage,
+    errorMessage,
+  ];
 }

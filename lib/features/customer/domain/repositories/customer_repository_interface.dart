@@ -1,7 +1,11 @@
 import 'package:gtcrm/features/customer/data/models/customer_model.dart';
 
 abstract class CustomerRepositoryInterface {
-  Future<List<CustomerModel>> getCustomers({int page = 1, int limit = 10, String? search});
+  Future<List<CustomerModel>> getCustomers({
+    int page = 1,
+    int limit = 10,
+    String? search,
+  });
   Future<CustomerModel> getCustomer(String id);
   Future<CustomerModel> createCustomer({
     required String name,

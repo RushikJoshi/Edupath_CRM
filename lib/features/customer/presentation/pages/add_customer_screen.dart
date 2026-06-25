@@ -111,9 +111,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                     duration: const Duration(seconds: 2),
                   ),
                 );
-              Future.delayed(
-                const Duration(seconds: 1),
-              ).then((_) {
+              Future.delayed(const Duration(seconds: 1)).then((_) {
                 if (context.mounted) {
                   Navigator.of(context).pop();
                 }
@@ -264,7 +262,9 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: isLoading ? null : () => Navigator.pop(context),
+                      onPressed: isLoading
+                          ? null
+                          : () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size(0, 50),
                         foregroundColor: const Color(0xFF2E8EFF),

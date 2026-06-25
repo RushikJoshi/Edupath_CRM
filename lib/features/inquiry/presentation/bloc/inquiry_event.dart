@@ -29,7 +29,15 @@ class InquiryFetched extends InquiryEvent {
   final String? location;
 
   @override
-  List<Object?> get props => [page, limit, search, status, isExternal, website, location];
+  List<Object?> get props => [
+    page,
+    limit,
+    search,
+    status,
+    isExternal,
+    website,
+    location,
+  ];
 }
 
 class InquiryCreated extends InquiryEvent {
@@ -138,10 +146,7 @@ class InquiryUpdated extends InquiryEvent {
 }
 
 class InquiryMerged extends InquiryEvent {
-  const InquiryMerged({
-    required this.sourceId,
-    required this.targetId,
-  });
+  const InquiryMerged({required this.sourceId, required this.targetId});
 
   final String sourceId;
   final String targetId;

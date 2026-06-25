@@ -12,5 +12,9 @@ abstract class DashboardApiClient {
   Future<HttpResponse<dynamic>> getDashboardStats();
 
   @GET(ApiEndpoints.dashboard)
-  Future<HttpResponse<dynamic>> getDashboard({@Query('branchId') String? branchId});
+  Future<HttpResponse<dynamic>> getDashboard({
+    @Query('branchId') String? branchId,
+    @Query('branch') String? branch,
+    @Query('branch_id') String? branch_id,
+  });
 }

@@ -46,18 +46,26 @@ class DealCreated extends DealEvent {
 
   @override
   List<Object?> get props => [
-        title, value, stage, leadId, customerId, contactId,
-        assignedTo, pipelineId, stageId, currency, expectedCloseDate,
-        description, priority, tags, notes,
-      ];
+    title,
+    value,
+    stage,
+    leadId,
+    customerId,
+    contactId,
+    assignedTo,
+    pipelineId,
+    stageId,
+    currency,
+    expectedCloseDate,
+    description,
+    priority,
+    tags,
+    notes,
+  ];
 }
 
 class DealStageUpdated extends DealEvent {
-  const DealStageUpdated({
-    required this.id,
-    required this.stage,
-    this.stageId,
-  });
+  const DealStageUpdated({required this.id, required this.stage, this.stageId});
 
   final String id;
   final String stage;
@@ -92,7 +100,14 @@ class DealUpdated extends DealEvent {
 
   @override
   List<Object?> get props => [
-        id, title, value, priority, description,
-        currency, expectedCloseDate, tags, notes,
-      ];
+    id,
+    title,
+    value,
+    priority,
+    description,
+    currency,
+    expectedCloseDate,
+    tags,
+    notes,
+  ];
 }

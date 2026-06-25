@@ -23,7 +23,10 @@ abstract class BranchApiClient {
   Future<HttpResponse<dynamic>> getBranchById(@Path('id') String id);
 
   @PUT(ApiEndpoints.branchDetail)
-  Future<HttpResponse<dynamic>> updateBranch(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateBranch(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE(ApiEndpoints.branchDetail)
   Future<void> deleteBranch(@Path('id') String id);

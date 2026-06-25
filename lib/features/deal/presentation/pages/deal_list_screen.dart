@@ -138,8 +138,7 @@ class _DealListScreenState extends State<DealListScreen> {
         heroTag: 'add_deal_fab',
         onPressed: () =>
             Navigator.pushNamed(context, AppRoutes.addDeal).then((_) {
-              if (context.mounted)
-                context.read<DealBloc>().add(DealFetched());
+              if (context.mounted) context.read<DealBloc>().add(DealFetched());
             }),
         icon: Icon(Icons.add_rounded, color: Colors.white),
         label: Text(

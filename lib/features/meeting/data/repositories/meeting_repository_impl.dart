@@ -42,7 +42,9 @@ class MeetingRepositoryImpl implements MeetingRepository {
       } else if (data is Map && data['meetings'] is List) {
         list = data['meetings'] as List<dynamic>;
       }
-      final meetings = list.map((e) => MeetingModel.fromJson(e as Map<String, dynamic>)).toList();
+      final meetings = list
+          .map((e) => MeetingModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       final role = await _storage.getRole();
       final branchId = await _storage.getBranchId();
@@ -105,35 +107,48 @@ class MeetingRepositoryImpl implements MeetingRepository {
         'startDate': startDate.toUtc().toIso8601String(),
       };
 
-      if (description != null && description.isNotEmpty) body['description'] = description;
+      if (description != null && description.isNotEmpty)
+        body['description'] = description;
       if (endDate != null) body['endDate'] = endDate.toUtc().toIso8601String();
-      if (assignedTo != null && assignedTo.isNotEmpty) body['assignedTo'] = assignedTo;
+      if (assignedTo != null && assignedTo.isNotEmpty)
+        body['assignedTo'] = assignedTo;
       if (leadId != null && leadId.isNotEmpty) body['leadId'] = leadId;
-      if (inquiryId != null && inquiryId.isNotEmpty) body['inquiryId'] = inquiryId;
+      if (inquiryId != null && inquiryId.isNotEmpty)
+        body['inquiryId'] = inquiryId;
       if (dealId != null && dealId.isNotEmpty) body['dealId'] = dealId;
-      if (customerId != null && customerId.isNotEmpty) body['customerId'] = customerId;
-      if (contactName != null && contactName.isNotEmpty) body['contactName'] = contactName;
-      if (contactEmail != null && contactEmail.isNotEmpty) body['contactEmail'] = contactEmail;
-      if (contactPhone != null && contactPhone.isNotEmpty) body['contactPhone'] = contactPhone;
-      if (attendanceMode != null && attendanceMode.isNotEmpty) body['attendanceMode'] = attendanceMode;
+      if (customerId != null && customerId.isNotEmpty)
+        body['customerId'] = customerId;
+      if (contactName != null && contactName.isNotEmpty)
+        body['contactName'] = contactName;
+      if (contactEmail != null && contactEmail.isNotEmpty)
+        body['contactEmail'] = contactEmail;
+      if (contactPhone != null && contactPhone.isNotEmpty)
+        body['contactPhone'] = contactPhone;
+      if (attendanceMode != null && attendanceMode.isNotEmpty)
+        body['attendanceMode'] = attendanceMode;
       if (meetingType != null && meetingType.isNotEmpty) {
         body['meetingType'] = meetingType;
         body['type'] = meetingType;
       }
-      if (meetingLink != null && meetingLink.isNotEmpty) body['meetingLink'] = meetingLink;
-      if (onlineUrl != null && onlineUrl.isNotEmpty) body['onlineUrl'] = onlineUrl;
+      if (meetingLink != null && meetingLink.isNotEmpty)
+        body['meetingLink'] = meetingLink;
+      if (onlineUrl != null && onlineUrl.isNotEmpty)
+        body['onlineUrl'] = onlineUrl;
       if (location != null && location.isNotEmpty) body['location'] = location;
       if (notes != null && notes.isNotEmpty) body['notes'] = notes;
       if (status != null && status.isNotEmpty) body['status'] = status;
-      if (reminderMinutes != null && reminderMinutes.isNotEmpty) body['reminderMinutes'] = reminderMinutes;
-      if (sendSystemReminder != null) body['sendSystemReminder'] = sendSystemReminder;
-      if (sendEmailReminder != null) body['sendEmailReminder'] = sendEmailReminder;
-
+      if (reminderMinutes != null && reminderMinutes.isNotEmpty)
+        body['reminderMinutes'] = reminderMinutes;
+      if (sendSystemReminder != null)
+        body['sendSystemReminder'] = sendSystemReminder;
+      if (sendEmailReminder != null)
+        body['sendEmailReminder'] = sendEmailReminder;
 
       final response = await _apiClient.createMeeting(body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['meeting'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['meeting'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return MeetingModel.fromJson(json);
       }
       throw const AppException(
@@ -141,7 +156,9 @@ class MeetingRepositoryImpl implements MeetingRepository {
         userMessage: 'Unexpected response creating meeting',
       );
     } on DioException catch (e) {
-      print('DIAGNOSTIC CREATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}');
+      print(
+        'DIAGNOSTIC CREATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}',
+      );
       throw AppErrorHandler.fromDioException(e);
     }
   }
@@ -176,35 +193,49 @@ class MeetingRepositoryImpl implements MeetingRepository {
       final body = <String, dynamic>{};
 
       if (title != null && title.isNotEmpty) body['title'] = title;
-      if (description != null && description.isNotEmpty) body['description'] = description;
-      if (startDate != null) body['startDate'] = startDate.toUtc().toIso8601String();
+      if (description != null && description.isNotEmpty)
+        body['description'] = description;
+      if (startDate != null)
+        body['startDate'] = startDate.toUtc().toIso8601String();
       if (endDate != null) body['endDate'] = endDate.toUtc().toIso8601String();
-      if (assignedTo != null && assignedTo.isNotEmpty) body['assignedTo'] = assignedTo;
+      if (assignedTo != null && assignedTo.isNotEmpty)
+        body['assignedTo'] = assignedTo;
       if (leadId != null && leadId.isNotEmpty) body['leadId'] = leadId;
-      if (inquiryId != null && inquiryId.isNotEmpty) body['inquiryId'] = inquiryId;
+      if (inquiryId != null && inquiryId.isNotEmpty)
+        body['inquiryId'] = inquiryId;
       if (dealId != null && dealId.isNotEmpty) body['dealId'] = dealId;
-      if (customerId != null && customerId.isNotEmpty) body['customerId'] = customerId;
-      if (contactName != null && contactName.isNotEmpty) body['contactName'] = contactName;
-      if (contactEmail != null && contactEmail.isNotEmpty) body['contactEmail'] = contactEmail;
-      if (contactPhone != null && contactPhone.isNotEmpty) body['contactPhone'] = contactPhone;
-      if (attendanceMode != null && attendanceMode.isNotEmpty) body['attendanceMode'] = attendanceMode;
+      if (customerId != null && customerId.isNotEmpty)
+        body['customerId'] = customerId;
+      if (contactName != null && contactName.isNotEmpty)
+        body['contactName'] = contactName;
+      if (contactEmail != null && contactEmail.isNotEmpty)
+        body['contactEmail'] = contactEmail;
+      if (contactPhone != null && contactPhone.isNotEmpty)
+        body['contactPhone'] = contactPhone;
+      if (attendanceMode != null && attendanceMode.isNotEmpty)
+        body['attendanceMode'] = attendanceMode;
       if (meetingType != null && meetingType.isNotEmpty) {
         body['meetingType'] = meetingType;
         body['type'] = meetingType;
       }
-      if (meetingLink != null && meetingLink.isNotEmpty) body['meetingLink'] = meetingLink;
-      if (onlineUrl != null && onlineUrl.isNotEmpty) body['onlineUrl'] = onlineUrl;
+      if (meetingLink != null && meetingLink.isNotEmpty)
+        body['meetingLink'] = meetingLink;
+      if (onlineUrl != null && onlineUrl.isNotEmpty)
+        body['onlineUrl'] = onlineUrl;
       if (location != null && location.isNotEmpty) body['location'] = location;
       if (notes != null && notes.isNotEmpty) body['notes'] = notes;
       if (status != null && status.isNotEmpty) body['status'] = status;
       if (reminderMinutes != null) body['reminderMinutes'] = reminderMinutes;
-      if (sendSystemReminder != null) body['sendSystemReminder'] = sendSystemReminder;
-      if (sendEmailReminder != null) body['sendEmailReminder'] = sendEmailReminder;
+      if (sendSystemReminder != null)
+        body['sendSystemReminder'] = sendSystemReminder;
+      if (sendEmailReminder != null)
+        body['sendEmailReminder'] = sendEmailReminder;
 
       final response = await _apiClient.updateMeeting(meetingId, body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['meeting'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['meeting'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return MeetingModel.fromJson(json);
       }
       throw const AppException(
@@ -212,7 +243,9 @@ class MeetingRepositoryImpl implements MeetingRepository {
         userMessage: 'Unexpected response updating meeting',
       );
     } on DioException catch (e) {
-      print('DIAGNOSTIC UPDATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}');
+      print(
+        'DIAGNOSTIC UPDATE MEETING ERROR: Status ${e.response?.statusCode} - Response: ${e.response?.data}',
+      );
       throw AppErrorHandler.fromDioException(e);
     }
   }

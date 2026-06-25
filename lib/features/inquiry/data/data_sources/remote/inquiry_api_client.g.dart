@@ -28,6 +28,9 @@ class _InquiryApiClient implements InquiryApiClient {
     bool? isExternal,
     String? website,
     String? location,
+    String? branchId,
+    String? branch,
+    String? branch_id,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -38,6 +41,9 @@ class _InquiryApiClient implements InquiryApiClient {
       r'isExternal': isExternal,
       r'website': website,
       r'location': location,
+      r'branchId': branchId,
+      r'branch': branch,
+      r'branch_id': branch_id,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};

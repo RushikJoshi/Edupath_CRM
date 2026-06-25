@@ -35,6 +35,9 @@ abstract class LeadRepositoryInterface {
     String? notes,
   });
   Future<List<LeadModel>> getDuplicateLeads(String leadId);
-  Future<LeadModel?> mergeDuplicateLead({required String leadId, required String targetId});
+  Future<LeadModel?> mergeDuplicateLead({
+    required String leadId,
+    required String targetId,
+  });
   Future<DealModel?> convertLead(String leadId);
 }

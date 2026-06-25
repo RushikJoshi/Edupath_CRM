@@ -111,8 +111,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 size: 26,
               ),
               onPressed: () => context.read<NotificationBloc>().add(
-                    const NotificationFetched(),
-                  ),
+                const NotificationFetched(),
+              ),
             ),
             SizedBox(width: 8.w),
           ],
@@ -193,8 +193,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         return GestureDetector(
                           onTap: canMarkAll
                               ? () => context.read<NotificationBloc>().add(
-                                    const NotificationMarkedAllRead(),
-                                  )
+                                  const NotificationMarkedAllRead(),
+                                )
                               : null,
                           child: Container(
                             height: 46.h,
@@ -242,11 +242,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               Expanded(
                 child: BlocBuilder<NotificationBloc, NotificationState>(
                   builder: (context, state) {
-                    if (state.status == AppStatus.loading && state.items.isEmpty) {
+                    if (state.status == AppStatus.loading &&
+                        state.items.isEmpty) {
                       return ShimmerLoading.listPlaceholder(itemCount: 7);
                     }
 
-                    if (state.status == AppStatus.failure && state.items.isEmpty) {
+                    if (state.status == AppStatus.failure &&
+                        state.items.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -258,7 +260,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             ),
                             SizedBox(height: 10.h),
                             Text(
-                              state.errorMessage ?? 'Unable to load notifications',
+                              state.errorMessage ??
+                                  'Unable to load notifications',
                               style: GoogleFonts.poppins(
                                 color: AppColors.textSecondary,
                               ),
@@ -266,9 +269,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             ),
                             SizedBox(height: 14.h),
                             FilledButton(
-                              onPressed: () => context.read<NotificationBloc>().add(
-                                    const NotificationFetched(),
-                                  ),
+                              onPressed: () => context
+                                  .read<NotificationBloc>()
+                                  .add(const NotificationFetched()),
                               style: FilledButton.styleFrom(
                                 backgroundColor: const Color(0xFF2E8EFF),
                               ),
@@ -290,15 +293,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       color: const Color(0xFF2E8EFF),
                       onRefresh: () async {
                         context.read<NotificationBloc>().add(
-                              const NotificationFetched(),
-                            );
+                          const NotificationFetched(),
+                        );
                       },
                       child: filteredItems.isEmpty
                           ? ListView(
                               physics: const AlwaysScrollableScrollPhysics(),
                               children: [
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.2,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
                                 ),
                                 Icon(
                                   Icons.notifications_none_rounded,
@@ -323,7 +327,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                 final item = filteredItems[index];
                                 return _notificationCard(context, item);
                               },
-                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                              separatorBuilder: (_, __) =>
+                                  SizedBox(height: 12.h),
                               itemCount: filteredItems.length,
                             ),
                     );
@@ -445,8 +450,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     children: [
                       GestureDetector(
                         onTap: () => context.read<NotificationBloc>().add(
-                              NotificationMarkedRead(item.id),
-                            ),
+                          NotificationMarkedRead(item.id),
+                        ),
                         child: Text(
                           'Mark Read',
                           style: GoogleFonts.poppins(

@@ -9,7 +9,9 @@ class AppColors {
   // ─── Primary ────────────────────────────────────────────────────────
   static const Color primary = Color(0xFF2E8EFF);
   static const Color primaryDark = Color(0xFF1B73E3); // darker shade of primary
-  static const Color primaryLight = Color(0xFF5CA3FF); // lighter shade of primary
+  static const Color primaryLight = Color(
+    0xFF5CA3FF,
+  ); // lighter shade of primary
   static const Color primarySurface = Color(0xFFE5F2FF);
   static const Color primaryDarkBlue = Color(0xFF2E8EFF);
 
@@ -20,10 +22,22 @@ class AppColors {
   static const Color accentSurface = Color(0xFFCCF7F0);
 
   // ─── Gradients ───────────────────────────────────────────────────────
-  static const List<Color> primaryGradient = [Color(0xFF2E8EFF), Color(0xFF1B73E3)];
-  static const List<Color> splashGradient = [Color(0xFF2E8EFF), Color(0xFF1B73E3)];
-  static const List<Color> dashboardGradient = [Color(0xFF1B73E3), Color(0xFF2E8EFF)];
-  static const List<Color> accentGradient = [Color(0xFF45E2C8), Color(0xFF2EC4AC)];
+  static const List<Color> primaryGradient = [
+    Color(0xFF2E8EFF),
+    Color(0xFF1B73E3),
+  ];
+  static const List<Color> splashGradient = [
+    Color(0xFF2E8EFF),
+    Color(0xFF1B73E3),
+  ];
+  static const List<Color> dashboardGradient = [
+    Color(0xFF1B73E3),
+    Color(0xFF2E8EFF),
+  ];
+  static const List<Color> accentGradient = [
+    Color(0xFF45E2C8),
+    Color(0xFF2EC4AC),
+  ];
 
   // ─── Status ──────────────────────────────────────────────────────────
   static const Color success = Color(0xFF45E2C8); // teal = success
@@ -39,13 +53,17 @@ class AppColors {
 
   // ─── Backgrounds ─────────────────────────────────────────────────────
   static const Color background = Color(0xFFF9FAFB); // page scaffold
-  static const Color surfaceWhite = Color(0xFFF5FBFF); // card surface (near-white, very light blue)
+  static const Color surfaceWhite = Color(
+    0xFFF5FBFF,
+  ); // card surface (near-white, very light blue)
   static const Color surfaceCard = Color(0xFFF5FBFF); // same as surfaceWhite
   static const Color surfaceLight = Color(0xFFCCF7F0); // teal section bg
 
   // ─── Text — proper hierarchy ─────────────────────────────────────────
   static const Color textPrimary = Color(0xFF0D4C7D); // main headings
-  static const Color textSecondary = Color(0xFF2D6EA0); // subtext (lighter blue)
+  static const Color textSecondary = Color(
+    0xFF2D6EA0,
+  ); // subtext (lighter blue)
   static const Color textMuted = Color(0xFF6B9AB8); // muted / hint text
 
   // ─── Borders / Dividers ──────────────────────────────────────────────

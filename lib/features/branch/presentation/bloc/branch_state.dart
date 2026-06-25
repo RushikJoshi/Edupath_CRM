@@ -33,12 +33,16 @@ class BranchState extends Equatable {
       items: items ?? this.items,
       errorMessage: errorMessage ?? this.errorMessage,
       actionStatus: actionStatus ?? this.actionStatus,
-      actionError:
-          clearActionError ? null : (actionError ?? this.actionError),
+      actionError: clearActionError ? null : (actionError ?? this.actionError),
     );
   }
 
   @override
-  List<Object?> get props =>
-      [status, items, errorMessage, actionStatus, actionError];
+  List<Object?> get props => [
+    status,
+    items,
+    errorMessage,
+    actionStatus,
+    actionError,
+  ];
 }

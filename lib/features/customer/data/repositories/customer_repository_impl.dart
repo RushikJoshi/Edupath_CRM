@@ -14,16 +14,73 @@ class CustomerRepositoryImpl implements CustomerRepository {
 
   Map<String, dynamic> _normalizeAccountJson(Map<String, dynamic> json) {
     final normalized = Map<String, dynamic>.from(json);
-    normalized['companyName'] = normalized['companyName'] ?? normalized['industry'] ?? normalized['name'] ?? '';
-    normalized['branchId'] = normalized['branchId'] ?? normalized['branch_id'] ?? '';
-    normalized['branchName'] = normalized['branchName'] ?? '';
+
+    String extractNestedName(dynamic value) {
+      if (value is Map) {
+        return (value['name'] ??
+                value['fullName'] ??
+                value['title'] ??
+                value['customerName'] ??
+                value['contactName'] ??
+                '')
+            .toString();
+      }
+      return value?.toString() ?? '';
+    }
+
+    final name = (json['name']?.toString() ?? 
+                  extractNestedName(json['contact']) ??
+                  extractNestedName(json['lead']) ??
+                  json['fullName']?.toString() ?? 
+                  json['displayName']?.toString() ?? 
+                  '').trim();
+                  
+    final companyName = (json['companyName']?.toString() ?? 
+                         json['industry']?.toString() ?? 
+                         '').trim();
+
+    if (name.isNotEmpty) {
+      normalized['name'] = name;
+      normalized['companyName'] = companyName.isNotEmpty ? companyName : name;
+    } else if (companyName.isNotEmpty) {
+      normalized['name'] = companyName;
+      normalized['companyName'] = companyName;
+    } else {
+      normalized['name'] = 'No Name';
+      normalized['companyName'] = 'No Company';
+    }
+
+    final branchRaw = json['branch'] ?? json['branch_id'] ?? json['branchId'];
+    String parsedBranchId = '';
+    String parsedBranchName = '';
+
+    if (branchRaw is Map) {
+      parsedBranchId = (branchRaw['_id'] ?? branchRaw['id'] ?? '').toString();
+      parsedBranchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '').toString();
+    } else if (branchRaw != null) {
+      parsedBranchId = branchRaw.toString();
+    }
+
+    normalized['branchId'] = parsedBranchId;
+    normalized['branchName'] = parsedBranchName.isNotEmpty 
+        ? parsedBranchName 
+        : (normalized['branchName']?.toString() ?? '');
+
     return normalized;
   }
 
   @override
-  Future<List<CustomerModel>> fetchAll({int page = 1, int limit = 10, String? search}) async {
+  Future<List<CustomerModel>> fetchAll({
+    int page = 1,
+    int limit = 10,
+    String? search,
+  }) async {
     try {
-      final response = await _apiClient.getCustomers(page: page, limit: limit, search: search);
+      final response = await _apiClient.getCustomers(
+        page: page,
+        limit: limit,
+        search: search,
+      );
       final data = response.data;
       List<dynamic> list = [];
       if (data is List) {
@@ -38,8 +95,14 @@ class CustomerRepositoryImpl implements CustomerRepository {
           }
         }
       }
-      final customers = list.map((e) => CustomerModel.fromJson(_normalizeAccountJson(e as Map<String, dynamic>))).toList();
-      
+      final customers = list
+          .map(
+            (e) => CustomerModel.fromJson(
+              _normalizeAccountJson(e as Map<String, dynamic>),
+            ),
+          )
+          .toList();
+
       // Apply branch filter for non-admin users
       final role = await _storageService.getRole();
       final branchId = await _storageService.getBranchId();
@@ -63,7 +126,12 @@ class CustomerRepositoryImpl implements CustomerRepository {
         return customers;
       }
 
-      final filtered = customers.where((customer) => customer.branchId == branchId).toList();
+      final filtered = customers
+          .where((customer) =>
+              customer.branchId == null ||
+              customer.branchId!.isEmpty ||
+              customer.branchId == branchId)
+          .toList();
       print('Filtered Count: ${filtered.length}');
       print('===========================');
       return filtered;
@@ -79,7 +147,8 @@ class CustomerRepositoryImpl implements CustomerRepository {
       final data = response.data;
       Map<String, dynamic>? accountData;
       if (data is Map<String, dynamic>) {
-        accountData = data['account'] ?? data['data'] ?? data['customer'] ?? data;
+        accountData =
+            data['account'] ?? data['data'] ?? data['customer'] ?? data;
       }
       if (accountData == null) {
         throw AppException(
@@ -127,10 +196,14 @@ class CustomerRepositoryImpl implements CustomerRepository {
       final data = response.data;
       Map<String, dynamic>? accountData;
       if (data is Map<String, dynamic>) {
-        accountData = data['account'] ?? data['data'] ?? data['customer'] ?? data;
+        accountData =
+            data['account'] ?? data['data'] ?? data['customer'] ?? data;
       }
       if (accountData == null) {
-        throw AppException(type: AppErrorType.server, userMessage: 'Failed to create account');
+        throw AppException(
+          type: AppErrorType.server,
+          userMessage: 'Failed to create account',
+        );
       }
       return CustomerModel.fromJson(_normalizeAccountJson(accountData));
     } on DioException catch (e) {
@@ -168,10 +241,14 @@ class CustomerRepositoryImpl implements CustomerRepository {
       final data = response.data;
       Map<String, dynamic>? accountData;
       if (data is Map<String, dynamic>) {
-        accountData = data['account'] ?? data['data'] ?? data['customer'] ?? data;
+        accountData =
+            data['account'] ?? data['data'] ?? data['customer'] ?? data;
       }
       if (accountData == null) {
-        throw AppException(type: AppErrorType.server, userMessage: 'Failed to update account');
+        throw AppException(
+          type: AppErrorType.server,
+          userMessage: 'Failed to update account',
+        );
       }
       return CustomerModel.fromJson(_normalizeAccountJson(accountData));
     } on DioException catch (e) {

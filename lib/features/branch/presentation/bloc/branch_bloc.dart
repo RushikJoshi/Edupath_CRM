@@ -17,7 +17,9 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
   final BranchRepository _repository;
 
   Future<void> _onFetched(
-      BranchFetched event, Emitter<BranchState> emit) async {
+    BranchFetched event,
+    Emitter<BranchState> emit,
+  ) async {
     emit(state.copyWith(status: AppStatus.loading));
     try {
       final items = await _repository.fetchAll(
@@ -28,79 +30,108 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
       );
       emit(state.copyWith(status: AppStatus.success, items: items));
     } catch (e) {
-      emit(state.copyWith(
-        status: AppStatus.failure,
-        errorMessage: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 
   Future<void> _onCreated(
-      BranchCreated event, Emitter<BranchState> emit) async {
-    emit(state.copyWith(
-        actionStatus: AppStatus.loading, clearActionError: true));
+    BranchCreated event,
+    Emitter<BranchState> emit,
+  ) async {
+    emit(
+      state.copyWith(actionStatus: AppStatus.loading, clearActionError: true),
+    );
     try {
       final newBranch = await _repository.createBranch(event.data);
       final updated = [newBranch, ...state.items];
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        items: updated,
-        clearActionError: true,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: updated,
+          clearActionError: true,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionError: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionError: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 
   Future<void> _onUpdated(
-      BranchUpdated event, Emitter<BranchState> emit) async {
-    emit(state.copyWith(
-        actionStatus: AppStatus.loading, clearActionError: true));
+    BranchUpdated event,
+    Emitter<BranchState> emit,
+  ) async {
+    emit(
+      state.copyWith(actionStatus: AppStatus.loading, clearActionError: true),
+    );
     try {
-      final updatedBranch = await _repository.updateBranch(event.id, event.data);
+      final updatedBranch = await _repository.updateBranch(
+        event.id,
+        event.data,
+      );
       final updatedItems = state.items.map((b) {
         return b.id == event.id ? updatedBranch : b;
       }).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        items: updatedItems,
-        clearActionError: true,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: updatedItems,
+          clearActionError: true,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionError: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionError: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 
   Future<void> _onDeleted(
-      BranchDeleted event, Emitter<BranchState> emit) async {
-    emit(state.copyWith(
-        actionStatus: AppStatus.loading, clearActionError: true));
+    BranchDeleted event,
+    Emitter<BranchState> emit,
+  ) async {
+    emit(
+      state.copyWith(actionStatus: AppStatus.loading, clearActionError: true),
+    );
     try {
       await _repository.deleteBranch(event.id);
       final updatedItems = state.items.where((b) => b.id != event.id).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        items: updatedItems,
-        clearActionError: true,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: updatedItems,
+          clearActionError: true,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionError: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionError: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 
   Future<void> _onStatusToggled(
-      BranchStatusToggled event, Emitter<BranchState> emit) async {
-    emit(state.copyWith(
-        actionStatus: AppStatus.loading, clearActionError: true));
+    BranchStatusToggled event,
+    Emitter<BranchState> emit,
+  ) async {
+    emit(
+      state.copyWith(actionStatus: AppStatus.loading, clearActionError: true),
+    );
     try {
       await _repository.toggleBranchStatus(event.id);
       final updatedItems = state.items.map((b) {
@@ -113,16 +144,20 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
         }
         return b;
       }).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        items: updatedItems,
-        clearActionError: true,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          items: updatedItems,
+          clearActionError: true,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionError: e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionError: e.toString().replaceFirst('Exception: ', ''),
+        ),
+      );
     }
   }
 }

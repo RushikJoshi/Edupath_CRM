@@ -49,12 +49,8 @@ class DioClient {
       createHttpClient: () {
         final client = HttpClient();
         if (allowBadCertificatesInDebug) {
-          client.badCertificateCallback = (
-            X509Certificate cert,
-            String host,
-            int port,
-          ) =>
-              true;
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
         }
         return client;
       },
@@ -97,10 +93,7 @@ class DioClient {
           }
 
           handler.reject(
-            error.copyWith(
-              message: appError.userMessage,
-              error: appError,
-            ),
+            error.copyWith(message: appError.userMessage, error: appError),
           );
         },
       ),

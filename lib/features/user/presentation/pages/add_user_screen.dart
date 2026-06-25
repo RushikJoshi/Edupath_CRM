@@ -47,7 +47,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   void initState() {
     super.initState();
     final auth = context.read<AuthBloc>().state;
-    
+
     // Fetch branches if empty
     final branchState = context.read<BranchBloc>().state;
     if (branchState.items.isEmpty && branchState.status != AppStatus.loading) {
@@ -74,7 +74,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
     super.dispose();
   }
 
-  List<BranchModel> _availableBranches(AuthState auth, BranchState branchState) {
+  List<BranchModel> _availableBranches(
+    AuthState auth,
+    BranchState branchState,
+  ) {
     final currentRole = auth.user?.role ?? '';
     final currentBranchId = auth.user?.branchId ?? '';
 
@@ -84,7 +87,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     if (currentBranchId.isEmpty) return [];
 
-    final fromList = branchState.items.where((b) => b.id == currentBranchId).toList();
+    final fromList = branchState.items
+        .where((b) => b.id == currentBranchId)
+        .toList();
     if (fromList.isNotEmpty) return fromList;
 
     final storedName = auth.user?.branchName ?? '';
@@ -100,7 +105,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
     return "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}";
   }
 
-  Future<void> _selectDate(BuildContext context, DateTime? initial, Function(DateTime) onSelected) async {
+  Future<void> _selectDate(
+    BuildContext context,
+    DateTime? initial,
+    Function(DateTime) onSelected,
+  ) async {
     final picked = await showDatePicker(
       context: context,
       initialDate: initial ?? DateTime.now(),
@@ -132,11 +141,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
       return;
     }
 
-    if (_selectedJoiningDate == null) {
-      _showErrorSnackBar('Please select a joining date');
-      return;
-    }
-
     final firstName = _firstNameCtrl.text.trim();
     final lastName = _lastNameCtrl.text.trim();
     final name = "$firstName $lastName";
@@ -151,10 +155,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       'role': _selectedRole,
       'department': _departmentCtrl.text.trim(),
       'primaryBranchId': _selectedBranchId,
-      'branchId': _selectedBranchId, // Keep compatibility with existing repository
+      'branchId':
+          _selectedBranchId, // Keep compatibility with existing repository
       'employeeId': _employeeIdCtrl.text.trim(),
       'jobTitle': _jobTitleCtrl.text.trim(),
-      'joiningDate': _formatDate(_selectedJoiningDate!),
+      'joiningDate': _selectedJoiningDate != null ? _formatDate(_selectedJoiningDate!) : null,
       'employmentType': _selectedEmploymentType,
       'password': _passCtrl.text,
       'status': _selectedStatus,
@@ -166,13 +171,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
+        content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.r),
+        ),
       ),
     );
   }
@@ -182,7 +186,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
     return BlocListener<UserBloc, UserState>(
       listenWhen: (prev, curr) =>
           curr.actionStatus != prev.actionStatus &&
-          (curr.actionStatus == AppStatus.success || curr.actionStatus == AppStatus.failure),
+          (curr.actionStatus == AppStatus.success ||
+              curr.actionStatus == AppStatus.failure),
       listener: (context, state) {
         final isCurrentRoute = ModalRoute.of(context)?.isCurrent ?? true;
         if (!isCurrentRoute) return;
@@ -198,7 +203,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 ),
                 backgroundColor: const Color(0xFF2ECC71),
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -217,7 +224,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 ),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
               ),
             );
         }
@@ -229,12 +238,20 @@ class _AddUserScreenState extends State<AddUserScreen> {
           elevation: 0,
           toolbarHeight: 64,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           title: Text(
             'Add User',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20.sp, color: Colors.white),
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+              color: Colors.white,
+            ),
           ),
         ),
         body: ResponsiveConstraint(
@@ -254,7 +271,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         label: 'First Name *',
                         hint: 'Rahul',
                         icon: Icons.person_outline_rounded,
-                        validator: (v) => v == null || v.isEmpty ? 'First name is required' : null,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'First name is required'
+                            : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildTextField(
@@ -262,7 +281,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         label: 'Last Name *',
                         hint: 'Patel',
                         icon: Icons.person_outline_rounded,
-                        validator: (v) => v == null || v.isEmpty ? 'Last name is required' : null,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'Last name is required'
+                            : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildTextField(
@@ -272,7 +293,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         icon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Email is required';
+                          if (v == null || v.isEmpty)
+                            return 'Email is required';
                           if (!v.contains('@')) return 'Enter a valid email';
                           return null;
                         },
@@ -284,7 +306,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         hint: 'e.g. 9876543210',
                         icon: Icons.phone_outlined,
                         keyboardType: TextInputType.phone,
-                        validator: (v) => v == null || v.isEmpty ? 'Phone number is required' : null,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'Phone number is required'
+                            : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildTextField(
@@ -294,7 +318,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         icon: Icons.lock_outline_rounded,
                         obscure: true,
                         validator: (v) {
-                          if (v == null || v.isEmpty) return 'Password is required';
+                          if (v == null || v.isEmpty)
+                            return 'Password is required';
                           if (v.length < 6) return 'Min 6 characters';
                           return null;
                         },
@@ -310,34 +335,32 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     children: [
                       _buildTextField(
                         controller: _employeeIdCtrl,
-                        label: 'Employee ID *',
+                        label: 'Employee ID',
                         hint: 'e.g. EMP001',
                         icon: Icons.badge_outlined,
-                        validator: (v) => v == null || v.isEmpty ? 'Employee ID is required' : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildTextField(
                         controller: _jobTitleCtrl,
-                        label: 'Job Title *',
+                        label: 'Job Title',
                         hint: 'e.g. Sales Executive',
                         icon: Icons.work_outline_rounded,
-                        validator: (v) => v == null || v.isEmpty ? 'Job title is required' : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildTextField(
                         controller: _departmentCtrl,
-                        label: 'Department *',
+                        label: 'Department',
                         hint: 'e.g. Sales',
                         icon: Icons.business_outlined,
-                        validator: (v) => v == null || v.isEmpty ? 'Department is required' : null,
                       ),
                       SizedBox(height: 14.h),
                       _buildDatePickerField(
-                        label: 'Joining Date *',
+                        label: 'Joining Date',
                         value: _selectedJoiningDate,
-                        onTap: () => _selectDate(context, _selectedJoiningDate, (dt) {
-                          setState(() => _selectedJoiningDate = dt);
-                        }),
+                        onTap: () =>
+                            _selectDate(context, _selectedJoiningDate, (dt) {
+                              setState(() => _selectedJoiningDate = dt);
+                            }),
                       ),
                       SizedBox(height: 14.h),
                       _buildEmploymentTypeDropdown(),
@@ -353,10 +376,17 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       BlocBuilder<BranchBloc, BranchState>(
                         builder: (context, branchState) {
                           final auth = context.read<AuthBloc>().state;
-                          final branches = _availableBranches(auth, branchState);
-                          final branchesLoading = RoleGuard.isCompanyAdmin(auth.user?.role ?? '') &&
+                          final branches = _availableBranches(
+                            auth,
+                            branchState,
+                          );
+                          final branchesLoading =
+                              RoleGuard.isCompanyAdmin(auth.user?.role ?? '') &&
                               branchState.status == AppStatus.loading;
-                          return _buildBranchDropdown(branches: branches, isLoading: branchesLoading);
+                          return _buildBranchDropdown(
+                            branches: branches,
+                            isLoading: branchesLoading,
+                          );
                         },
                       ),
                       SizedBox(height: 14.h),
@@ -379,7 +409,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
-                  BoxShadow(color: Color(0x10000000), blurRadius: 10, spreadRadius: 0, offset: Offset(0, -4)),
+                  BoxShadow(
+                    color: Color(0x10000000),
+                    blurRadius: 10,
+                    spreadRadius: 0,
+                    offset: Offset(0, -4),
+                  ),
                 ],
               ),
               child: SafeArea(
@@ -387,16 +422,26 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: isLoading ? null : () => Navigator.pop(context),
+                        onPressed: isLoading
+                            ? null
+                            : () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: Colors.black87,
-                          side: BorderSide(color: Color(0xFF2E8EFF), width: 1.5.w),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                          side: BorderSide(
+                            color: Color(0xFF2E8EFF),
+                            width: 1.5.w,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
                         ),
                         child: Text(
                           'Cancel',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Color(0xFF2E8EFF)),
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF2E8EFF),
+                          ),
                         ),
                       ),
                     ),
@@ -410,18 +455,27 @@ class _AddUserScreenState extends State<AddUserScreen> {
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF2E8EFF),
                             disabledBackgroundColor: Colors.grey.shade300,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
                             elevation: 0,
                           ),
                           child: isLoading
                               ? SizedBox(
                                   height: 20.h,
                                   width: 20.w,
-                                  child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Colors.white,
+                                  ),
                                 )
                               : Text(
                                   'Add User',
-                                  style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 15.sp, color: Colors.white),
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15.sp,
+                                    color: Colors.white,
+                                  ),
                                 ),
                         ),
                       ),
@@ -503,7 +557,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         TextFormField(
@@ -513,11 +571,17 @@ class _AddUserScreenState extends State<AddUserScreen> {
           style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+            hintStyle: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              color: Colors.grey.shade400,
+            ),
             prefixIcon: Icon(icon, size: 18, color: Colors.black54),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 12.w),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 12.h,
+              horizontal: 12.w,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.r),
               borderSide: BorderSide(color: Colors.grey.shade300),
@@ -556,7 +620,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         InkWell(
@@ -564,13 +632,22 @@ class _AddUserScreenState extends State<AddUserScreen> {
           borderRadius: BorderRadius.circular(10.r),
           child: InputDecorator(
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.calendar_today_rounded, size: 18, color: Colors.black54),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+              prefixIcon: const Icon(
+                Icons.calendar_today_rounded,
+                size: 18,
+                color: Colors.black54,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
                 borderSide: BorderSide(color: Colors.grey.shade300),
               ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 12.h,
+              ),
             ),
             child: Text(
               text,
@@ -589,16 +666,23 @@ class _AddUserScreenState extends State<AddUserScreen> {
     required List<BranchModel> branches,
     bool isLoading = false,
   }) {
-    final selectedBranch = branches.where((b) => b.id == _selectedBranchId).firstOrNull ??
+    final selectedBranch =
+        branches.where((b) => b.id == _selectedBranchId).firstOrNull ??
         (branches.isNotEmpty ? branches.first : null);
-    final displayText = selectedBranch != null ? selectedBranch.name : 'Select branch *';
+    final displayText = selectedBranch != null
+        ? selectedBranch.name
+        : 'Select branch *';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Primary Branch *',
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         if (isLoading)
@@ -637,7 +721,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       children: [
         Text(
           'Role *',
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         _buildDropdownSelector(
@@ -671,7 +759,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       children: [
         Text(
           'Status *',
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         _buildDropdownSelector(
@@ -697,14 +789,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
       'contract': 'Contract',
       'intern': 'Intern',
     };
-    final displayText = labels[_selectedEmploymentType] ?? _selectedEmploymentType;
+    final displayText =
+        labels[_selectedEmploymentType] ?? _selectedEmploymentType;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Employment Type *',
-          style: GoogleFonts.poppins(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.black54),
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: Colors.black54,
+          ),
         ),
         SizedBox(height: 6.h),
         _buildDropdownSelector(
@@ -727,7 +824,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
   Widget _buildLoadingDecorator(String text) {
     return InputDecorator(
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.refresh_rounded, size: 18, color: Colors.black54),
+        prefixIcon: Icon(
+          Icons.refresh_rounded,
+          size: 18,
+          color: Colors.black54,
+        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
         contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       ),
@@ -736,10 +837,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
           SizedBox(
             width: 14.w,
             height: 14.h,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Color(0xFF2E8EFF),
+            ),
           ),
           SizedBox(width: 10.w),
-          Text(text, style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500)),
+          Text(
+            text,
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              color: Colors.grey.shade500,
+            ),
+          ),
         ],
       ),
     );
@@ -761,7 +871,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
             borderRadius: BorderRadius.circular(10.r),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 12.w,
+            vertical: 12.h,
+          ),
         ),
         child: Text(
           displayText,
@@ -782,7 +895,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
       builder: (BuildContext ctx) {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -794,9 +909,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title, style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Colors.black54,
+                      ),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -814,11 +939,20 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         labels[val] ?? val,
                         style: GoogleFonts.poppins(
                           fontSize: 14.sp,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
+                          color: isSelected
+                              ? const Color(0xFF2E8EFF)
+                              : Colors.black87,
                         ),
                       ),
-                      trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF)) : null,
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_circle_rounded,
+                              color: Color(0xFF2E8EFF),
+                            )
+                          : null,
                       onTap: () {
                         onSelected(val);
                         Navigator.pop(ctx);
@@ -838,7 +972,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
       builder: (BuildContext ctx) {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -850,9 +986,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Select Primary Branch', style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.black)),
+                    Text(
+                      'Select Primary Branch',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.black54),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Colors.black54,
+                      ),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -866,16 +1012,30 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     final b = branches[index];
                     final isSelected = b.id == _selectedBranchId;
                     return ListTile(
-                      leading: Icon(Icons.account_tree_outlined, color: isSelected ? const Color(0xFF2E8EFF) : Colors.black54),
+                      leading: Icon(
+                        Icons.account_tree_outlined,
+                        color: isSelected
+                            ? const Color(0xFF2E8EFF)
+                            : Colors.black54,
+                      ),
                       title: Text(
                         b.name,
                         style: GoogleFonts.poppins(
                           fontSize: 14.sp,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
+                          color: isSelected
+                              ? const Color(0xFF2E8EFF)
+                              : Colors.black87,
                         ),
                       ),
-                      trailing: isSelected ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF)) : null,
+                      trailing: isSelected
+                          ? const Icon(
+                              Icons.check_circle_rounded,
+                              color: Color(0xFF2E8EFF),
+                            )
+                          : null,
                       onTap: () {
                         setState(() => _selectedBranchId = b.id);
                         Navigator.pop(ctx);

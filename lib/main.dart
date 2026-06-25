@@ -156,17 +156,20 @@ Future<void> main() async {
     );
   };
 
-  runZonedGuarded(() {
-    runApp(const MultiBranchCrmApp());
+  runZonedGuarded(
+    () {
+      runApp(const MultiBranchCrmApp());
 
-    // Keep native splash on-screen briefly for a smoother startup.
-    Timer(const Duration(seconds: 2), FlutterNativeSplash.remove);
+      // Keep native splash on-screen briefly for a smoother startup.
+      Timer(const Duration(seconds: 2), FlutterNativeSplash.remove);
 
-    // Do notification setup in background so native splash exits quickly.
-    unawaited(_initializeMessaging());
-  }, (error, stackTrace) {
-    _log('RunZonedGuarded Error: $error');
-  });
+      // Do notification setup in background so native splash exits quickly.
+      unawaited(_initializeMessaging());
+    },
+    (error, stackTrace) {
+      _log('RunZonedGuarded Error: $error');
+    },
+  );
 }
 
 Future<void> _initializeMessaging() async {

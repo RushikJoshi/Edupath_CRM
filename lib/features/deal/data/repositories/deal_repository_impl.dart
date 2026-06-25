@@ -15,13 +15,16 @@ class DealRepositoryImpl implements DealRepository {
   Map<String, dynamic> _normalizeAccountToDeal(Map<String, dynamic> json) {
     final normalized = Map<String, dynamic>.from(json);
     normalized['title'] = normalized['title'] ?? normalized['name'] ?? '';
-    normalized['value'] = normalized['value'] ?? normalized['annualRevenue'] ?? 0;
+    normalized['value'] =
+        normalized['value'] ?? normalized['annualRevenue'] ?? 0;
     normalized['stage'] = normalized['stage'] ?? normalized['industry'] ?? '';
     normalized['pipelineId'] = normalized['pipelineId'] ?? '';
     normalized['leadId'] = normalized['leadId'] ?? '';
     normalized['leadName'] = normalized['leadName'] ?? '';
-    normalized['customerId'] = normalized['customerId'] ?? normalized['id'] ?? '';
-    normalized['customerName'] = normalized['customerName'] ?? normalized['name'] ?? '';
+    normalized['customerId'] =
+        normalized['customerId'] ?? normalized['id'] ?? '';
+    normalized['customerName'] =
+        normalized['customerName'] ?? normalized['name'] ?? '';
     normalized['createdBy'] = normalized['createdBy'] ?? '';
     normalized['createdByName'] = normalized['createdByName'] ?? '';
     return normalized;
@@ -46,14 +49,20 @@ class DealRepositoryImpl implements DealRepository {
           }
         }
       }
-      final deals = list.map((e) => DealModel.fromJson(_normalizeAccountToDeal(e as Map<String, dynamic>))).toList();
-      
+      final deals = list
+          .map(
+            (e) => DealModel.fromJson(
+              _normalizeAccountToDeal(e as Map<String, dynamic>),
+            ),
+          )
+          .toList();
+
       final role = await _storageService.getRole();
       final branchId = await _storageService.getBranchId();
 
       if (role == null || role.toLowerCase().contains('admin')) return deals;
       if (branchId == null || branchId.isEmpty) return deals;
-      
+
       return deals.where((deal) => deal.branchId == branchId).toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
@@ -102,7 +111,10 @@ class DealRepositoryImpl implements DealRepository {
         dealData = data['account'] ?? data['data'] ?? data['deal'] ?? data;
       }
       if (dealData == null) {
-        throw AppException(type: AppErrorType.server, userMessage: 'Failed to create deal');
+        throw AppException(
+          type: AppErrorType.server,
+          userMessage: 'Failed to create deal',
+        );
       }
       return DealModel.fromJson(_normalizeAccountToDeal(dealData));
     } on DioException catch (e) {
@@ -111,7 +123,11 @@ class DealRepositoryImpl implements DealRepository {
   }
 
   @override
-  Future<DealModel> updateDealStage({required String id, required String stage, String? stageId}) async {
+  Future<DealModel> updateDealStage({
+    required String id,
+    required String stage,
+    String? stageId,
+  }) async {
     try {
       final body = {'industry': stage, 'status': 'Active'};
       final response = await _apiClient.updateDeal(id, body);
@@ -121,7 +137,10 @@ class DealRepositoryImpl implements DealRepository {
         dealData = data['account'] ?? data['data'] ?? data['deal'] ?? data;
       }
       if (dealData == null) {
-        throw AppException(type: AppErrorType.server, userMessage: 'Failed to update deal stage');
+        throw AppException(
+          type: AppErrorType.server,
+          userMessage: 'Failed to update deal stage',
+        );
       }
       return DealModel.fromJson(_normalizeAccountToDeal(dealData));
     } on DioException catch (e) {
@@ -156,7 +175,10 @@ class DealRepositoryImpl implements DealRepository {
         dealData = data['account'] ?? data['data'] ?? data['deal'] ?? data;
       }
       if (dealData == null) {
-        throw AppException(type: AppErrorType.server, userMessage: 'Failed to update deal');
+        throw AppException(
+          type: AppErrorType.server,
+          userMessage: 'Failed to update deal',
+        );
       }
       return DealModel.fromJson(_normalizeAccountToDeal(dealData));
     } on DioException catch (e) {

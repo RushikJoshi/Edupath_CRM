@@ -12,7 +12,9 @@ abstract class FollowUpApiClient {
   Future<HttpResponse<dynamic>> getFollowUps(@Path('leadId') String leadId);
 
   @GET(ApiEndpoints.followUpsFallback)
-  Future<HttpResponse<dynamic>> getFollowUpsFallback(@Path('leadId') String leadId);
+  Future<HttpResponse<dynamic>> getFollowUpsFallback(
+    @Path('leadId') String leadId,
+  );
 
   @POST(ApiEndpoints.leadTasks)
   Future<HttpResponse<dynamic>> createFollowUp(

@@ -18,10 +18,16 @@ abstract class LeadApiClient {
   Future<HttpResponse<dynamic>> createLead(@Body() Map<String, dynamic> body);
 
   @PUT(ApiEndpoints.leadDetail)
-  Future<HttpResponse<dynamic>> updateLead(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateLead(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @PATCH(ApiEndpoints.leadStage)
-  Future<HttpResponse<dynamic>> updateLeadStage(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updateLeadStage(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @GET(ApiEndpoints.leadPipeline)
   Future<HttpResponse<dynamic>> getLeadPipeline();
@@ -30,18 +36,26 @@ abstract class LeadApiClient {
   Future<HttpResponse<dynamic>> getLostLeads();
 
   @POST(ApiEndpoints.leadLost)
-  Future<HttpResponse<dynamic>> markLeadAsLost(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> markLeadAsLost(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @GET(ApiEndpoints.leadDuplicates)
   Future<HttpResponse<dynamic>> getDuplicateLeads(@Path('id') String id);
 
   @POST(ApiEndpoints.leadMerge)
-  Future<HttpResponse<dynamic>> mergeDuplicateLead(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> mergeDuplicateLead(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @PATCH(ApiEndpoints.leadAssign)
-  Future<HttpResponse<dynamic>> assignLead(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> assignLead(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @POST(ApiEndpoints.leadConvert)
   Future<HttpResponse<dynamic>> convertLead(@Path('id') String id);
 }
-

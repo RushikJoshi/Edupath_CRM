@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:gtcrm/core/errors/app_error_handler.dart';
 import 'package:gtcrm/core/errors/app_exception.dart';
+import 'package:gtcrm/core/services/storage_service.dart';
 import 'package:gtcrm/features/lead/domain/repositories/lead_repository.dart';
 import '../data_sources/remote/lead_api_client.dart';
 import 'package:gtcrm/features/lead/data/models/lead_model.dart';
 import 'package:gtcrm/features/deal/data/models/deal_model.dart';
 
 class LeadRepositoryImpl implements LeadRepository {
-  LeadRepositoryImpl(this._apiClient);
+  LeadRepositoryImpl(this._apiClient, this._storageService);
   final LeadApiClient _apiClient;
+  final StorageService _storageService;
 
   bool _hasIsDeletedTrue(dynamic data) {
     if (data is Map) {
@@ -38,7 +40,10 @@ class LeadRepositoryImpl implements LeadRepository {
       }
       return LeadModel.fromJson(json);
     }
-    throw const AppException(type: AppErrorType.invalidResponse, userMessage: 'Something went wrong');
+    throw const AppException(
+      type: AppErrorType.invalidResponse,
+      userMessage: 'Something went wrong',
+    );
   }
 
   List<LeadModel> _parseLeadsListFromResponse(dynamic data) {
@@ -52,14 +57,31 @@ class LeadRepositoryImpl implements LeadRepository {
     } else {
       list = [];
     }
-    return list.map((e) => LeadModel.fromJson(e as Map<String, dynamic>)).toList();
+    return list
+        .map((e) => LeadModel.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   @override
   Future<List<LeadModel>> fetchAll({String? search}) async {
     try {
+      final role = await _storageService.getRole() ?? '';
+      final userId = await _storageService.getUserId() ?? '';
+      final userName = await _storageService.getUserName() ?? '';
+
       final response = await _apiClient.getLeads(search: search);
-      return _parseLeadsListFromResponse(response.data);
+      final leads = _parseLeadsListFromResponse(response.data);
+
+      if (role.toLowerCase().contains('admin')) {
+        return leads;
+      } else {
+        final userIdClean = userId.trim().toLowerCase();
+        final userNameClean = userName.trim().toLowerCase();
+        return leads.where((lead) {
+          final assigned = lead.assignedTo.trim().toLowerCase();
+          return assigned == userIdClean || assigned == userNameClean;
+        }).toList();
+      }
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -99,21 +121,50 @@ class LeadRepositoryImpl implements LeadRepository {
         'email': email,
         'phone': phone,
       };
-      if (companyName != null && companyName.isNotEmpty) body['companyName'] = companyName;
+      if (companyName != null && companyName.isNotEmpty)
+        body['companyName'] = companyName;
       if (notes != null && notes.isNotEmpty) body['notes'] = notes;
       if (city != null && city.isNotEmpty) body['city'] = city;
       if (address != null && address.isNotEmpty) body['address'] = address;
       if (course != null && course.isNotEmpty) body['course'] = course;
       if (location != null && location.isNotEmpty) body['location'] = location;
       if (status != null && status.isNotEmpty) body['status'] = status;
-      final resolvedStage = (stage != null && stage.isNotEmpty) ? stage : status;
+      final resolvedStage = (stage != null && stage.isNotEmpty)
+          ? stage
+          : status;
       if (resolvedStage != null && resolvedStage.isNotEmpty) {
         body['stage'] = resolvedStage;
       }
       if (value != null) body['value'] = value;
       if (sourceId != null && sourceId.isNotEmpty) body['sourceId'] = sourceId;
-      if (branchId != null && branchId.isNotEmpty) body['branchId'] = branchId;
-      if (assignedTo != null && assignedTo.isNotEmpty) body['assignedTo'] = assignedTo;
+      if (branchId != null && branchId.isNotEmpty) {
+        body['branchId'] = branchId;
+        body['branch_id'] = branchId;
+        body['branch'] = branchId;
+        body['assignedBranchId'] = branchId;
+      }
+      if (assignedTo != null && assignedTo.isNotEmpty)
+        body['assignedTo'] = assignedTo;
+
+      final now = DateTime.now().toIso8601String();
+      final userId = await _storageService.getUserId() ?? '';
+      body['createdAt'] = now;
+      body['create_at'] = now;
+      body['created_at'] = now;
+      if (_isValidObjectId(userId)) {
+        body['createdBy'] = userId;
+        body['created_by'] = userId;
+        body['createBy'] = userId;
+        body['create_by'] = userId;
+        body['createdby'] = userId;
+        body['createby'] = userId;
+        body['updatedBy'] = userId;
+        body['updated_by'] = userId;
+        body['updateBy'] = userId;
+        body['update_by'] = userId;
+        body['updatedby'] = userId;
+        body['updateby'] = userId;
+      }
 
       final response = await _apiClient.createLead(body);
       final data = response.data;
@@ -142,7 +193,10 @@ class LeadRepositoryImpl implements LeadRepository {
   }) async {
     try {
       final body = <String, dynamic>{};
-      if (status != null) body['status'] = status;
+      if (status != null) {
+        body['status'] = status;
+        body['stage'] = status;
+      }
       if (value != null) body['value'] = value;
       if (phone != null) body['phone'] = phone;
       if (notes != null) body['notes'] = notes;
@@ -154,6 +208,23 @@ class LeadRepositoryImpl implements LeadRepository {
         );
       }
 
+      final userId = await _storageService.getUserId() ?? '';
+      if (_isValidObjectId(userId)) {
+        body['updatedBy'] = userId;
+        body['updated_by'] = userId;
+        body['updateBy'] = userId;
+        body['update_by'] = userId;
+        body['updatedby'] = userId;
+        body['updateby'] = userId;
+        // Include created_by fields to prevent database schema validation errors on update
+        body['createdBy'] = userId;
+        body['created_by'] = userId;
+        body['createBy'] = userId;
+        body['create_by'] = userId;
+        body['createdby'] = userId;
+        body['createby'] = userId;
+      }
+
       final response = await _apiClient.updateLead(leadId, body);
       return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
@@ -162,12 +233,33 @@ class LeadRepositoryImpl implements LeadRepository {
   }
 
   @override
-  Future<LeadModel> updateLeadStage({required String leadId, required String status, String? remark}) async {
+  Future<LeadModel> updateLeadStage({
+    required String leadId,
+    required String status,
+    String? remark,
+  }) async {
     try {
+      final userId = await _storageService.getUserId() ?? '';
       final body = <String, dynamic>{
         'status': status,
+        'stage': status,
         if (remark != null && remark.isNotEmpty) 'remark': remark,
       };
+      if (_isValidObjectId(userId)) {
+        body['updatedBy'] = userId;
+        body['updated_by'] = userId;
+        body['updateBy'] = userId;
+        body['update_by'] = userId;
+        body['updatedby'] = userId;
+        body['updateby'] = userId;
+        // Include created_by fields to prevent database schema validation errors on update
+        body['createdBy'] = userId;
+        body['created_by'] = userId;
+        body['createBy'] = userId;
+        body['create_by'] = userId;
+        body['createdby'] = userId;
+        body['createby'] = userId;
+      }
       final response = await _apiClient.updateLeadStage(leadId, body);
       return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
@@ -191,10 +283,26 @@ class LeadRepositoryImpl implements LeadRepository {
     String? notes,
   }) async {
     try {
+      final userId = await _storageService.getUserId() ?? '';
       final body = <String, dynamic>{
         'reason': reason,
         if (notes != null && notes.isNotEmpty) 'notes': notes,
       };
+      if (_isValidObjectId(userId)) {
+        body['updatedBy'] = userId;
+        body['updated_by'] = userId;
+        body['updateBy'] = userId;
+        body['update_by'] = userId;
+        body['updatedby'] = userId;
+        body['updateby'] = userId;
+        // Include created_by fields to prevent database schema validation errors on update
+        body['createdBy'] = userId;
+        body['created_by'] = userId;
+        body['createBy'] = userId;
+        body['create_by'] = userId;
+        body['createdby'] = userId;
+        body['createby'] = userId;
+      }
       final response = await _apiClient.markLeadAsLost(leadId, body);
       return _parseLeadFromResponse(response.data);
     } on DioException catch (e) {
@@ -221,18 +329,27 @@ class LeadRepositoryImpl implements LeadRepository {
       if (data is List) {
         list = data;
       } else if (data is Map) {
-        list = (data['duplicates'] ?? data['data'] ?? data['leads'] ?? []) as List<dynamic>;
+        list =
+            (data['duplicates'] ?? data['data'] ?? data['leads'] ?? [])
+                as List<dynamic>;
       }
-      return list.map((e) => LeadModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => LeadModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
   }
 
   @override
-  Future<LeadModel?> mergeDuplicateLead({required String leadId, required String targetId}) async {
+  Future<LeadModel?> mergeDuplicateLead({
+    required String leadId,
+    required String targetId,
+  }) async {
     try {
-      final response = await _apiClient.mergeDuplicateLead(leadId, {'targetId': targetId});
+      final response = await _apiClient.mergeDuplicateLead(leadId, {
+        'targetId': targetId,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
         final lead = data['lead'] ?? data['mergedLead'] ?? data['data'] ?? data;
@@ -258,5 +375,9 @@ class LeadRepositoryImpl implements LeadRepository {
       if (e.response?.statusCode == 400) return null;
       throw AppErrorHandler.fromDioException(e);
     }
+  }
+
+  bool _isValidObjectId(String id) {
+    return RegExp(r'^[a-fA-F0-9]{24}$').hasMatch(id);
   }
 }

@@ -53,10 +53,15 @@ class InquiryModel extends Equatable {
     // Branch may be a plain id string or a populated object
     String branchId = '';
     String branchName = '';
-    final branchRaw = json['branch'] ?? json['branch_id'] ?? json['branchId'];
+    final branchRaw = json['branch'] ??
+        json['branch_id'] ??
+        json['branchId'] ??
+        json['assignedBranchId'] ??
+        json['assigned_branch_id'];
     if (branchRaw is Map) {
       branchId = (branchRaw['_id'] ?? branchRaw['id'] ?? '').toString();
-      branchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '').toString();
+      branchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '')
+          .toString();
     } else if (branchRaw != null) {
       branchId = branchRaw.toString();
     }
@@ -65,14 +70,16 @@ class InquiryModel extends Equatable {
     String? assignedToValue;
     final assignedToRaw = json['assignedTo'] ?? json['assigned_to'];
     if (assignedToRaw is Map) {
-      assignedToValue = assignedToRaw['name']?.toString() ??
-                        assignedToRaw['_id']?.toString() ??
-                        assignedToRaw['id']?.toString();
+      assignedToValue =
+          assignedToRaw['name']?.toString() ??
+          assignedToRaw['_id']?.toString() ??
+          assignedToRaw['id']?.toString();
     } else if (assignedToRaw != null) {
       assignedToValue = assignedToRaw.toString();
     }
 
-    final statusStr = (json['inquiryStatus'] ?? json['status'] ?? 'Fresh').toString();
+    final statusStr = (json['inquiryStatus'] ?? json['status'] ?? 'Fresh')
+        .toString();
 
     return InquiryModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
@@ -94,7 +101,9 @@ class InquiryModel extends Equatable {
       website: json['website']?.toString(),
       course: json['course']?.toString(),
       location: json['location']?.toString(),
-      value: json['value'] != null ? num.tryParse(json['value'].toString()) : null,
+      value: json['value'] != null
+          ? num.tryParse(json['value'].toString())
+          : null,
       product: json['product']?.toString(),
       followUpDate: json['followUpDate'] != null
           ? DateTime.tryParse(json['followUpDate'].toString())
@@ -106,27 +115,27 @@ class InquiryModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        '_id': id,
-        'name': name,
-        'phone': phone,
-        'email': email,
-        if (message != null) 'message': message,
-        'branchId': branchId,
-        'source': source,
-        if (sourceId != null) 'sourceId': sourceId,
-        if (assignedTo != null) 'assignedTo': assignedTo,
-        if (notes != null) 'notes': notes,
-        'inquiryStatus': status,
-        if (city != null) 'city': city,
-        if (address != null) 'address': address,
-        if (companyName != null) 'companyName': companyName,
-        if (website != null) 'website': website,
-        if (course != null) 'course': course,
-        if (location != null) 'location': location,
-        if (value != null) 'value': value,
-        if (product != null) 'product': product,
-        if (followUpDate != null) 'followUpDate': followUpDate!.toIso8601String(),
-      };
+    '_id': id,
+    'name': name,
+    'phone': phone,
+    'email': email,
+    if (message != null) 'message': message,
+    'branchId': branchId,
+    'source': source,
+    if (sourceId != null) 'sourceId': sourceId,
+    if (assignedTo != null) 'assignedTo': assignedTo,
+    if (notes != null) 'notes': notes,
+    'inquiryStatus': status,
+    if (city != null) 'city': city,
+    if (address != null) 'address': address,
+    if (companyName != null) 'companyName': companyName,
+    if (website != null) 'website': website,
+    if (course != null) 'course': course,
+    if (location != null) 'location': location,
+    if (value != null) 'value': value,
+    if (product != null) 'product': product,
+    if (followUpDate != null) 'followUpDate': followUpDate!.toIso8601String(),
+  };
 
   InquiryModel copyWith({
     String? id,
@@ -180,8 +189,27 @@ class InquiryModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id, name, phone, email, message, branchId, branchName, source, sourceId,
-        assignedTo, notes, status, city, address, companyName, website,
-        course, location, value, product, followUpDate, createdAt,
-      ];
+    id,
+    name,
+    phone,
+    email,
+    message,
+    branchId,
+    branchName,
+    source,
+    sourceId,
+    assignedTo,
+    notes,
+    status,
+    city,
+    address,
+    companyName,
+    website,
+    course,
+    location,
+    value,
+    product,
+    followUpDate,
+    createdAt,
+  ];
 }

@@ -1,11 +1,7 @@
 import 'package:gtcrm/features/task/data/models/task_model.dart';
 
 abstract class TaskRepository {
-  Future<List<TaskModel>> fetchAll({
-    String? leadId,
-    int? page,
-    int? limit,
-  });
+  Future<List<TaskModel>> fetchAll({String? leadId, int? page, int? limit});
 
   Future<TaskModel> create({
     required String title,

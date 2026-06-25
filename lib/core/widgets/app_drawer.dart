@@ -104,12 +104,13 @@ class AppDrawer extends StatelessWidget {
                   'Dashboard',
                   AppRoutes.home,
                 ),
-                _routeItem(
-                  context,
-                  'assets/svgs/Enquiries.svg',
-                  'Enquiries',
-                  AppRoutes.inquiryList,
-                ),
+                if (role.toLowerCase() != AppConstants.sales)
+                  _routeItem(
+                    context,
+                    'assets/svgs/Enquiries.svg',
+                    'Enquiries',
+                    AppRoutes.inquiryList,
+                  ),
                 _routeItem(
                   context,
                   'assets/svgs/leads.svg',
@@ -267,7 +268,9 @@ class AppDrawer extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(12),
         child: ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           onTap: () {
             Navigator.pop(context);
             if (activeRoute == route) return;
@@ -333,11 +336,7 @@ class AppDrawer extends StatelessWidget {
     }
 
     if (pngAsset != null) {
-      return Image.asset(
-        pngAsset,
-        width: 38,
-        height: 38,
-      );
+      return Image.asset(pngAsset, width: 38, height: 38);
     }
 
     Color bgColor;

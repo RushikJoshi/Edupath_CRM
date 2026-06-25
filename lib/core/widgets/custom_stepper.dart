@@ -89,9 +89,7 @@ class CustomStepper extends StatelessWidget {
           ),
         ],
       ),
-      child: step.showIcon
-          ? Icon(icon, color: baseColor, size: 20)
-          : null,
+      child: step.showIcon ? Icon(icon, color: baseColor, size: 20) : null,
     );
   }
 
@@ -147,7 +145,9 @@ class CustomStepper extends StatelessWidget {
             children: [
               circleTap,
               if (!isLast)
-                Expanded(child: _buildLine(step.status == StepStatus.completed)),
+                Expanded(
+                  child: _buildLine(step.status == StepStatus.completed),
+                ),
             ],
           ),
           const SizedBox(width: 12),
@@ -194,7 +194,10 @@ class CustomStepper extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Text(' : ', style: GoogleFonts.poppins(fontSize: 12)),
+                                Text(
+                                  ' : ',
+                                  style: GoogleFonts.poppins(fontSize: 12),
+                                ),
                                 Expanded(
                                   child: Text(
                                     e.description,

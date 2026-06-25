@@ -10,12 +10,22 @@ import 'package:gtcrm/features/user/data/models/user_model.dart';
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._apiClient, this._storageService);
   final AuthApiClient _apiClient;
-  final StorageService _storageService;///save token
+  final StorageService _storageService;
+
+  ///save token
 
   @override
-  Future<UserModel> login({required String email, required String password}) async {
+  Future<UserModel> login({
+    required String email,
+    required String password,
+  }) async {
     try {
-      final response = await _apiClient.login({'email': email, 'password': password});/// token
+      final response = await _apiClient.login({
+        'email': email,
+        'password': password,
+      });
+
+      /// token
       final data = response.data;
       if (data == null || data is! Map<String, dynamic>) {
         throw const AppException(
@@ -23,10 +33,15 @@ class AuthRepositoryImpl implements AuthRepository {
           userMessage: 'Something went wrong',
         );
       }
-      /// server response token-===
-      final token = (data['token'] ?? data['accessToken'] ?? data['jwt'])?.toString();
 
-      final userJson = data['user'] ?? (data['data'] != null ? data['data']['user'] : null) ?? data['data'];
+      /// server response token-===
+      final token = (data['token'] ?? data['accessToken'] ?? data['jwt'])
+          ?.toString();
+
+      final userJson =
+          data['user'] ??
+          (data['data'] != null ? data['data']['user'] : null) ??
+          data['data'];
 
       if (token == null || token.isEmpty) {
         throw const AppException(
@@ -43,6 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
 
       final user = UserModel.fromJson(userJson);
+
       ///save token-=========
       final tokenExpiry = _extractTokenExpiry(token)?.toIso8601String();
       await _storageService.saveSession(
@@ -58,7 +74,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return user;
     } on DioException catch (e) {
-      throw AppErrorHandler.fromDioException(e, fallbackMessage: 'Invalid email or password');
+      throw AppErrorHandler.fromDioException(
+        e,
+        fallbackMessage: 'Invalid email or password',
+      );
     }
   }
 
@@ -81,9 +100,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<UserModel> updateProfile({required String name, required String email}) async {
+  Future<UserModel> updateProfile({
+    required String name,
+    required String email,
+  }) async {
     try {
-      final response = await _apiClient.updateProfile({'name': name, 'email': email});
+      final response = await _apiClient.updateProfile({
+        'name': name,
+        'email': email,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
         final userJson = data['user'] ?? data;
@@ -99,9 +124,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> changePassword({required String currentPassword, required String newPassword}) async {
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     try {
-      await _apiClient.changePassword({'currentPassword': currentPassword, 'newPassword': newPassword});
+      await _apiClient.changePassword({
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      });
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

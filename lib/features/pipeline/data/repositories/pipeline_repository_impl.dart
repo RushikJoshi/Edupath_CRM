@@ -26,10 +26,15 @@ class PipelineRepositoryImpl implements PipelineRepository {
         list = [data['data']];
       } else if (data is Map && data['pipeline'] is Map) {
         list = [data['pipeline']];
-      } else if (data is Map && (data.containsKey('stages') || data.containsKey('name'))) {
+      } else if (data is Map &&
+          (data.containsKey('stages') || data.containsKey('name'))) {
         list = [data];
       }
-      return list.map((e) => PipelineModel.fromJson(Map<String, dynamic>.from(e as Map))).toList();
+      return list
+          .map(
+            (e) => PipelineModel.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -48,14 +53,19 @@ class PipelineRepositoryImpl implements PipelineRepository {
       } else if (data is Map && data['stages'] is List) {
         list = data['stages'] as List<dynamic>;
       }
-      return list.map((e) => StageModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => StageModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
   }
 
   @override
-  Future<PipelineModel> createPipeline({required String name, String? description}) async {
+  Future<PipelineModel> createPipeline({
+    required String name,
+    String? description,
+  }) async {
     try {
       final body = <String, dynamic>{'name': name};
       if (description != null && description.isNotEmpty) {
@@ -80,7 +90,10 @@ class PipelineRepositoryImpl implements PipelineRepository {
   }
 
   @override
-  Future<PipelineModel> updatePipeline(String id, Map<String, dynamic> body) async {
+  Future<PipelineModel> updatePipeline(
+    String id,
+    Map<String, dynamic> body,
+  ) async {
     try {
       final response = await _apiClient.updatePipeline(id, body);
       final data = response.data;
@@ -162,7 +175,10 @@ class PipelineRepositoryImpl implements PipelineRepository {
             )
             .toList(),
       };
-      final response = await _apiClient.updatePipelineByCompany(companyId, body);
+      final response = await _apiClient.updatePipelineByCompany(
+        companyId,
+        body,
+      );
       final data = response.data;
       if (data is Map<String, dynamic>) {
         final json = data['data'] ?? data['pipeline'] ?? data;

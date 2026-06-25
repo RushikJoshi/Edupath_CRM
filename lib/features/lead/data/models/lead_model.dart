@@ -50,31 +50,41 @@ class LeadModel extends Equatable {
   factory LeadModel.fromJson(Map<String, dynamic> json) {
     String extractString(dynamic value, [String defaultKey = '_id']) {
       if (value is Map) {
-        return (value[defaultKey] ?? value['name'] ?? value['id'] ?? '').toString();
+        return (value[defaultKey] ?? value['name'] ?? value['id'] ?? '')
+            .toString();
       }
       return value?.toString() ?? '';
     }
 
-    String branchId = extractString(json['branchId'] ?? json['branch_id'] ?? json['branch']);
+    String branchId = extractString(
+      json['branchId'] ?? json['branch_id'] ?? json['branch'],
+    );
     String branchName = '';
     final branchRaw = json['branch'] ?? json['branch_id'] ?? json['branchId'];
     if (branchRaw is Map) {
-      branchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '').toString();
+      branchName = (branchRaw['name'] ?? branchRaw['branchName'] ?? '')
+          .toString();
     }
 
     // Parse lost info from nested lostInfo map or top-level fields
     final lostInfo = json['lostInfo'] as Map<String, dynamic>?;
-    final lostReason = lostInfo?['reason']?.toString() ?? json['lostReason']?.toString();
-    final lostAt = lostInfo?['lostAt']?.toString() ?? json['lostAt']?.toString();
+    final lostReason =
+        lostInfo?['reason']?.toString() ?? json['lostReason']?.toString();
+    final lostAt =
+        lostInfo?['lostAt']?.toString() ?? json['lostAt']?.toString();
 
     return LeadModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
       inquiryId: extractString(json['inquiryId'] ?? json['sourceId']),
       name: (json['name'] ?? '').toString(),
-      stage: (json['status'] ?? json['stage'] ?? json['state'] ?? 'New').toString(),
+      stage: (json['stage'] ?? json['status'] ?? json['state'] ?? 'New')
+          .toString(),
       // Prefer assigned user's name when API returns a populated user object.
       // Falls back to ID/string if name is not available.
-      assignedTo: extractString(json['assignedTo'] ?? json['assigned_to'], 'name'),
+      assignedTo: extractString(
+        json['assignedTo'] ?? json['assigned_to'],
+        'name',
+      ),
       branchId: branchId,
       branchName: branchName,
       email: (json['email'] ?? '').toString(),
@@ -85,7 +95,9 @@ class LeadModel extends Equatable {
       address: json['address']?.toString(),
       course: json['course']?.toString(),
       location: json['location']?.toString(),
-      value: json['value'] != null ? num.tryParse(json['value'].toString()) : null,
+      value: json['value'] != null
+          ? num.tryParse(json['value'].toString())
+          : null,
       sourceId: json['sourceId']?.toString(),
       lostReason: lostReason,
       lostAt: lostAt,
@@ -140,5 +152,26 @@ class LeadModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, inquiryId, name, stage, assignedTo, branchId, branchName, email, phone, companyName, notes, city, address, course, location, value, sourceId, lostReason, lostAt, createdAt];
+  List<Object?> get props => [
+    id,
+    inquiryId,
+    name,
+    stage,
+    assignedTo,
+    branchId,
+    branchName,
+    email,
+    phone,
+    companyName,
+    notes,
+    city,
+    address,
+    course,
+    location,
+    value,
+    sourceId,
+    lostReason,
+    lostAt,
+    createdAt,
+  ];
 }

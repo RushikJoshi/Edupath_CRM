@@ -68,10 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
           listener: (context, state) {
             if (state.status == AppStatus.success && state.hasToken) {
               context.read<BranchBloc>().add(BranchFetched());
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                AppRoutes.home,
-                (route) => false,
-              );
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
             } else if (state.status == AppStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -290,10 +289,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              validator: (v) => Validators.requiredField(
-                                v,
-                                'Password',
-                              ),
+                              validator: (v) =>
+                                  Validators.requiredField(v, 'Password'),
                             ),
                             SizedBox(height: 16.h),
 
@@ -314,8 +311,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           });
                                         },
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4.r),
+                                          borderRadius: BorderRadius.circular(
+                                            4.r,
+                                          ),
                                         ),
                                         side: BorderSide(
                                           color: Color(0xFF2E8EFF),
@@ -335,9 +333,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                                 TextButton(
-                                  onPressed: () => Navigator.of(context).pushNamed(
-                                    AppRoutes.forgotPassword,
-                                  ),
+                                  onPressed: () => Navigator.of(
+                                    context,
+                                  ).pushNamed(AppRoutes.forgotPassword),
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
@@ -371,14 +369,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                         }
                                         // Trigger Auth Bloc event (both map to LoginSubmitted as registration isn't in scope)
                                         context.read<AuthBloc>().add(
-                                              LoginSubmitted(
-                                                email: _emailController.text
-                                                    .trim(),
-                                                password: _passwordController
-                                                    .text
-                                                    .trim(),
-                                              ),
-                                            );
+                                          LoginSubmitted(
+                                            email: _emailController.text.trim(),
+                                            password: _passwordController.text
+                                                .trim(),
+                                          ),
+                                        );
                                       },
                                 style: FilledButton.styleFrom(
                                   backgroundColor: const Color(0xFF2E8EFF),

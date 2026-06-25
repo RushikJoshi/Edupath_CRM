@@ -5,6 +5,8 @@ import 'package:gtcrm/core/services/storage_service.dart';
 import 'package:gtcrm/features/inquiry/domain/repositories/inquiry_repository.dart';
 import '../data_sources/remote/inquiry_api_client.dart';
 import 'package:gtcrm/features/inquiry/data/models/inquiry_model.dart';
+import 'package:gtcrm/core/di/injection_container.dart';
+import 'package:gtcrm/features/lead/domain/repositories/lead_repository.dart';
 
 class InquiryRepositoryImpl implements InquiryRepository {
   InquiryRepositoryImpl(this._apiClient, this._storageService);
@@ -36,6 +38,13 @@ class InquiryRepositoryImpl implements InquiryRepository {
     String? location,
   }) async {
     try {
+      final role = await _storageService.getRole() ?? 'sales';
+      final branchId = await _storageService.getBranchId() ?? '';
+
+      final isNotAdmin = role.toLowerCase().contains('admin') == false;
+      final queryBranchId =
+          (isNotAdmin && branchId.isNotEmpty) ? branchId : null;
+
       final response = await _apiClient.getInquiries(
         page: page,
         limit: limit,
@@ -44,6 +53,9 @@ class InquiryRepositoryImpl implements InquiryRepository {
         isExternal: isExternal,
         website: website,
         location: location,
+        branchId: queryBranchId,
+        branch: queryBranchId,
+        branch_id: queryBranchId,
       );
       final data = response.data;
       List<dynamic> list = [];
@@ -54,15 +66,19 @@ class InquiryRepositoryImpl implements InquiryRepository {
       } else if (data is Map && data['data'] is List) {
         list = data['data'] as List<dynamic>;
       }
-      final inquiries = list.map((e) => InquiryModel.fromJson(e as Map<String, dynamic>)).toList();
-      
-      final role = await _storageService.getRole() ?? 'sales';
-      final branchId = await _storageService.getBranchId() ?? '';
+      final inquiries = list
+          .map((e) => InquiryModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       if (role.toLowerCase().contains('admin')) {
         return inquiries;
+      } else if (role.toLowerCase().contains('manager')) {
+        final bIdClean = branchId.trim().toLowerCase();
+        return inquiries
+            .where((i) => i.branchId.trim().toLowerCase() == bIdClean)
+            .toList();
       } else {
-        return inquiries.where((i) => i.branchId == branchId).toList();
+        return [];
       }
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
@@ -93,7 +109,8 @@ class InquiryRepositoryImpl implements InquiryRepository {
         'email': email,
         'phone': phone,
       };
-      if (companyName != null && companyName.isNotEmpty) body['companyName'] = companyName;
+      if (companyName != null && companyName.isNotEmpty)
+        body['companyName'] = companyName;
       if (message != null && message.isNotEmpty) body['message'] = message;
       if (source != null && source.isNotEmpty) body['source'] = source;
       if (sourceId != null && sourceId.isNotEmpty) body['sourceId'] = sourceId;
@@ -102,9 +119,15 @@ class InquiryRepositoryImpl implements InquiryRepository {
       if (address != null && address.isNotEmpty) body['address'] = address;
       if (course != null && course.isNotEmpty) body['course'] = course;
       if (location != null && location.isNotEmpty) body['location'] = location;
-      if (inquiryStatus != null && inquiryStatus.isNotEmpty) body['inquiryStatus'] = inquiryStatus;
+      if (inquiryStatus != null && inquiryStatus.isNotEmpty)
+        body['inquiryStatus'] = inquiryStatus;
       if (value != null) body['value'] = value;
-      if (branchId != null && branchId.isNotEmpty) body['branchId'] = branchId;
+      if (branchId != null && branchId.isNotEmpty) {
+        body['branchId'] = branchId;
+        body['branch_id'] = branchId;
+        body['branch'] = branchId;
+        body['assignedBranchId'] = branchId;
+      }
 
       final response = await _apiClient.createInquiry(body);
       final data = response.data;
@@ -115,7 +138,10 @@ class InquiryRepositoryImpl implements InquiryRepository {
             userMessage: 'This enquiry already exists (Duplicate prevented)',
           );
         }
-        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] as Map<String, dynamic>? ?? data;
+        final json =
+            data['inquiry'] as Map<String, dynamic>? ??
+            data['data'] as Map<String, dynamic>? ??
+            data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(
@@ -133,7 +159,9 @@ class InquiryRepositoryImpl implements InquiryRepository {
     required String status,
   }) async {
     try {
-      final response = await _apiClient.updateStatus(inquiryId, {'status': status});
+      final response = await _apiClient.updateStatus(inquiryId, {
+        'status': status,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
         final json = data['inquiry'] as Map<String, dynamic>? ?? data;
@@ -154,9 +182,31 @@ class InquiryRepositoryImpl implements InquiryRepository {
     required String assignedTo,
   }) async {
     try {
-      final response = await _apiClient.convertToLead(inquiryId, {'assignedTo': assignedTo});
+      final response = await _apiClient.convertToLead(inquiryId, {
+        'assignedTo': assignedTo,
+      });
       final data = response.data;
-      if (data is Map<String, dynamic>) return data;
+      if (data is Map<String, dynamic>) {
+        String? leadId;
+        if (data.containsKey('lead') && data['lead'] is Map) {
+          final leadObj = data['lead'] as Map;
+          leadId = (leadObj['_id'] ?? leadObj['id'])?.toString();
+        }
+        if (leadId == null && data.containsKey('data') && data['data'] is Map) {
+          final dataObj = data['data'] as Map;
+          leadId = (dataObj['_id'] ?? dataObj['id'])?.toString();
+        }
+        leadId ??= (data['_id'] ?? data['id'] ?? data['leadId'])?.toString();
+
+        if (leadId != null && leadId.isNotEmpty && assignedTo.isNotEmpty) {
+          try {
+            await getIt<LeadRepository>().assignLead(leadId, assignedTo);
+          } catch (_) {
+            // Keep conversion successful even if automatic assignment fails
+          }
+        }
+        return data;
+      }
       return <String, dynamic>{};
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
@@ -178,10 +228,15 @@ class InquiryRepositoryImpl implements InquiryRepository {
     required String assignedTo,
   }) async {
     try {
-      final response = await _apiClient.assignInquiry(inquiryId, {'assignedTo': assignedTo});
+      final response = await _apiClient.assignInquiry(inquiryId, {
+        'assignedTo': assignedTo,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['data'] as Map<String, dynamic>? ?? data['inquiry'] as Map<String, dynamic>? ?? data;
+        final json =
+            data['data'] as Map<String, dynamic>? ??
+            data['inquiry'] as Map<String, dynamic>? ??
+            data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(
@@ -199,7 +254,8 @@ class InquiryRepositoryImpl implements InquiryRepository {
       final response = await _apiClient.getInquiryById(id);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(
@@ -227,7 +283,8 @@ class InquiryRepositoryImpl implements InquiryRepository {
       final response = await _apiClient.updateInquiry(id, body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(
@@ -252,7 +309,9 @@ class InquiryRepositoryImpl implements InquiryRepository {
       } else if (data is Map && data['data'] is List) {
         list = data['data'] as List<dynamic>;
       }
-      return list.map((e) => InquiryModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => InquiryModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -264,10 +323,13 @@ class InquiryRepositoryImpl implements InquiryRepository {
     required String targetId,
   }) async {
     try {
-      final response = await _apiClient.mergeInquiry(sourceId, {'targetId': targetId});
+      final response = await _apiClient.mergeInquiry(sourceId, {
+        'targetId': targetId,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['inquiry'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return InquiryModel.fromJson(json);
       }
       throw const AppException(

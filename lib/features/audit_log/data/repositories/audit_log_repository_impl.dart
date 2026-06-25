@@ -9,9 +9,17 @@ class AuditLogRepositoryImpl implements AuditLogRepository {
   final AuditLogApiClient _apiClient;
 
   @override
-  Future<List<AuditLogModel>> getLogs({int? page, int? limit, String? search}) async {
+  Future<List<AuditLogModel>> getLogs({
+    int? page,
+    int? limit,
+    String? search,
+  }) async {
     try {
-      final response = await _apiClient.getLogs(page: page, limit: limit, search: search);
+      final response = await _apiClient.getLogs(
+        page: page,
+        limit: limit,
+        search: search,
+      );
       final data = response.data;
       List<dynamic> list = [];
       if (data is List) {
@@ -21,7 +29,9 @@ class AuditLogRepositoryImpl implements AuditLogRepository {
       } else if (data is Map && data['logs'] is List) {
         list = data['logs'] as List<dynamic>;
       }
-      return list.map((e) => AuditLogModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => AuditLogModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -58,7 +68,9 @@ class AuditLogRepositoryImpl implements AuditLogRepository {
       } else if (data is Map && data['logs'] is List) {
         list = data['logs'] as List<dynamic>;
       }
-      return list.map((e) => AuditLogModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => AuditLogModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

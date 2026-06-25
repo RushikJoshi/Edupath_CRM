@@ -12,20 +12,30 @@ abstract class PipelineApiClient {
   Future<HttpResponse<dynamic>> getPipelines();
 
   @POST(ApiEndpoints.pipeline)
-  Future<HttpResponse<dynamic>> createPipeline(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> createPipeline(
+    @Body() Map<String, dynamic> body,
+  );
 
   @PUT(ApiEndpoints.pipelineDetail)
-  Future<HttpResponse<dynamic>> updatePipeline(@Path('id') String id, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updatePipeline(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE(ApiEndpoints.pipelineDetail)
   Future<void> deletePipeline(@Path('id') String id);
 
   @GET(ApiEndpoints.pipelineStages)
-  Future<HttpResponse<dynamic>> getPipelineStages(@Path('pipelineId') String pipelineId);
+  Future<HttpResponse<dynamic>> getPipelineStages(
+    @Path('pipelineId') String pipelineId,
+  );
 
   @POST(ApiEndpoints.stages)
   Future<HttpResponse<dynamic>> createStage(@Body() Map<String, dynamic> body);
 
   @PUT(ApiEndpoints.pipelineCompany)
-  Future<HttpResponse<dynamic>> updatePipelineByCompany(@Path('companyId') String companyId, @Body() Map<String, dynamic> body);
+  Future<HttpResponse<dynamic>> updatePipelineByCompany(
+    @Path('companyId') String companyId,
+    @Body() Map<String, dynamic> body,
+  );
 }

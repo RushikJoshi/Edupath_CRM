@@ -93,10 +93,9 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
       );
 
       // Navigate back to login
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.login,
-        (route) => false,
-      );
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
     });
   }
 
@@ -138,7 +137,13 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
               onChanged: (val) {
                 setState(() {});
               },
-              buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
+              buildCounter:
+                  (
+                    context, {
+                    required currentLength,
+                    required isFocused,
+                    maxLength,
+                  }) => null,
               decoration: const InputDecoration(
                 counterText: '',
                 border: InputBorder.none,
@@ -173,7 +178,9 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
-                    color: isCurrent ? const Color(0xFF2E8EFF) : const Color(0xFFE8EEF9),
+                    color: isCurrent
+                        ? const Color(0xFF2E8EFF)
+                        : const Color(0xFFE8EEF9),
                     width: isCurrent ? 2 : 1.5,
                   ),
                 ),
@@ -184,7 +191,9 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                     fontWeight: FontWeight.w600,
                     color: char == '-'
                         ? Colors.grey.shade400
-                        : (char == '|' ? const Color(0xFF2E8EFF) : Colors.black),
+                        : (char == '|'
+                              ? const Color(0xFF2E8EFF)
+                              : Colors.black),
                   ),
                 ),
               );
@@ -271,7 +280,7 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                 child: Column(
                   children: [
                     _buildOtpField(),
-                    
+
                     SizedBox(height: 35.h),
 
                     // Confirm OTP Button
@@ -321,10 +330,11 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                            AppRoutes.login,
-                            (route) => false,
-                          ),
+                          onPressed: () =>
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                AppRoutes.login,
+                                (route) => false,
+                              ),
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
                             minimumSize: Size.zero,
@@ -355,7 +365,9 @@ class _ConfirmOtpScreenState extends State<ConfirmOtpScreen> {
                     ),
                     SizedBox(height: 4.h),
                     TextButton(
-                      onPressed: _secondsRemaining == 0 ? _handleResendCode : null,
+                      onPressed: _secondsRemaining == 0
+                          ? _handleResendCode
+                          : null,
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
                         minimumSize: Size.zero,

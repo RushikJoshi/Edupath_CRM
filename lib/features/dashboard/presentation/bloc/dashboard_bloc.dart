@@ -12,14 +12,22 @@ class DashboardBloc extends Bloc<DashboardFetched, DashboardState> {
 
   final DashboardRepository _repository;
 
-  Future<void> _onFetched(DashboardFetched event, Emitter<DashboardState> emit) async {
+  Future<void> _onFetched(
+    DashboardFetched event,
+    Emitter<DashboardState> emit,
+  ) async {
     emit(state.copyWith(status: AppStatus.loading));
     try {
       final data = await _repository.fetch(event.role);
       emit(state.copyWith(status: AppStatus.success, data: data));
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(status: AppStatus.failure, errorMessage: msg.isNotEmpty ? msg : 'Failed to load dashboard'));
+      emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: msg.isNotEmpty ? msg : 'Failed to load dashboard',
+        ),
+      );
     }
   }
 }

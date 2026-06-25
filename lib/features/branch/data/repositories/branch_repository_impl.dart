@@ -9,7 +9,12 @@ class BranchRepositoryImpl implements BranchRepository {
   final BranchApiClient _apiClient;
 
   @override
-  Future<List<BranchModel>> fetchAll({String? search, int? page, int? limit, String? status}) async {
+  Future<List<BranchModel>> fetchAll({
+    String? search,
+    int? page,
+    int? limit,
+    String? status,
+  }) async {
     try {
       final response = await _apiClient.getBranches(
         search: search,
@@ -28,7 +33,9 @@ class BranchRepositoryImpl implements BranchRepository {
       } else {
         list = const [];
       }
-      return list.map((e) => BranchModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => BranchModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -74,7 +81,10 @@ class BranchRepositoryImpl implements BranchRepository {
   }
 
   @override
-  Future<BranchModel> updateBranch(String branchId, Map<String, dynamic> branchData) async {
+  Future<BranchModel> updateBranch(
+    String branchId,
+    Map<String, dynamic> branchData,
+  ) async {
     try {
       final response = await _apiClient.updateBranch(branchId, branchData);
       return _parseBranchFromResponse(response.data);

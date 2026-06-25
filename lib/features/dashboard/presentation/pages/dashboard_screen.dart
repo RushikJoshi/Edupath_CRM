@@ -28,7 +28,6 @@ import 'package:gtcrm/routes/app_routes.dart';
 import 'package:gtcrm/features/customer/presentation/pages/customer_list_screen.dart';
 import 'package:gtcrm/features/inquiry/presentation/pages/inquiry_list_screen.dart';
 
-
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, this.onProfileTap});
   final VoidCallback? onProfileTap;
@@ -51,10 +50,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
     final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
-    context.read<MeetingBloc>().add(MeetingFetched(
-      start: todayStart.toIso8601String(),
-      end: todayEnd.toIso8601String(),
-    ));
+    context.read<MeetingBloc>().add(
+      MeetingFetched(
+        start: todayStart.toIso8601String(),
+        end: todayEnd.toIso8601String(),
+      ),
+    );
 
     // Fetch recent activities (last 10)
     context.read<AuditLogBloc>().add(AuditLogsFetched(limit: 10));
@@ -288,12 +289,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                10,
-                12,
-                10,
-                16,
-              ),
+              padding: const EdgeInsets.fromLTRB(10, 12, 10, 16),
               child: ResponsiveConstraint(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,8 +306,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             children: [
                               _smallStatCard(
                                 title: 'Total inquiry',
-                                value: _formatCompactNumber(data.totalInquiries),
-                                imageAsset: 'assets/svgs/total_inquiry_illustration.png',
+                                value: _formatCompactNumber(
+                                  data.totalInquiries,
+                                ),
+                                imageAsset:
+                                    'assets/svgs/total_inquiry_illustration.png',
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -323,8 +322,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               SizedBox(height: 10.h),
                               _smallStatCard(
                                 title: 'Total Accounts',
-                                value: _formatCompactNumber(data.totalCustomers),
-                                imageAsset: 'assets/svgs/total_accounts_illustration.png',
+                                value: _formatCompactNumber(
+                                  data.totalCustomers,
+                                ),
+                                imageAsset:
+                                    'assets/svgs/total_accounts_illustration.png',
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -336,8 +338,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               SizedBox(height: 10.h),
                               _smallStatCard(
                                 title: 'Conversion Rate',
-                                value: '${data.conversionRate.toStringAsFixed(1).replaceAll('.', ',')}%',
-                                imageAsset: 'assets/svgs/conversion_rate_illustration.png',
+                                value:
+                                    '${data.conversionRate.toStringAsFixed(1).replaceAll('.', ',')}%',
+                                imageAsset:
+                                    'assets/svgs/conversion_rate_illustration.png',
                               ),
                             ],
                           ),
@@ -425,7 +429,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(width: 12.w),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF10B981),
                         borderRadius: BorderRadius.circular(20.r),
@@ -496,12 +503,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          10,
-          12,
-          10,
-          16,
-        ),
+        padding: const EdgeInsets.fromLTRB(10, 12, 10, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -773,11 +775,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: iconBgColor ?? Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? Colors.blue,
-                  size: 20,
-                ),
+                child: Icon(icon, color: iconColor ?? Colors.blue, size: 20),
               ),
           ],
         ),
@@ -899,7 +897,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const Spacer(),
                     // Count badge
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
                       decoration: BoxDecoration(
                         color: meetings.isEmpty
                             ? Colors.grey.shade100
@@ -944,7 +945,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 )
               else if (meetings.isEmpty)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 12.w),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20.h,
+                    horizontal: 12.w,
+                  ),
                   child: Row(
                     children: [
                       const Icon(
@@ -969,12 +973,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   final statusColor = m.status.toLowerCase() == 'completed'
                       ? Colors.green
                       : m.status.toLowerCase() == 'cancelled'
-                          ? Colors.red
-                          : const Color(0xFF2E8EFF);
+                      ? Colors.red
+                      : const Color(0xFF2E8EFF);
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 10.h,
+                    ),
                     decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
+                      border: Border(
+                        bottom: BorderSide(color: Color(0xFFF1F5F9)),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -1025,7 +1034,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             Container(
                               margin: const EdgeInsets.only(top: 2),
-                              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6.w,
+                                vertical: 2.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: statusColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(6.r),
@@ -1119,7 +1131,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 )
               else if (activities.isEmpty)
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 12.w),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20.h,
+                    horizontal: 12.w,
+                  ),
                   child: Row(
                     children: [
                       const Icon(
@@ -1139,14 +1154,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 )
               else
-                ...activities.map((a) => _activityRow(
-                      _ActivityItem(
-                        _activityIcon(a.action),
-                        a.details.isNotEmpty ? a.details : a.action,
-                        _relativeTime(a.createdAt),
-                        a.userName.isNotEmpty ? a.userName : 'System',
-                      ),
-                    )),
+                ...activities.map(
+                  (a) => _activityRow(
+                    _ActivityItem(
+                      _activityIcon(a.action),
+                      a.details.isNotEmpty ? a.details : a.action,
+                      _relativeTime(a.createdAt),
+                      a.userName.isNotEmpty ? a.userName : 'System',
+                    ),
+                  ),
+                ),
             ],
           ),
         );
@@ -1213,16 +1230,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
   /// Returns an icon for a given activity type string
   IconData _activityIcon(String type) {
     switch (type.toLowerCase()) {
-      case 'call': return Icons.phone_outlined;
-      case 'email': return Icons.mail_outline_rounded;
-      case 'meeting': return Icons.calendar_today_outlined;
-      case 'note': return Icons.note_outlined;
-      case 'lead': return Icons.person_add_outlined;
-      case 'inquiry': return Icons.contact_page_outlined;
-      case 'task': return Icons.task_outlined;
-      case 'deal': return Icons.handshake_outlined;
-      case 'stage_change': return Icons.swap_horiz_rounded;
-      default: return Icons.circle_notifications_outlined;
+      case 'call':
+        return Icons.phone_outlined;
+      case 'email':
+        return Icons.mail_outline_rounded;
+      case 'meeting':
+        return Icons.calendar_today_outlined;
+      case 'note':
+        return Icons.note_outlined;
+      case 'lead':
+        return Icons.person_add_outlined;
+      case 'inquiry':
+        return Icons.contact_page_outlined;
+      case 'task':
+        return Icons.task_outlined;
+      case 'deal':
+        return Icons.handshake_outlined;
+      case 'stage_change':
+        return Icons.swap_horiz_rounded;
+      default:
+        return Icons.circle_notifications_outlined;
     }
   }
 

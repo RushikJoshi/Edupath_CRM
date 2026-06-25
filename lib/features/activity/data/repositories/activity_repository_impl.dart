@@ -21,7 +21,9 @@ class ActivityRepositoryImpl implements ActivityRepository {
       } else if (data is Map && data['activities'] is List) {
         list = data['activities'] as List<dynamic>;
       }
-      return list.map((e) => ActivityModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => ActivityModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -64,7 +66,9 @@ class ActivityRepositoryImpl implements ActivityRepository {
       } else if (data is Map && data['activities'] is List) {
         list = data['activities'] as List<dynamic>;
       }
-      return list.map((e) => ActivityModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => ActivityModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -95,7 +99,9 @@ class ActivityRepositoryImpl implements ActivityRepository {
       } else if (data is Map && data['activities'] is List) {
         list = data['activities'] as List<dynamic>;
       }
-      return list.map((e) => ActivityModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => ActivityModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }

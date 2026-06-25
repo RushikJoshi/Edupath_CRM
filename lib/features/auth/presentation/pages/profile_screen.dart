@@ -39,18 +39,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .where((b) => b.id == userBranchId)
         .firstOrNull;
 
+    bool looksLikeHexId(String s) =>
+        s.length >= 20 && RegExp(r'^[a-fA-F0-9\-]+$').hasMatch(s);
+
     String branchName = '-';
     if (RoleGuard.isCompanyAdmin(role) && userBranchId.isEmpty) {
       branchName = 'All Branches';
-    } else if (RoleGuard.isBranchManager(role) && userBranchId.isEmpty) {
-      branchName = '-';
-    } else if (RoleGuard.isSales(role) && userBranchId.isEmpty) {
-      branchName = '-';
-    } else if (storedBranchName.isNotEmpty &&
-        storedBranchName != userBranchId) {
-      branchName = storedBranchName;
     } else if (matchedBranch != null) {
       branchName = matchedBranch.name;
+    } else if (storedBranchName.isNotEmpty && !looksLikeHexId(storedBranchName)) {
+      branchName = storedBranchName;
+    } else if (userBranchId.isNotEmpty && !looksLikeHexId(userBranchId)) {
+      branchName = userBranchId;
     }
 
     String prettyRole(String r) {
@@ -99,12 +99,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: SafeArea(
                       bottom: false,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             IconButton(
-                              icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+                              icon: Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                               onPressed: () {
                                 if (Navigator.canPop(context)) {
                                   Navigator.pop(context);
@@ -236,7 +243,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildActionTile(
                       icon: Icons.lock_rounded,
                       title: 'Change Password',
-                      onTap: () => Navigator.pushNamed(context, AppRoutes.changePassword),
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.changePassword,
+                      ),
                     ),
                     Divider(height: 1.h, color: Color(0xFFF1F5F9), indent: 56),
                     _buildActionTile(
@@ -305,7 +315,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildInfoTile({required IconData icon, required String title, required String value}) {
+  Widget _buildInfoTile({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       child: Row(
@@ -347,7 +361,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildActionTile({required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _buildActionTile({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20.r),
@@ -386,7 +404,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         title: Text(
           'Logout',
           style: GoogleFonts.poppins(
@@ -450,10 +470,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (shouldLogout != true || !context.mounted) return;
 
     context.read<AuthBloc>().add(LogoutRequested());
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.login,
-      (r) => false,
-    );
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (r) => false);
   }
 }

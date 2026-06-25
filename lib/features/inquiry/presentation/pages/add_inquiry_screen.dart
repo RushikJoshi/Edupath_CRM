@@ -78,6 +78,8 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
     final canSeeAll = RoleGuard.canSeeAllBranches(role);
     if (!canSeeAll && _branchId == null && myBranch.isNotEmpty) {
       _branchId = myBranch;
+    } else if (canSeeAll && _branchId == null && branches.isNotEmpty) {
+      _branchId = branches.first.id;
     }
 
     return BlocListener<InquiryBloc, InquiryState>(
@@ -240,7 +242,8 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                     SizedBox(height: 14.h),
                     _label('Inquiry Status'),
                     SizedBox(height: 8.h),
-                    if (pipelineState.status == AppStatus.loading && statusOptions.isEmpty)
+                    if (pipelineState.status == AppStatus.loading &&
+                        statusOptions.isEmpty)
                       _loadingField('Loading stages...')
                     else if (statusOptions.isEmpty)
                       _emptyField('No stages available')
@@ -251,7 +254,9 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                         items: statusOptions,
                         onChanged: (v) {
                           if (statusOptions.isNotEmpty) {
-                            setState(() => _inquiryStatus = v ?? effectiveStatus);
+                            setState(
+                              () => _inquiryStatus = v ?? effectiveStatus,
+                            );
                           }
                         },
                       ),
@@ -313,7 +318,9 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: loading ? null : () => Navigator.pop(context),
+                        onPressed: loading
+                            ? null
+                            : () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 50),
                           foregroundColor: const Color(0xFF2E8EFF),
@@ -527,16 +534,17 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
             ),
             child: const Padding(
               padding: EdgeInsets.only(top: 8),
-              child: Icon(Icons.edit_outlined, size: 18, color: Color(0xFF2E8EFF)),
+              child: Icon(
+                Icons.edit_outlined,
+                size: 18,
+                color: Color(0xFF2E8EFF),
+              ),
             ),
           ),
         ),
         filled: true,
         fillColor: Colors.white,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 14.h,
-          horizontal: 14.w,
-        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 14.w),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: Color(0xFFE8ECF3), width: 1.5.w),
@@ -587,12 +595,18 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
           SizedBox(
             width: 16.w,
             height: 16.h,
-            child: const CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF2E8EFF)),
+            child: const CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Color(0xFF2E8EFF),
+            ),
           ),
           SizedBox(width: 12.w),
           Text(
             message,
-            style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade500),
+            style: GoogleFonts.poppins(
+              fontSize: 13.sp,
+              color: Colors.grey.shade500,
+            ),
           ),
         ],
       ),
@@ -609,7 +623,10 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
       ),
       child: Text(
         message,
-        style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+        style: GoogleFonts.poppins(
+          fontSize: 13.sp,
+          color: Colors.grey.shade400,
+        ),
       ),
     );
   }
@@ -660,7 +677,10 @@ class _AddInquiryScreenState extends State<AddInquiryScreen> {
 
   InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
     hintText: hint,
-    hintStyle: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.grey.shade400),
+    hintStyle: GoogleFonts.poppins(
+      fontSize: 13.sp,
+      color: Colors.grey.shade400,
+    ),
     prefixIcon: Padding(
       padding: EdgeInsets.all(6.w),
       child: Container(

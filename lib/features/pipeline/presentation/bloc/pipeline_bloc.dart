@@ -18,7 +18,10 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
 
   final PipelineRepository _repository;
 
-  Future<void> _onPipelinesFetched(PipelinesFetched event, Emitter<PipelineState> emit) async {
+  Future<void> _onPipelinesFetched(
+    PipelinesFetched event,
+    Emitter<PipelineState> emit,
+  ) async {
     emit(state.copyWith(status: AppStatus.loading));
     try {
       final pipelines = await _repository.getPipelines();
@@ -28,11 +31,19 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
       }
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(status: AppStatus.failure, errorMessage: msg.isNotEmpty ? msg : 'Failed to load pipelines'));
+      emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: msg.isNotEmpty ? msg : 'Failed to load pipelines',
+        ),
+      );
     }
   }
 
-  Future<void> _onLoadLeadDealStages(LoadLeadDealStages event, Emitter<PipelineState> emit) async {
+  Future<void> _onLoadLeadDealStages(
+    LoadLeadDealStages event,
+    Emitter<PipelineState> emit,
+  ) async {
     if (state.pipelines.isEmpty) return;
     try {
       PipelineModel? leadPipeline;
@@ -41,35 +52,52 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
       for (final p in state.pipelines) {
         final n = p.name.toLowerCase();
         if (leadPipeline == null && n.contains('lead')) leadPipeline = p;
-        if (dealPipeline == null && (n.contains('deal') || n.contains('sales'))) dealPipeline = p;
+        if (dealPipeline == null && (n.contains('deal') || n.contains('sales')))
+          dealPipeline = p;
       }
 
       leadPipeline ??= state.pipelines.first;
-      dealPipeline ??= state.pipelines.length > 1 ? state.pipelines[1] : state.pipelines.first;
+      dealPipeline ??= state.pipelines.length > 1
+          ? state.pipelines[1]
+          : state.pipelines.first;
 
       final leadStages = leadPipeline.stages;
       final dealStages = dealPipeline.stages;
 
       // Always update from API — empty API result means no stages (not fallback)
-      emit(state.copyWith(
-        leadStages: leadStages,
-        dealStages: dealStages,
-      ));
+      emit(state.copyWith(leadStages: leadStages, dealStages: dealStages));
     } catch (_) {}
   }
 
-  Future<void> _onPipelineStagesFetched(PipelineStagesFetched event, Emitter<PipelineState> emit) async {
-    emit(state.copyWith(status: AppStatus.loading, selectedPipelineId: event.pipelineId, stages: []));
+  Future<void> _onPipelineStagesFetched(
+    PipelineStagesFetched event,
+    Emitter<PipelineState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: AppStatus.loading,
+        selectedPipelineId: event.pipelineId,
+        stages: [],
+      ),
+    );
     try {
       final stages = await _repository.getPipelineStages(event.pipelineId);
       emit(state.copyWith(status: AppStatus.success, stages: stages));
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(status: AppStatus.failure, errorMessage: msg.isNotEmpty ? msg : 'Failed to load stages'));
+      emit(
+        state.copyWith(
+          status: AppStatus.failure,
+          errorMessage: msg.isNotEmpty ? msg : 'Failed to load stages',
+        ),
+      );
     }
   }
 
-  Future<void> _onPipelineCreated(PipelineCreated event, Emitter<PipelineState> emit) async {
+  Future<void> _onPipelineCreated(
+    PipelineCreated event,
+    Emitter<PipelineState> emit,
+  ) async {
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
       final created = await _repository.createPipeline(
@@ -77,21 +105,28 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
         description: event.description,
       );
       final updated = [created, ...state.pipelines];
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Pipeline created',
-        pipelines: updated,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Pipeline created',
+          pipelines: updated,
+        ),
+      );
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: msg.isNotEmpty ? msg : 'Failed to create pipeline',
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: msg.isNotEmpty ? msg : 'Failed to create pipeline',
+        ),
+      );
     }
   }
 
-  Future<void> _onStageCreated(StageCreated event, Emitter<PipelineState> emit) async {
+  Future<void> _onStageCreated(
+    StageCreated event,
+    Emitter<PipelineState> emit,
+  ) async {
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
       final created = await _repository.createStage(
@@ -102,31 +137,74 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
         winLikelihood: event.winLikelihood,
       );
       final updated = [created, ...state.stages];
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Stage created',
-        stages: updated,
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Stage created',
+          stages: updated,
+        ),
+      );
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: msg.isNotEmpty ? msg : 'Failed to create stage',
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: msg.isNotEmpty ? msg : 'Failed to create stage',
+        ),
+      );
     }
   }
 
-  Future<void> _onUpdateToAdvanced(PipelineUpdateToAdvanced event, Emitter<PipelineState> emit) async {
+  Future<void> _onUpdateToAdvanced(
+    PipelineUpdateToAdvanced event,
+    Emitter<PipelineState> emit,
+  ) async {
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
       // Use the default advanced stages as defined in the initial state
       final advancedStages = const <StageModel>[
-        StageModel(id: '', name: 'New Lead', pipelineId: '', probability: 10, color: '#3b82f6'),
-        StageModel(id: '', name: 'Contacted', pipelineId: '', probability: 25, color: '#6366f1'),
-        StageModel(id: '', name: 'Demo Done', pipelineId: '', probability: 50, color: '#f59e0b'),
-        StageModel(id: '', name: 'Negotiation', pipelineId: '', probability: 75, color: '#f97316'),
-        StageModel(id: '', name: 'Closed Won', pipelineId: '', probability: 100, color: '#10b981'),
-        StageModel(id: '', name: 'Closed Lost', pipelineId: '', probability: 0, color: '#ef4444'),
+        StageModel(
+          id: '',
+          name: 'New Lead',
+          pipelineId: '',
+          probability: 10,
+          color: '#3b82f6',
+        ),
+        StageModel(
+          id: '',
+          name: 'Contacted',
+          pipelineId: '',
+          probability: 25,
+          color: '#6366f1',
+        ),
+        StageModel(
+          id: '',
+          name: 'Demo Done',
+          pipelineId: '',
+          probability: 50,
+          color: '#f59e0b',
+        ),
+        StageModel(
+          id: '',
+          name: 'Negotiation',
+          pipelineId: '',
+          probability: 75,
+          color: '#f97316',
+        ),
+        StageModel(
+          id: '',
+          name: 'Closed Won',
+          pipelineId: '',
+          probability: 100,
+          color: '#10b981',
+        ),
+        StageModel(
+          id: '',
+          name: 'Closed Lost',
+          pipelineId: '',
+          probability: 0,
+          color: '#ef4444',
+        ),
       ];
 
       await _repository.updatePipelineByCompany(
@@ -135,19 +213,23 @@ class PipelineBloc extends Bloc<PipelineEvent, PipelineState> {
         stages: advancedStages,
       );
 
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Pipeline updated to Advanced Sales Pipeline',
-      ));
-      
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.success,
+          actionMessage: 'Pipeline updated to Advanced Sales Pipeline',
+        ),
+      );
+
       // Refresh to get the updated IDs and stages
       add(const PipelinesFetched());
     } catch (e) {
       final msg = e.toString().replaceFirst('Exception: ', '');
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: msg.isNotEmpty ? msg : 'Failed to update pipeline',
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: msg.isNotEmpty ? msg : 'Failed to update pipeline',
+        ),
+      );
     }
   }
 }

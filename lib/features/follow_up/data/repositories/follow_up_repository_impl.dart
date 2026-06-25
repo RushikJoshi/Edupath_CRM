@@ -32,7 +32,9 @@ class FollowUpRepositoryImpl implements FollowUpRepository {
       } else if (data is Map && data['data'] is List) {
         list = data['data'] as List<dynamic>;
       }
-      return list.map((e) => FollowUpModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => FollowUpModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         return <FollowUpModel>[];
@@ -59,7 +61,8 @@ class FollowUpRepositoryImpl implements FollowUpRepository {
       final response = await _apiClient.createFollowUp(leadId, body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['followup'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['followup'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return FollowUpModel.fromJson(json);
       }
       throw const AppException(
@@ -83,7 +86,8 @@ class FollowUpRepositoryImpl implements FollowUpRepository {
       final response = await _apiClient.updateStatus(leadId, body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['followup'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['followup'] as Map<String, dynamic>? ?? data['data'] ?? data;
         return FollowUpModel.fromJson(json);
       }
       throw const AppException(

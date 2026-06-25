@@ -30,7 +30,9 @@ class TaskRepositoryImpl implements TaskRepository {
       } else if (data is Map && data['tasks'] is List) {
         list = data['tasks'] as List<dynamic>;
       }
-      return list.map((e) => TaskModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => TaskModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -68,7 +70,8 @@ class TaskRepositoryImpl implements TaskRepository {
       final response = await _apiClient.createTask(body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
         if (json is Map<String, dynamic>) {
           return TaskModel.fromJson(json);
         }
@@ -89,7 +92,8 @@ class TaskRepositoryImpl implements TaskRepository {
       final response = await _apiClient.updateTask(id, body);
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
         if (json is Map<String, dynamic>) {
           return TaskModel.fromJson(json);
         }
@@ -119,10 +123,13 @@ class TaskRepositoryImpl implements TaskRepository {
     required String status,
   }) async {
     try {
-      final response = await _apiClient.updateTask(taskId, <String, dynamic>{'status': status});
+      final response = await _apiClient.updateTask(taskId, <String, dynamic>{
+        'status': status,
+      });
       final data = response.data;
       if (data is Map<String, dynamic>) {
-        final json = data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
+        final json =
+            data['task'] as Map<String, dynamic>? ?? data['data'] ?? data;
         if (json is Map<String, dynamic>) {
           return TaskModel.fromJson(json);
         }

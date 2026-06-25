@@ -53,6 +53,14 @@ class ActivityModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, leadId, dealId, customerId, type, note, userName, createdAt];
+  List<Object?> get props => [
+    id,
+    leadId,
+    dealId,
+    customerId,
+    type,
+    note,
+    userName,
+    createdAt,
+  ];
 }
-

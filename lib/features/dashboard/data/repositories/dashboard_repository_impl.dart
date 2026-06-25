@@ -7,7 +7,11 @@ import 'package:gtcrm/core/services/storage_service.dart';
 import 'package:gtcrm/features/customer/domain/repositories/customer_repository.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
-  DashboardRepositoryImpl(this._apiClient, this._storage, this._customerRepository);
+  DashboardRepositoryImpl(
+    this._apiClient,
+    this._storage,
+    this._customerRepository,
+  );
   final DashboardApiClient _apiClient;
   final StorageService _storage;
   final CustomerRepository _customerRepository;
@@ -31,13 +35,18 @@ class DashboardRepositoryImpl implements DashboardRepository {
     try {
       final branchId = await _storage.getBranchId();
       final isNotAdmin = role.toLowerCase().contains('admin') == false;
-      final queryBranchId = (isNotAdmin && branchId != null && branchId.isNotEmpty)
+      final queryBranchId =
+          (isNotAdmin && branchId != null && branchId.isNotEmpty)
           ? branchId
           : null;
 
-      final response = await _apiClient.getDashboard(branchId: queryBranchId);
+      final response = await _apiClient.getDashboard(
+        branchId: queryBranchId,
+        branch: queryBranchId,
+        branch_id: queryBranchId,
+      );
       final data = response.data;
-      
+
       // DIAGNOSTIC LOGGING FOR DASHBOARD DATA
       print('=== DASHBOARD DEBUG ===');
       print('Role: $role');
@@ -65,7 +74,10 @@ class DashboardRepositoryImpl implements DashboardRepository {
       // Fallback for Accounts/Customers count if it is 0
       if (model.totalCustomers == 0) {
         try {
-          final customers = await _customerRepository.fetchAll(page: 1, limit: 1000);
+          final customers = await _customerRepository.fetchAll(
+            page: 1,
+            limit: 1000,
+          );
           model = model.copyWith(totalCustomers: customers.length);
           print('=== DASHBOARD FALLBACK SUCCESS ===');
           print('Fetched customer length: ${customers.length}');

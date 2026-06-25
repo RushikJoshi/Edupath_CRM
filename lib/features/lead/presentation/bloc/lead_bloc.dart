@@ -69,30 +69,46 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
     }
   }
 
-  Future<void> _onByIdFetched(LeadByIdFetched event, Emitter<LeadState> emit) async {
+  Future<void> _onByIdFetched(
+    LeadByIdFetched event,
+    Emitter<LeadState> emit,
+  ) async {
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
       final lead = await _repository.getLeadById(event.leadId);
       emit(state.copyWith(actionStatus: AppStatus.success, selectedLead: lead));
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Unable to fetch lead'),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: AppErrorHandler.userMessage(
+            e,
+            fallbackMessage: 'Unable to fetch lead',
+          ),
+        ),
+      );
     }
   }
 
-  Future<void> _onLostLeadsFetched(LostLeadsFetched event, Emitter<LeadState> emit) async {
+  Future<void> _onLostLeadsFetched(
+    LostLeadsFetched event,
+    Emitter<LeadState> emit,
+  ) async {
     if (state.lostStatus == AppStatus.loading) return;
     emit(state.copyWith(lostStatus: AppStatus.loading));
     try {
       final lostLeads = await _repository.getLostLeads();
       emit(state.copyWith(lostStatus: AppStatus.success, lostLeads: lostLeads));
     } catch (e) {
-      emit(state.copyWith(
-        lostStatus: AppStatus.failure,
-        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Unable to fetch lost leads'),
-      ));
+      emit(
+        state.copyWith(
+          lostStatus: AppStatus.failure,
+          actionMessage: AppErrorHandler.userMessage(
+            e,
+            fallbackMessage: 'Unable to fetch lost leads',
+          ),
+        ),
+      );
     }
   }
 
@@ -306,13 +322,27 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         if (i.id == event.leadId) return _mergeLeadForUi(i, updatedLead);
         return i;
       }).toList();
-      emit(
-        state.copyWith(
-          actionStatus: AppStatus.success,
-          actionMessage: 'Status updated to ${event.status}',
-          items: items,
-        ),
-      );
+
+      if (isLeadStageWon(event.status)) {
+        await _repository.convertLead(event.leadId);
+        final withoutLead = items.where((i) => i.id != event.leadId).toList();
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Lead converted to account',
+            items: withoutLead,
+            clearConvertedDeal: true,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Status updated to ${event.status}',
+            items: items,
+          ),
+        );
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -325,7 +355,10 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
     }
   }
 
-  Future<void> _onStageMoved(LeadStageMoved event, Emitter<LeadState> emit) async {
+  Future<void> _onStageMoved(
+    LeadStageMoved event,
+    Emitter<LeadState> emit,
+  ) async {
     if (state.actionStatus == AppStatus.loading) return;
     emit(state.copyWith(actionStatus: AppStatus.loading));
     try {
@@ -338,16 +371,37 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         if (i.id == event.leadId) return _mergeLeadForUi(i, updatedLead);
         return i;
       }).toList();
-      emit(state.copyWith(
-        actionStatus: AppStatus.success,
-        actionMessage: 'Stage moved to ${event.status}',
-        items: items,
-      ));
+
+      if (isLeadStageWon(event.status)) {
+        await _repository.convertLead(event.leadId);
+        final withoutLead = items.where((i) => i.id != event.leadId).toList();
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Lead converted to account',
+            items: withoutLead,
+            clearConvertedDeal: true,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Stage moved to ${event.status}',
+            items: items,
+          ),
+        );
+      }
     } catch (e) {
-      emit(state.copyWith(
-        actionStatus: AppStatus.failure,
-        actionMessage: AppErrorHandler.userMessage(e, fallbackMessage: 'Stage update failed'),
-      ));
+      emit(
+        state.copyWith(
+          actionStatus: AppStatus.failure,
+          actionMessage: AppErrorHandler.userMessage(
+            e,
+            fallbackMessage: 'Stage update failed',
+          ),
+        ),
+      );
     }
   }
 
@@ -449,13 +503,27 @@ class LeadBloc extends Bloc<LeadEvent, LeadState> {
         if (i.id == event.leadId) return _mergeLeadForUi(i, updatedLead);
         return i;
       }).toList();
-      emit(
-        state.copyWith(
-          actionStatus: AppStatus.success,
-          actionMessage: 'Lead updated',
-          items: items,
-        ),
-      );
+
+      if (event.status != null && isLeadStageWon(event.status!)) {
+        await _repository.convertLead(event.leadId);
+        final withoutLead = items.where((i) => i.id != event.leadId).toList();
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Lead converted to account',
+            items: withoutLead,
+            clearConvertedDeal: true,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            actionStatus: AppStatus.success,
+            actionMessage: 'Lead updated',
+            items: items,
+          ),
+        );
+      }
     } catch (e) {
       emit(
         state.copyWith(

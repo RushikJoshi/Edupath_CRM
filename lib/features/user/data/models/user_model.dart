@@ -43,25 +43,31 @@ class UserModel extends Equatable {
     final branchRaw = json['branch'] ?? json['branch_id'] ?? json['branchId'];
     if (branchRaw is Map) {
       branchId = (branchRaw['_id'] ?? branchRaw['id'] ?? '').toString();
-      branchName = (branchRaw['name'] ?? 
-                    branchRaw['branchName'] ?? 
-                    branchRaw['branch_name'] ?? 
-                    '').toString();
+      branchName =
+          (branchRaw['name'] ??
+                  branchRaw['branchName'] ??
+                  branchRaw['branch_name'] ??
+                  '')
+              .toString();
     } else if (branchRaw != null) {
       branchId = branchRaw.toString();
     }
 
     if (branchName.isEmpty) {
-      branchName = (json['branchName'] ?? 
-                    json['branch_name'] ?? 
-                    '').toString();
+      branchName = (json['branchName'] ?? json['branch_name'] ?? '').toString();
     }
-    
+
     // Safety check: if branchName looks like a hex ID, discard it as a name.
-    bool looksLikeId(String s) => s.length >= 20 && RegExp(r'^[a-fA-F0-9]+$').hasMatch(s);
+    bool looksLikeId(String s) =>
+        s.length >= 20 && RegExp(r'^[a-fA-F0-9]+$').hasMatch(s);
     if (looksLikeId(branchName)) branchName = '';
 
-    final statusVal = json['status'] ?? (json['isActive'] == false ? 'inactive' : 'active');
+    if (branchName.isEmpty && branchId.isNotEmpty && !looksLikeId(branchId)) {
+      branchName = branchId;
+    }
+
+    final statusVal =
+        json['status'] ?? (json['isActive'] == false ? 'inactive' : 'active');
 
     return UserModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
@@ -76,33 +82,48 @@ class UserModel extends Equatable {
       phone: (json['phone'] ?? '').toString(),
       department: (json['department'] ?? '').toString(),
       jobTitle: (json['jobTitle'] ?? json['job_title'] ?? '').toString(),
-      salesTarget: (json['salesTarget'] ?? json['sales_target'] ?? 0.0) is num 
-          ? (json['salesTarget'] ?? json['sales_target'] ?? 0.0).toDouble() 
-          : double.tryParse((json['salesTarget'] ?? json['sales_target'] ?? '0').toString()) ?? 0.0,
-      commissionPercentage: (json['commissionPercentage'] ?? json['commission_percentage'] ?? 0.0) is num
-          ? (json['commissionPercentage'] ?? json['commission_percentage'] ?? 0.0).toDouble()
-          : double.tryParse((json['commissionPercentage'] ?? json['commission_percentage'] ?? '0').toString()) ?? 0.0,
+      salesTarget: (json['salesTarget'] ?? json['sales_target'] ?? 0.0) is num
+          ? (json['salesTarget'] ?? json['sales_target'] ?? 0.0).toDouble()
+          : double.tryParse(
+                  (json['salesTarget'] ?? json['sales_target'] ?? '0')
+                      .toString(),
+                ) ??
+                0.0,
+      commissionPercentage:
+          (json['commissionPercentage'] ?? json['commission_percentage'] ?? 0.0)
+              is num
+          ? (json['commissionPercentage'] ??
+                    json['commission_percentage'] ??
+                    0.0)
+                .toDouble()
+          : double.tryParse(
+                  (json['commissionPercentage'] ??
+                          json['commission_percentage'] ??
+                          '0')
+                      .toString(),
+                ) ??
+                0.0,
       status: statusVal.toString(),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        '_id': id,
-        'name': name,
-        'email': email,
-        'role': role,
-        'branch_id': branchId,
-        'branch_name': branchName,
-        'isActive': isActive,
-        'firstName': firstName,
-        'lastName': lastName,
-        'phone': phone,
-        'department': department,
-        'jobTitle': jobTitle,
-        'salesTarget': salesTarget,
-        'commissionPercentage': commissionPercentage,
-        'status': status,
-      };
+    '_id': id,
+    'name': name,
+    'email': email,
+    'role': role,
+    'branch_id': branchId,
+    'branch_name': branchName,
+    'isActive': isActive,
+    'firstName': firstName,
+    'lastName': lastName,
+    'phone': phone,
+    'department': department,
+    'jobTitle': jobTitle,
+    'salesTarget': salesTarget,
+    'commissionPercentage': commissionPercentage,
+    'status': status,
+  };
 
   UserModel copyWith({
     String? id,
@@ -142,20 +163,20 @@ class UserModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        email,
-        role,
-        branchId,
-        branchName,
-        isActive,
-        firstName,
-        lastName,
-        phone,
-        department,
-        jobTitle,
-        salesTarget,
-        commissionPercentage,
-        status,
-      ];
+    id,
+    name,
+    email,
+    role,
+    branchId,
+    branchName,
+    isActive,
+    firstName,
+    lastName,
+    phone,
+    department,
+    jobTitle,
+    salesTarget,
+    commissionPercentage,
+    status,
+  ];
 }

@@ -16,7 +16,9 @@ abstract class ActivityApiClient {
   Future<ActivityModel> createActivity(@Body() Map<String, dynamic> body);
 
   @GET(ApiEndpoints.activitiesByLead)
-  Future<HttpResponse<dynamic>> getActivitiesByLead(@Path('leadId') String leadId);
+  Future<HttpResponse<dynamic>> getActivitiesByLead(
+    @Path('leadId') String leadId,
+  );
 
   @GET(ApiEndpoints.activityTimeline)
   Future<HttpResponse<dynamic>> getActivityTimeline({

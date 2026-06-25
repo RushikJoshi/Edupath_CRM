@@ -100,14 +100,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 ),
                 child: TextField(
                   onChanged: (value) => setState(() => _searchQuery = value),
-                  style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.black),
+                  style: GoogleFonts.poppins(
+                    fontSize: 14.sp,
+                    color: Colors.black,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Search...',
                     hintStyle: GoogleFonts.poppins(
                       fontSize: 14.sp,
                       color: Colors.grey.shade500,
                     ),
-                    prefixIcon: const Icon(Icons.search, color: Colors.black, size: 22),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.black,
+                      size: 22,
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 14.h,
@@ -122,10 +129,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 buildWhen: (prev, curr) =>
                     prev.status != curr.status || prev.items != curr.items,
                 builder: (context, state) {
-                  if (state.status == AppStatus.loading && state.items.isEmpty) {
+                  if (state.status == AppStatus.loading &&
+                      state.items.isEmpty) {
                     return ShimmerLoading.listPlaceholder();
                   }
-                  if (state.status == AppStatus.failure && state.items.isEmpty) {
+                  if (state.status == AppStatus.failure &&
+                      state.items.isEmpty) {
                     return Center(
                       child: Text(
                         state.errorMessage ?? 'Failed to load activity',
@@ -155,7 +164,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             physics: const AlwaysScrollableScrollPhysics(),
                             children: [
                               SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.2,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
                               ),
                               Center(
                                 child: Text(
@@ -198,16 +208,18 @@ class _ActivityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final initials = item.userName.isNotEmpty
         ? item.userName
-            .trim()
-            .split(' ')
-            .map((p) => p.isNotEmpty ? p[0] : '')
-            .take(2)
-            .join()
-            .toUpperCase()
+              .trim()
+              .split(' ')
+              .map((p) => p.isNotEmpty ? p[0] : '')
+              .take(2)
+              .join()
+              .toUpperCase()
         : 'EP';
 
     final displayType = item.type.replaceAll('_', ' ').replaceAll('-', ' ');
-    final headline = item.note.trim().isNotEmpty ? item.note.trim() : 'Activity logged';
+    final headline = item.note.trim().isNotEmpty
+        ? item.note.trim()
+        : 'Activity logged';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

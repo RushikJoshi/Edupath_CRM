@@ -37,6 +37,11 @@ class InquiryState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [status, items, errorMessage, actionStatus, actionMessage];
+  List<Object?> get props => [
+    status,
+    items,
+    errorMessage,
+    actionStatus,
+    actionMessage,
+  ];
 }

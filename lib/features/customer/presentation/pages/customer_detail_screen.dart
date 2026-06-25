@@ -119,10 +119,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           borderRadius: BorderRadius.circular(10.r),
           borderSide: BorderSide(color: AppColors.primary, width: 1.5.w),
         ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 14.w,
-          vertical: 12.h,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       ),
     );
   }

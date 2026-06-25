@@ -40,10 +40,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           SnackBar(
             content: Text(
               'OTP generated successfully!',
-              style: GoogleFonts.poppins(
-                fontSize: 13.sp,
-                color: Colors.white,
-              ),
+              style: GoogleFonts.poppins(fontSize: 13.sp, color: Colors.white),
             ),
             backgroundColor: AppColors.stageWon,
             behavior: SnackBarBehavior.floating,
@@ -73,8 +70,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Scaffold(
         backgroundColor: const Color(0xFFF9FAFB),
 
-
-
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -100,7 +95,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       color: const Color(0xFFF1F5FD),
                     ),
                   ),
-                  
+
                   // Back Arrow Button
                   Positioned(
                     top: 20,
@@ -152,7 +147,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFDDE7FF), // Soft Blue
                                 borderRadius: BorderRadius.circular(24.r),
-                                border: Border.all(color:Color(0xffAFC4FF) )
+                                border: Border.all(color: Color(0xffAFC4FF)),
                               ),
                               child: Center(
                                 child: Column(

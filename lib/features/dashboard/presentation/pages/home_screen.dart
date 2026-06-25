@@ -70,13 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
             return GoogleFonts.poppins(
               fontSize: 11.sp,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: isSelected ? const Color(0xFF2E8EFF) : const Color(0xFF0E4C7D),
+              color: isSelected
+                  ? const Color(0xFF2E8EFF)
+                  : const Color(0xFF0E4C7D),
             );
           }),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             final isSelected = states.contains(WidgetState.selected);
             return IconThemeData(
-              color: isSelected ? const Color(0xFF2E8EFF) : const Color(0xFF0E4C7D),
+              color: isSelected
+                  ? const Color(0xFF2E8EFF)
+                  : const Color(0xFF0E4C7D),
             );
           }),
         ),
@@ -146,7 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.only(bottomRight: Radius.circular(32.r)),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(32.r),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,11 +339,14 @@ class _HomeScreenState extends State<HomeScreen> {
         clipBehavior: Clip.antiAlias,
         borderRadius: BorderRadius.circular(12.r),
         child: ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           onTap: () {
             if (index == 0) {
               final role =
-                  context.read<AuthBloc>().state.user?.role ?? AppConstants.sales;
+                  context.read<AuthBloc>().state.user?.role ??
+                  AppConstants.sales;
               context.read<DashboardBloc>().add(DashboardFetched(role));
             }
             setState(() => _currentIndex = index);
@@ -381,7 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
         onTap: () {
           Navigator.pop(context);
           Navigator.pushNamed(context, route);
@@ -443,11 +454,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if (pngAsset != null) {
-      return Image.asset(
-        pngAsset,
-        width: 38.w,
-        height: 38.h,
-      );
+      return Image.asset(pngAsset, width: 38.w, height: 38.h);
     }
 
     Color bgColor;
@@ -512,18 +519,15 @@ class _NavIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = IconTheme.of(context).color;
     if (assetPath.endsWith('.png')) {
-      return Image.asset(
-        assetPath,
-        width: 24.w,
-        height: 24.h,
-        color: color,
-      );
+      return Image.asset(assetPath, width: 24.w, height: 24.h, color: color);
     }
     return SvgPicture.asset(
       assetPath,
       width: 24.w,
       height: 24.h,
-      colorFilter: color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      colorFilter: color != null
+          ? ColorFilter.mode(color, BlendMode.srcIn)
+          : null,
     );
   }
 }

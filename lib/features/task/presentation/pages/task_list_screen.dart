@@ -117,7 +117,10 @@ class _TaskListScreenState extends State<TaskListScreen>
                       SizedBox(height: 14.h),
                       TextFormField(
                         controller: titleCtrl,
-                        decoration: _fieldDec('Title', Icons.text_fields_rounded),
+                        decoration: _fieldDec(
+                          'Title',
+                          Icons.text_fields_rounded,
+                        ),
                         validator: (v) => v == null || v.trim().isEmpty
                             ? 'Title is required'
                             : null,
@@ -193,7 +196,8 @@ class _TaskListScreenState extends State<TaskListScreen>
                       _buildSelectorField(
                         context: context,
                         label: 'Due Date',
-                        value: '${dueDate.day}/${dueDate.month}/${dueDate.year}',
+                        value:
+                            '${dueDate.day}/${dueDate.month}/${dueDate.year}',
                         prefixIcon: Icons.calendar_today_rounded,
                         showDropdownArrow: false,
                         onTap: () async {
@@ -296,7 +300,12 @@ class _TaskListScreenState extends State<TaskListScreen>
           child: InputDecorator(
             decoration: InputDecoration(
               prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  top: 4,
+                  bottom: 4,
+                ),
                 child: Container(
                   padding: EdgeInsets.all(6.w),
                   decoration: BoxDecoration(
@@ -310,7 +319,10 @@ class _TaskListScreenState extends State<TaskListScreen>
                   ),
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 12.h,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.r),
                 borderSide: const BorderSide(color: Color(0xFFE8ECF3)),
@@ -336,10 +348,7 @@ class _TaskListScreenState extends State<TaskListScreen>
                   ),
                 ),
                 if (showDropdownArrow)
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.grey,
-                  ),
+                  const Icon(Icons.arrow_drop_down, color: Colors.grey),
               ],
             ),
           ),
@@ -387,17 +396,25 @@ class _TaskListScreenState extends State<TaskListScreen>
               SizedBox(height: 8.h),
               const Divider(),
               ...['High', 'Medium', 'Low'].map((p) {
-                final isSelected = p.toLowerCase() == currentValue.toLowerCase();
+                final isSelected =
+                    p.toLowerCase() == currentValue.toLowerCase();
                 return ListTile(
                   title: Text(
                     p,
                     style: GoogleFonts.poppins(
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                      color: isSelected
+                          ? const Color(0xFF2E8EFF)
+                          : Colors.black87,
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                      ? const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF2E8EFF),
+                        )
                       : null,
                   onTap: () {
                     onSelected(p);
@@ -451,17 +468,25 @@ class _TaskListScreenState extends State<TaskListScreen>
               SizedBox(height: 8.h),
               const Divider(),
               ..._statuses.map((s) {
-                final isSelected = s.toLowerCase() == currentValue.toLowerCase();
+                final isSelected =
+                    s.toLowerCase() == currentValue.toLowerCase();
                 return ListTile(
                   title: Text(
                     s,
                     style: GoogleFonts.poppins(
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                      color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
+                      color: isSelected
+                          ? const Color(0xFF2E8EFF)
+                          : Colors.black87,
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                      ? const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF2E8EFF),
+                        )
                       : null,
                   onTap: () {
                     onSelected(s);
@@ -519,12 +544,19 @@ class _TaskListScreenState extends State<TaskListScreen>
                 title: Text(
                   'Unassigned',
                   style: GoogleFonts.poppins(
-                    fontWeight: currentValue.isEmpty ? FontWeight.w600 : FontWeight.w400,
-                    color: currentValue.isEmpty ? const Color(0xFF2E8EFF) : Colors.black87,
+                    fontWeight: currentValue.isEmpty
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                    color: currentValue.isEmpty
+                        ? const Color(0xFF2E8EFF)
+                        : Colors.black87,
                   ),
                 ),
                 trailing: currentValue.isEmpty
-                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                    ? const Icon(
+                        Icons.check_circle_rounded,
+                        color: Color(0xFF2E8EFF),
+                      )
                     : null,
                 onTap: () {
                   onSelected('');
@@ -542,12 +574,19 @@ class _TaskListScreenState extends State<TaskListScreen>
                       title: Text(
                         u.name,
                         style: GoogleFonts.poppins(
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                          color: isSelected
+                              ? const Color(0xFF2E8EFF)
+                              : Colors.black87,
                         ),
                       ),
                       trailing: isSelected
-                          ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                          ? const Icon(
+                              Icons.check_circle_rounded,
+                              color: Color(0xFF2E8EFF),
+                            )
                           : null,
                       onTap: () {
                         onSelected(u.id);
@@ -633,10 +672,7 @@ class _TaskListScreenState extends State<TaskListScreen>
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey.shade200,
-                    width: 1.w,
-                  ),
+                  bottom: BorderSide(color: Colors.grey.shade200, width: 1.w),
                 ),
               ),
               child: TabBar(
@@ -775,11 +811,7 @@ class _TaskListScreenState extends State<TaskListScreen>
             color: const Color(0xFFF2F6FE),
             borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(
-            prefixIcon,
-            color: const Color(0xFF2E8EFF),
-            size: 18,
-          ),
+          child: Icon(prefixIcon, color: const Color(0xFF2E8EFF), size: 18),
         ),
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -1025,7 +1057,9 @@ class _TaskCard extends StatelessWidget {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.r),
+                      ),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                     child: Column(
@@ -1056,7 +1090,9 @@ class _TaskCard extends StatelessWidget {
                             itemCount: _statuses.length,
                             itemBuilder: (context, i) {
                               final statusOption = _statuses[i];
-                              final isSelected = task.status.toLowerCase() == statusOption.toLowerCase();
+                              final isSelected =
+                                  task.status.toLowerCase() ==
+                                  statusOption.toLowerCase();
                               final statusColor = _getStatusColor(statusOption);
                               return ListTile(
                                 leading: Container(
@@ -1070,15 +1106,23 @@ class _TaskCard extends StatelessWidget {
                                 title: Text(
                                   statusOption,
                                   style: GoogleFonts.poppins(
-                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                    color: isSelected ? const Color(0xFF2E8EFF) : Colors.black87,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                    color: isSelected
+                                        ? const Color(0xFF2E8EFF)
+                                        : Colors.black87,
                                   ),
                                 ),
                                 trailing: isSelected
-                                    ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2E8EFF))
+                                    ? const Icon(
+                                        Icons.check_circle_rounded,
+                                        color: Color(0xFF2E8EFF),
+                                      )
                                     : null,
                                 onTap: () {
-                                  if (task.status.toLowerCase() != statusOption.toLowerCase()) {
+                                  if (task.status.toLowerCase() !=
+                                      statusOption.toLowerCase()) {
                                     onStatusChanged(statusOption);
                                   }
                                   Navigator.pop(ctx);
@@ -1102,7 +1146,9 @@ class _TaskCard extends StatelessWidget {
                 border: task.status.toLowerCase() == 'pending'
                     ? null
                     : Border.all(
-                        color: _getStatusColor(task.status).withValues(alpha: 0.2),
+                        color: _getStatusColor(
+                          task.status,
+                        ).withValues(alpha: 0.2),
                       ),
               ),
               child: Row(

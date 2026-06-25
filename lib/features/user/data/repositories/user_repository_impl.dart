@@ -9,9 +9,17 @@ class UserRepositoryImpl implements UserRepository {
   final UserApiClient _apiClient;
 
   @override
-  Future<List<UserModel>> fetchAll({String? search, String? role, String? status}) async {
+  Future<List<UserModel>> fetchAll({
+    String? search,
+    String? role,
+    String? status,
+  }) async {
     try {
-      final response = await _apiClient.getUsers(search: search, role: role, status: status);
+      final response = await _apiClient.getUsers(
+        search: search,
+        role: role,
+        status: status,
+      );
       final data = response.data;
       List<dynamic> list;
       if (data is List) {
@@ -23,7 +31,9 @@ class UserRepositoryImpl implements UserRepository {
       } else {
         list = [];
       }
-      return list.map((e) => UserModel.fromJson(e as Map<String, dynamic>)).toList();
+      return list
+          .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw AppErrorHandler.fromDioException(e);
     }
@@ -69,7 +79,10 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<UserModel> updateUser(String userId, Map<String, dynamic> updateData) async {
+  Future<UserModel> updateUser(
+    String userId,
+    Map<String, dynamic> updateData,
+  ) async {
     try {
       final response = await _apiClient.updateUser(userId, updateData);
       return _parseUserFromResponse(response.data);

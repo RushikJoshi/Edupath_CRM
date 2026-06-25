@@ -21,7 +21,9 @@ class PipelineModel extends Equatable {
   factory PipelineModel.fromJson(Map<String, dynamic> json) {
     List<StageModel> stagesList = [];
     if (json['stages'] != null && json['stages'] is List) {
-      stagesList = (json['stages'] as List).map((e) => StageModel.fromJson(e as Map<String, dynamic>)).toList();
+      stagesList = (json['stages'] as List)
+          .map((e) => StageModel.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
 
     return PipelineModel(
@@ -39,13 +41,13 @@ class PipelineModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'description': description,
-        'stages': stages.map((s) => s.toJson()).toList(),
-        if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
-        if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'description': description,
+    'stages': stages.map((s) => s.toJson()).toList(),
+    if (createdAt != null) 'createdAt': createdAt!.toIso8601String(),
+    if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
+  };
 
   @override
   List<Object?> get props => [id, name, description, stages];
